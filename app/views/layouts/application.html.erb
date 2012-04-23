@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Railsdemo</title>
+  <%= stylesheet_link_tag    "application", :media => "all" %>
+  <%= javascript_include_tag "application" %>
+  <%= csrf_meta_tags %>
+</head>
+<body>
+  <div>
+    <%= link_to 'Users', users_path %>
+    <%= link_to 'Shift types', shift_types_path %>
+    <%= link_to 'Shifts', shifts_path %>
+  </div>
+<%= yield %>
+
+</body>
+</html>

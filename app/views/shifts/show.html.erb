@@ -1,0 +1,45 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Shift type:</b>
+  <%= link_to @shift.shift_type.title, @shift.shift_type %>
+</p>
+<p>
+  <b>Comment:</b>
+  <%= @shift.comment %>
+</p>
+
+<p>
+  <b>Time:</b>
+  <%= "#{@shift.start} - #{@shift.end}" %>
+</p>
+
+<p>
+  <b>Duration:</b>
+  <%= @shift.end - @shift.start %>
+</p>
+
+<p>
+  <b>User:</b>
+  <%= @shift.user ? @shift.user.username : "No user" %>
+</p>
+
+<% if @shift.user %>
+<p>
+  <b>Certification: Returns wrong value</b>
+  <%= @shift.shift_type.certifications.where(user: @shift.user) ? "Has certification" : "No certification" %>
+</p>
+<% end %>
+
+<p>
+  <b>Training:</b>
+  <%= @shift.training ? "Yes" : "No" %>
+</p>
+
+<p>
+  <b>Leasing:</b>
+  <%= @shift.leasing ? "Yes" : "No" %>
+</p>
+
+<%= link_to 'Edit', edit_shift_path(@shift) %> |
+<%= link_to 'Back', shifts_path %>

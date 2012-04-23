@@ -1,0 +1,44 @@
+<%= form_for(@shift) do |f| %>
+  <% if @shift.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@shift.errors.count, "error") %> prohibited this shift from being saved:</h2>
+
+      <ul>
+      <% @shift.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+  <div class="field">
+    <%= f.label :shift_type_id %>
+    <%= select("shift", "shift_type_id", ShiftType.all.collect {|p| [ p.title, p.id ] }, {:include_blank => false}) %>
+  </div>
+  <div class="field">
+    <%= f.label :user_id %>
+    <%= select("shift", "user_id", User.all.collect {|p| [ p.username, p.id ] }, {:include_blank => true}) %>
+  </div>
+  <div class="field">
+    <%= f.label :start %>
+    <%= f.datetime_select :start %>
+  </div>
+  <div class="field">
+    <%= f.label :end %>
+    <%= f.datetime_select :end %>
+  </div>
+  <div class="field">
+    <%= f.label :training %>
+    <%= f.check_box :training %>
+  </div>
+  <div class="field">
+    <%= f.label :comment %>
+    <%= f.text_area :comment %>
+  </div>
+  <div class="field">
+    <%= f.label :leasing %>
+    <%= f.check_box :leasing %>
+  </div>
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>
