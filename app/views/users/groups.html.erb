@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Edit user groups for <%= @user.username %></h1>
+
+<%= form_tag do %>
+  <% UserGroup.all.each do |user_group| %>
+    <div id="field">
+      <%= check_box_tag "user[user_group_ids][]", user_group.id, @user.user_groups.exists?(user_group) %><%= user_group.name %>
+    </div>
+  <% end %>
+  <div class="actions">
+    <%= submit_tag "Update groups!" %>
+  </div>
+<% end %>
+
+<%= link_to 'Edit', edit_user_path(@user) %> |
+<%= link_to 'Back', users_path %>

@@ -67,4 +67,22 @@ class UsersController < ApplicationController
       format.json { head :ok }
     end
   end
+
+    def groups
+    @user = User.find(params[:id])
+  end
+
+  def update_groups
+    @user = User.find(params[:id])
+    @user.user_groups.destroy_all
+
+    params[:user][:user_group_ids].each do |ug_id|
+      @user.user_groups << UserGroup.find(ug_id)
+    end
+
+    respond_to do |format|
+      format.html { redirect_to @user, notice: 'User group was successfully certified!' }
+      format.json { head :ok }
+    end
+  end
 end

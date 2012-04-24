@@ -1,0 +1,17 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Edit certifications for <%= @user_group.name %></h1>
+
+<%= form_tag do %>
+  <% ShiftType.all.each do |shift_type| %>
+    <div id="field">
+      <%= check_box_tag "user_group[shift_type_ids][]", shift_type.id, @user_group.certifications.exists?(shift_type_id: shift_type.id) %><%= shift_type.title %>
+    </div>
+  <% end %>
+  <div class="actions">
+    <%= submit_tag "Certify!" %>
+  </div>
+<% end %>
+
+<%= link_to 'Edit', edit_user_group_path(@user_group) %> |
+<%= link_to 'Back', user_groups_path %>
