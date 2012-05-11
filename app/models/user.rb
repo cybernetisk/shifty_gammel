@@ -6,6 +6,7 @@ class User < ActiveRecord::Base
   before_save :encrypt_password
 
   has_many :shifts, dependent: :nullify, inverse_of: :user
+  has_many :tickets, through: :shifts, inverse_of: :user
   has_many :certifications, dependent: :destroy, inverse_of: :user
   has_and_belongs_to_many :user_groups
 
