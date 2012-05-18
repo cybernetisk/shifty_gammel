@@ -19,6 +19,7 @@ Railsdemo::Application.routes.draw do
   resources :sessions
   resources :user_groups
   resources :tickets
+  resources :tasks
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
