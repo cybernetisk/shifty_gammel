@@ -7,7 +7,7 @@ one:
   used: false
 
 two:
-  user_id: 1
-  shift_id: 1
-  value: 1.5
-  used: false
+  user_id: 2
+  shift_id: 4
+  value: 42
+  used: true
