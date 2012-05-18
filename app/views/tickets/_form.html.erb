@@ -16,6 +16,10 @@
     <%= f.number_field :task_id %>
   </div>
   <div class="field">
+    <%= f.label :user_id %>
+    <%= select("task_", "task_id", Task.all.collect {|t| [ t.task.title, t.id ] }, {:include_blank => true}) %>
+  </div>
+  <div class="field">
     <%= f.label :used %><br />
     <%= f.check_box :used %>
   </div>
