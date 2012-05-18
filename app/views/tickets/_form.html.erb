@@ -12,8 +12,8 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :task_id %><br />
-    <%= f.number_field :task_id %>
+    <%= f.label :task_id %>
+    <%= select("ticket", :task_id, Task.all.collect {|t| [ t.title, t.id ] }, {:include_blank => true}) %>
   </div>
   <div class="field">
     <%= f.label :used %><br />

@@ -12,12 +12,12 @@
   <% end %>
   <div class="field">
     <%= f.label :shift_type_id %>
-    <%= select("shift", "shift_type_id", ShiftType.all.collect {|p| [ p.title, p.id ] }, {:include_blank => false}) %>
+    <%= select("shift", :shift_type_id, ShiftType.all.collect {|p| [ p.title, p.id ] }, {:include_blank => false}) %>
   </div>
-  <div class="field">
-    <%= f.label :user_id %>
-    <%= select("shift", "user_id", User.all.collect {|p| [ p.username, p.id ] }, {:include_blank => true}) %>
-  </div>
+<!---  <div class="field">
+    <%= f.label :task_id %>
+    <%= select("shift", :task_id, Task.all.collect {|p| [ p.title, p.id ] }, {:include_blank => true}) %>
+  </div> -->
   <div class="field">
     <%= f.label :start %>
     <%= f.datetime_select :start %>

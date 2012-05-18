@@ -20,18 +20,6 @@
 </p>
 
 <p>
-  <b>User:</b>
-  <%= @shift.user ? @shift.user.username : "No user" %>
-</p>
-
-<% if @shift.user %>
-<p>
-  <b>Certification: Returns wrong value</b>
-  <%= @shift.shift_type.certifications.where(user: @shift.user) ? "Has certification" : "No certification" %>
-</p>
-<% end %>
-
-<p>
   <b>Training:</b>
   <%= @shift.training ? "Yes" : "No" %>
 </p>
