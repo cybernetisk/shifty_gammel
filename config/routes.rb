@@ -11,14 +11,14 @@ Railsdemo::Application.routes.draw do
   post "user_groups/:id/certify" => 'user_groups#update_certifications'
   get "users/:id/groups" => "users#groups"
   post "users/:id/groups" => "users#update_groups"
-
+  
   # Default CRUD routes
   resources :shift_types
   resources :shifts
   resources :users
   resources :sessions
   resources :user_groups
-
+  resources :tickets
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

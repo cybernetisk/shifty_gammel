@@ -3,6 +3,7 @@ class Fixes < ActiveRecord::Migration
     rename_column :shifts, :user_id, :task_id
     rename_column :tickets, :shift_id, :task_id
   end
+  
   def up
   end
 
