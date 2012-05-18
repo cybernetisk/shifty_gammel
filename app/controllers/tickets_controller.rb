@@ -3,6 +3,8 @@ class TicketsController < ApplicationController
   # GET /tickets.json
   def showForUser
     @tickets = Ticket.all
+    @user = User.find(params[:id])
+    @tickets = @user.countUnusedTickets
 
     respond_to do |format|
       format.html # index.html.erb

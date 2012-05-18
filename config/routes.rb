@@ -13,7 +13,7 @@ Railsdemo::Application.routes.draw do
   post "users/:id/groups" => "users#update_groups"
   
   # Lagt til av Mari
-  match 'tickets/showForUser' => 'tickets#showForUser', :as => :tickets_for_user
+  match 'tickets/showForUser/:id' => 'tickets#showForUser', :as => :tickets_for_user
   
   # Default CRUD routes
   resources :shift_types

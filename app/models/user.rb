@@ -34,4 +34,15 @@ class User < ActiveRecord::Base
   def can_take_shift?(shift)
     Certification.exists?(shift_type_id: shift.shift_type, user_group_id: user_groups)
   end
+
+  def countUnusedTickets
+      tasks = Task.where(user_id: self); # husk å legg til at skíftet også skal være signert
+      tickets = 0;
+      tasks.each do |task|
+        if task.ticket != nil
+          tickets += task.ticket.value
+        end
+      end
+      tickets
+  end  
 end
