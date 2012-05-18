@@ -1,0 +1,20 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Task:</b>
+  <%= @ticket.task_id %>
+</p>
+
+<p>
+  <b>Used:</b>
+  <%= @ticket.used %>
+</p>
+
+<p>
+  <b>Value:</b>
+  <%= @ticket.value %>
+</p>
+
+
+<%= link_to 'Edit', edit_ticket_path(@ticket) %> |
+<%= link_to 'Back', tickets_path %>
