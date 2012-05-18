@@ -12,6 +12,9 @@ Railsdemo::Application.routes.draw do
   get "users/:id/groups" => "users#groups"
   post "users/:id/groups" => "users#update_groups"
   
+  # Lagt til av Mari
+  match 'tickets/showForUser' => 'tickets#showForUser', :as => :tickets_for_user
+  
   # Default CRUD routes
   resources :shift_types
   resources :shifts
@@ -20,6 +23,7 @@ Railsdemo::Application.routes.draw do
   resources :user_groups
   resources :tickets
   resources :tasks
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
