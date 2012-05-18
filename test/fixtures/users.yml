@@ -4,8 +4,10 @@ one:
   username: Admin
   password: hemmelig
   last_login: 2012-04-21 22:41:53
+  admin: false
 
 two:
   username: User
   password: hemmelig
   last_login: 2012-04-21 22:41:53
+  admin: true
