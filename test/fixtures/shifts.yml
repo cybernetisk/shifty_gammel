@@ -1,6 +1,7 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
 one:
+  id: 1
   shift_type_id: 1
   start: 2012-04-21 18:30:00
   end: 2012-04-21 22:00:00
@@ -9,6 +10,7 @@ one:
   leasing: false
 
 two:
+  id: 2
   shift_type_id: 2
   start: 2012-04-21 18:00:00
   end: 2012-04-22 02:30:00
