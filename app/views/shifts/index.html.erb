@@ -1,3 +1,35 @@
+<% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
+<table>
+  <thead>
+    <tr>
+      <th class="time"></th>
+      <% days.values.each do |day| %>
+        <th><%= day.camelcase %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="time">
+        <ul>
+        <% for i in 0..23 do %>
+          <li><%= "%02d" % i %></li>
+        <% end %>
+        <ul>
+      </td>
+      <% days.keys.each do |day| %>
+        <td class="day <%= day %>">
+          <ul>
+            <% 48.times do %>
+              <li></li>
+            <% end %>
+          </ul>
+        </td>
+      <% end %>
+    </tr>
+  </tbody>
+</table>
+
 <h1>Listing shifts</h1>
 
 <table>
@@ -16,27 +48,27 @@
     <th></th>
   </tr>
 
-<% @shifts.each do |shift| %>
-  <tr>
-    <td><%= link_to shift.shift_type.title, shift.shift_type %></td>
-    <td><%= shift.comment %></td>
-    <td><%= shift.start %></td>
-    <td><%= shift.end %></td>
-    <td><%= shift.end - shift.start %></td>
-    <td><%= shift.user ? shift.user.username : "No user" %></td>
-    <td><%= shift.shift_type.certifications.where(user: shift.user) ? "No certification" : "Has certification" %></td>
-    <td><%= shift.training ? "Yes" : "No" %></td>
-    <td><%= shift.leasing ? "Yes" : "No" %></td>
-    <% if current_user && current_user.can_take_shift?(shift) %>
-      <td><%= "Take shift" %></td>
-    <% else %>
-      <td><%= "You can't take this shift" %></td>
-    <% end %>
-    <td><%= link_to 'Show', shift %></td>
-    <td><%= link_to 'Edit', edit_shift_path(shift) %></td>
-    <td><%= link_to 'Destroy', shift, confirm: 'Are you sure?', method: :delete %></td>
-  </tr>
-<% end %>
+  <% @shifts.each do |shift| %>
+    <tr>
+      <td><%= link_to shift.shift_type.title, shift.shift_type %></td>
+      <td><%= shift.comment %></td>
+      <td><%= shift.start %></td>
+      <td><%= shift.end %></td>
+      <td><%= shift.end - shift.start %></td>
+      <td><%= shift.user ? shift.user.username : "No user" %></td>
+      <td><%= shift.shift_type.certifications.where(user: shift.user) ? "No certification" : "Has certification" %></td>
+      <td><%= shift.training ? "Yes" : "No" %></td>
+      <td><%= shift.leasing ? "Yes" : "No" %></td>
+      <% if current_user && current_user.can_take_shift?(shift) %>
+        <td><%= "Take shift" %></td>
+      <% else %>
+        <td><%= "You can't take this shift" %></td>
+      <% end %>
+      <td><%= link_to 'Show', shift %></td>
+      <td><%= link_to 'Edit', edit_shift_path(shift) %></td>
+      <td><%= link_to 'Destroy', shift, confirm: 'Are you sure?', method: :delete %></td>
+    </tr>
+  <% end %>
 </table>
 
 <br />
