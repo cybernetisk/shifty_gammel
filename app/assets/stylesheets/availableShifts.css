@@ -10,7 +10,7 @@
 }
 
 table#availableShifts{
-	width: 70%;
+	width: 75%;
 	margin-top: 20px;
 	margin-left: 10px;
 	font: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -18,14 +18,14 @@ table#availableShifts{
 }
 
 #availableShifts td{
-	width: 80px;
+	width: 85px;
 	padding: 6px 8px;
 	border-bottom: 1px solid #ccc;
 	color: #669;
 }
 
 #availableShifts th{
-	width: 80px;
+	width: 85px;
 	text-align: left;
 	padding: 8px;
 	border-bottom: 2px solid #6678b1;
@@ -39,9 +39,9 @@ table#availableShifts{
 }
 
 .pickType {
-	width: 150px;
+	width: 120px;
 	float: left;
-	margin: 20px 30px 10px 15px;
+	margin: 20px 5px 10px 15px;
 	font-size: 15px;
 	border: 1px solid #669;
 	padding: 2px;
