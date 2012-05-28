@@ -45,3 +45,8 @@ gem 'cancan'
 
 # To use debugger
 # gem 'ruby-debug19', :require => 'ruby-debug'
+
+# Railroady genererer diagrammer av bl.a. modellene
+group :development, :test do
+  gem 'railroady'
+end
