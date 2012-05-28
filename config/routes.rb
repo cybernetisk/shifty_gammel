@@ -14,6 +14,7 @@ Railsdemo::Application.routes.draw do
   
   # Lagt til av Mari
   match 'tickets/showForUser/:id' => 'tickets#showForUser', :as => :tickets_for_user
+  match 'shifts/showAvailable' => 'shifts#showAvailable', :as => :available_shifts
   
   # Default CRUD routes
   resources :shift_types

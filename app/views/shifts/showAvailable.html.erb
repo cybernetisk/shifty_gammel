@@ -1,0 +1,42 @@
+<% stylesheet_link_tag "availableShifts" %>
+<% javascript_include_tag "availableShifts" %>
+
+<% days = {"Mon"=>"Mandag", "Tue"=>"Tirsdag", "Wed"=>"Onsdag", "Thu"=>"Torsdag", "Fri"=>"Fredag", "Sat"=>"Lørdag", "Sun"=>"Søndag"} %>
+
+
+<br>
+
+<div id='showAvailable'>
+<h1>Ledige skift i Escape</h1>
+
+<br>
+<div class='pickType picked' shift_type="0">Alle</div>
+<div class='pickType' shift_type="1">Barvakt</div>
+<div class='pickType' shift_type="2">Vakt</div>
+<div class='pickType' shift_type="3">Sjenkemester</div>
+<div class='pickType' shift_type="4">DJ</div>
+
+
+<table id='availableShifts'>
+	<th>Dato</th>
+	<th>Ukedag</th>
+	<th>Fra</th>
+	<th>Til</th>
+	<th>Skift</th>
+	<th>Utlån</th>
+	<th>Detaljer</th>
+	<th>Ta skift</th>
+  <% @shifts.each do |shift| %>
+    <tr class="type_<%= shift.shift_type.id %>">
+		<td><%= shift.start.strftime("%d/%m %Y") %></td>
+		<td><%= days[shift.start.strftime("%a")] %></td>
+		<td><%= shift.start.strftime("%H.%M") %></td>
+		<td><%= shift.end.strftime("%H.%M") %></td>
+		<td><%= shift.shift_type.title %></td>
+		<td><%= shift.leasing ? "Ja" : "Nei" %></td>
+		<td><%= link_to 'Se mer', shift %></td>
+		<td></td>
+    </tr>
+  <% end %>
+</table>
+</div>

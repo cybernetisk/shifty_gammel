@@ -67,4 +67,13 @@ class ShiftsController < ApplicationController
       format.json { head :ok }
     end
   end
+  
+  def showAvailable
+    @shifts = Shift.all
+    
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @shift }
+    end
+  end
 end
