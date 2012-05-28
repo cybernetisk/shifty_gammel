@@ -2,8 +2,8 @@ class TicketsController < ApplicationController
   # GET /tickets
   # GET /tickets.json
   def showForUser
-    @tickets = Ticket.all
     @user = User.find(params[:id])
+    @ticket_history = Ticket.getTicketHistoryForUser(params[:id])
     @tickets = @user.countUnusedTickets
 
     respond_to do |format|

@@ -9,4 +9,15 @@
 		<th>Type vakt</th>
 		<th>Bonger tjent</th>
 	</tr>
+	<% @ticket_history.each do |ticket| %>
+	<tr>
+		<% if ticket.task.shift != nil %>
+		<td><%= ticket.task.shift.start.strftime("%d/%m %Y") %></td>
+		<td><%=	ticket.task.shift.shift_type.title %></td>
+		<td><%=	ticket.value %></td>
+		<% end %>
+		
+	</tr>
+	
+	<% end %>
 </table>

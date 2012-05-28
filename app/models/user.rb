@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def countUnusedTickets
-      tasks = Task.where(user_id: self); # husk å legg til at skíftet også skal være signert
+      tasks = Task.where(user_id: self.id); # husk å legg til at skíftet også skal være signert
       tickets = 0;
       tasks.each do |task|
         if task.ticket != nil

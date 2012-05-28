@@ -5,9 +5,10 @@
     <th>Task</th>
     <th>Used</th>
     <th>Value</th>
+    <th>Type</th>
     <th></th>
     <th></th>
-    <th></th>
+	<th></th>
   </tr>
 
 <% @tickets.each do |ticket| %>
@@ -15,6 +16,11 @@
     <td><%= ticket.task_id %></td>
     <td><%= ticket.used %></td>
     <td><%= ticket.value %></td>
+	<% if ticket.task != nil %>
+		<% if ticket.task.shift != nil %>
+			<%= ticket.task.shift.shift_type.title %>
+		<% end %>
+	<% end %>
     <td><%= link_to 'Show', ticket %></td>
     <td><%= link_to 'Edit', edit_ticket_path(ticket) %></td>
     <td><%= link_to 'Destroy', ticket, confirm: 'Are you sure?', method: :delete %></td>
