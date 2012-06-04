@@ -74,3 +74,15 @@
 <br />
 
 <%= link_to 'New shift', new_shift_path %>
+
+
+
+<div id="shifts"></div>
+
+<script type="text/javascript">
+  $(function() {
+    // Blog is the app name
+    window.router = new Railsdemo.Routers.ShiftsRouter({shifts: <%= @shifts.to_json.html_safe -%>});
+    Backbone.history.start();
+  });
+</script>

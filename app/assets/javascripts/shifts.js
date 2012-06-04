@@ -56,3 +56,39 @@ $(document).ready(function() {
         $(element).append(shift);
     }
 });
+
+var Shift = Backbone.Model.extend({
+	initialize: function()
+					{
+					},
+		allowedToEdit: function(lol)
+				{
+					return false;
+				}
+	});
+	
+Backbone.sync = function(method, model) {
+  alert(method + ": " + JSON.stringify(model));
+  model.id = 1;
+};
+
+
+var DocumentRow = Backbone.View.extend({
+
+  tagName: "li",
+
+  className: "document-row",
+
+  events: {
+    "click .icon":          "open",
+    "click .button.edit":   "openEditDialog",
+    "click .button.delete": "destroy"
+  },
+
+  render: function() {
+    return "<li>lol</li>"
+  }
+
+});
+
+
