@@ -1,0 +1,19 @@
+Railsdemo.Views.Shifts ||= {}
+
+class Railsdemo.Views.Shifts.ShiftView extends Backbone.View
+  template: JST["backbone/templates/shifts/shift"]
+
+  events:
+    "click .destroy" : "destroy"
+
+  tagName: "tr"
+
+  destroy: () ->
+    @model.destroy()
+    this.remove()
+
+    return false
+
+  render: ->
+    $(@el).html(@template(@model.toJSON() ))
+    return this
