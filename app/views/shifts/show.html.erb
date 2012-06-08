@@ -1,33 +1,40 @@
 <p id="notice"><%= notice %></p>
 
+<h2>Vis skift</h2>
+
 <p>
-  <b>Shift type:</b>
-  <%= link_to @shift.shift_type.title, @shift.shift_type %>
+  <b>Type</b>
+  <%= @shift.shift_type.title %>
 </p>
 <p>
-  <b>Comment:</b>
+  <b>Kommentar</b>
   <%= @shift.comment %>
 </p>
 
 <p>
-  <b>Time:</b>
-  <%= "#{@shift.start} - #{@shift.end}" %>
+  <b>Dato:</b>
+  <%= @shift.start.strftime("%d/%m %Y") %>
 </p>
 
 <p>
-  <b>Duration:</b>
+  <b>Tid:</b>
+  <%= @shift.start.strftime("%H.%M")+'-'+@shift.end.strftime("%H.%M") %>
+</p>
+
+<p>
+  <b>Varighet:</b>
   <%= @shift.end - @shift.start %>
 </p>
 
 <p>
-  <b>Training:</b>
-  <%= @shift.training ? "Yes" : "No" %>
+  <b>Opplæring:</b>
+  <%= @shift.training ? "Ja" : "Nei" %>
 </p>
 
 <p>
-  <b>Leasing:</b>
-  <%= @shift.leasing ? "Yes" : "No" %>
+  <b>Utlån:</b>
+  <%= @shift.leasing ? "Ja" : "Nei" %>
 </p>
 
-<%= link_to 'Edit', edit_shift_path(@shift) %> |
+<%= link_to 'Rediger', edit_shift_path(@shift) %> |
 <%= link_to 'Back', shifts_path %>
