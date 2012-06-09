@@ -2,7 +2,7 @@ class Railsdemo.Routers.ShiftsRouter extends Backbone.Router
   initialize: (options) ->
     @shifts = new Railsdemo.Collections.ShiftsCollection()
     @shifts.reset options.shifts
-
+  
   routes:
     "new"      : "newShift"
     "index"    : "index"
@@ -22,10 +22,10 @@ class Railsdemo.Routers.ShiftsRouter extends Backbone.Router
     shift = @shifts.get(id)
 
     @view = new Railsdemo.Views.Shifts.ShowView(model: shift)
-    $("#shifts").html(@view.render().el)
+    $(@view.render().el).dialog()
 
   edit: (id) ->
     shift = @shifts.get(id)
 
     @view = new Railsdemo.Views.Shifts.EditView(model: shift)
-    $("#shifts").html(@view.render().el)
+    $(@view.render().el).dialog()
