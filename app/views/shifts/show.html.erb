@@ -46,10 +46,10 @@ minutes = (fraction*60).to_i
 	<p>
 	<b>Bruker:</b><br>
 	<% if @shift.user != nil %>
-		<span class='green'><%= @shift.user.username %></span>
+		<span class='green_text'><%= @shift.user.username %></span>
 	<% else %>
 		Dette skiftet er ledig.<br>
-		<div class='green_button'>Ta skift</div>
+		<%= button_to 'Ta skift', shifts_path, :class =>"green_button", :method => :get %>
 	<% end %>
 	</p>
 	
@@ -58,5 +58,5 @@ minutes = (fraction*60).to_i
 <div id='clear'></div>
 
 
-<%= link_to 'Rediger', edit_shift_path(@shift) %> |
+<%= link_to 'Rediger', edit_shift_path(@shift)%> |
 <%= link_to 'Se alle skift på denne datoen', shifts_path %>

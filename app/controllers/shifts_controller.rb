@@ -69,7 +69,7 @@ class ShiftsController < ApplicationController
   end
   
   def showAvailable
-    @shifts = Shift.all
+    @shifts = Shift.getAvailableShifts
     
     respond_to do |format|
       format.html # new.html.erb

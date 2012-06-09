@@ -9,7 +9,6 @@ one:
 
 two:
   id: 2
-  user_id: 1
   description: Hei
   title: Test
   user_group_id: 2

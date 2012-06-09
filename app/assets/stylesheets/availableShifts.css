@@ -10,7 +10,7 @@
 }
 
 table#availableShifts{
-	width: 90%;
+	width: 95%;
 	margin-top: 20px;
 	font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: #373737;
@@ -38,7 +38,7 @@ table#availableShifts{
 }
 
 .pickType {
-	width: 120px;
+	width: 125px;
 	float: left;
 	margin: 10px 5px 10px 0px;
 	font-size: 15px;
@@ -49,15 +49,16 @@ table#availableShifts{
 	color: #373737;
 	-moz-border-radius: 15px;
 	border-radius: 5px;
+	font-weight: 600;
 }
 
 .picked {
 	background-color: #93B300;
 }
 
-h3{
+#show_shift h3{
 	font-size: 18px;
-	color: #779300;
+	color: #93B300;
 	text-transform: uppercase;
 	margin-top: 0px;
 	padding-top: 2px;
@@ -79,7 +80,7 @@ h3{
 	margin: 5px 0px 0px 0px;
 }
 
-.green {
+.green_text {
 		color: #779300;
 }
 
@@ -87,13 +88,15 @@ h3{
 	width: 120px;
 	margin: 8px 0px 10px 0px;
 	font-size: 15px;
-	background-color:  #93B300;
+	background-color: #93B300;
 	padding: 2px;
 	cursor: pointer;
 	text-align: center;
 	color: #373737;
 	-moz-border-radius: 15px;
 	border-radius: 5px;
+	border: 0px;
+	font-weight: 700;
 }
 
 .green_button:hover{

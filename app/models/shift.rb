@@ -3,4 +3,10 @@ class Shift < ActiveRecord::Base
   belongs_to :task
   belongs_to :shift_type
   has_one :user, through: :task
+
+  def self.getAvailableShifts
+      shifts = Shift.joins(:task).where('tasks.user_id'=> nil) #remember to remove shifts that are finished
+      shifts
+  end
+  
 end
