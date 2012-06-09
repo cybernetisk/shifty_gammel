@@ -9,11 +9,11 @@
 <body>
 <div id="wrap">	
 	<div id="top">
-		<h2><a href="#" title="Back to main page">SHIFTY</a></h2>
+		<h2><a href="/" title="Back to main page">SHIFTY</a></h2>
 		<div id="menu">
 			<ul>
 				<li><a href="/" class="current">HJEM</a></li>
-				<li><%= link_to 'SHIFT', shifts_path %></li>
+				<li><%= link_to 'SKIFT', shifts_path %></li>
 				<li><%= link_to 'OPPGAVER', tasks_path %></li>
 				<li><%= link_to 'BONGER', tickets_path %></li>
 			</ul>
@@ -22,7 +22,7 @@
 <div id='content'>
 <%= yield %>
 </div>
-
+<div id='clear'></div>
 
 <div id="footer">
 <p>Copyright 2006 LoadFoO [V1]. Designed by <a href="http://loadfoo.org/" rel="external">LoadFoO</a>. Valid <a href="http://jigsaw.w3.org/css-validator/check/referer" rel="external">CSS</a> &amp; <a href="http://validator.w3.org/check?uri=referer" rel="external">XHTML</a></p>

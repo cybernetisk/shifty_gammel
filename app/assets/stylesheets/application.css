@@ -268,11 +268,11 @@ blockquote{
 
 
 #footer {
-        margin: 40px auto 0 auto;
+    margin: 40px auto 0 auto;
 	text-align: center;
 	border-top: dotted 1px gray;
 	padding: 20px 0 20px 0;
-	width: 70%;
+	width: 1000px;
 }
 
 #footer p {
