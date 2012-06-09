@@ -10,9 +10,8 @@
 }
 
 table#availableShifts{
-	width: 75%;
+	width: 90%;
 	margin-top: 20px;
-	margin-left: 10px;
 	font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: #373737;
 }
@@ -21,29 +20,29 @@ table#availableShifts{
 	width: 85px;
 	padding: 6px 8px;
 	border-bottom: 1px solid #ccc;
-	color: #669;
+	color: #000;
 }
 
 #availableShifts th{
 	width: 85px;
 	text-align: left;
 	padding: 8px;
-	border-bottom: 2px solid #6678b1;
+	border-bottom: 2px solid #779300;
 	font-size: 16px;
 	font-weight: 500;
-	color: #039;
+	color: #3E4C00;
 }
 
 #availableShifts tr:hover td {
-	color: #009;
+	color: #3E4C00;
 }
 
 .pickType {
 	width: 120px;
 	float: left;
-	margin: 20px 5px 10px 15px;
+	margin: 10px 5px 10px 0px;
 	font-size: 15px;
-	border: 1px solid #669;
+	background-color: #ccc;
 	padding: 2px;
 	cursor: pointer;
 	text-align: center;
@@ -53,5 +52,5 @@ table#availableShifts{
 }
 
 .picked {
-	background-color: #ccc;
+	background-color: #93B300;
 }
