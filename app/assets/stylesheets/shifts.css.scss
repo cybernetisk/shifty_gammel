@@ -3,50 +3,62 @@
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
 table {
-	width:100%; border-collapse:collapse;
+  width:100%; border-collapse:collapse; table-layout:fixed;
 
-	tr {
-		max-height:500px; overflow-y:scroll;
-	}
+  tr {
+    max-height:500px; overflow-y:scroll;
+  }
 
-	td {
-		position:relative; vertical-align:top;
-		
-		ul {
-			list-style:none; width:100%;
-            border-bottom:1px solid #ddd;
-			
-			li {
-				height:20px; padding:4px; box-sizing:border-box; line-height:20px; user-select:none; width:100;
-				border:1px solid #ddd; border-left:0px; border-bottom:0px;
-								
-				&:nth-child(2n+2) {
-					border-top:1px dotted #ddd;
-				}
-				
-				&.event {
-					position:absolute; width:100%; border:none;
-					background:rgba(178,178,178,.25);
-					
-					&.missing {
-						background:rgba(178,0,0,.25);
-					}
-				}
-			}
-		}
-		
-		&.time {
-			width:40px;
-			
-			ul {
-				list-style:none; text-align:right; font-size:11px; position:relative;
-				
-				li {
-					height:40px; padding:4px; box-sizing:border-box;
-					border:1px solid #ddd; border-bottom:0px;					
-  				}
-			}
-		}
-	}
+  td {
+    position:relative; vertical-align:top; padding:0; margin:0;
+
+    ul {
+      list-style:none; width:100%;
+      border-bottom:1px solid #ddd;
+
+      li {
+        height:20px; padding:4px; box-sizing:border-box; line-height:20px; user-select:none; width:100;
+        border:1px solid #ddd; border-left:0px; border-bottom:0px;
+
+        &:nth-child(2n+2) {
+          border-top:1px dotted #ddd;
+        }
+
+        &.event {
+          position:absolute; width:100%; border:none;
+          background:rgba(178,178,178,.25);
+
+          &.missing {
+            background:rgba(178,0,0,.25);
+          }
+        }
+      } 
+    }
+
+    &.time {
+      width:40px;
+
+      ul {
+        list-style:none; text-align:right; font-size:11px; position:relative;
+
+        li {
+          height:40px; padding:4px; box-sizing:border-box;
+          border:1px solid #ddd; border-bottom:0px;					
+        }
+      }
+    }
+  }
+  .time {
+    width:40px;
+
+    ul {
+      list-style:none; text-align:right; font-size:11px; position:relative;
+
+      li {
+        height:40px; padding:4px; box-sizing:border-box;
+        border:1px solid #ddd; border-bottom:0px;					
+      }
+    }
+  }
 }
 
