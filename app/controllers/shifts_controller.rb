@@ -76,4 +76,22 @@ class ShiftsController < ApplicationController
       format.json { render json: @shift }
     end
   end
+  
+  def showForDate
+    @date = params[:date]
+    @shifts = Shift.findForDate(@date)
+    
+    respond_to do |format|
+      format.html 
+      format.json { render json: @shift }
+    end
+  end  
+  
+  def start
+    @upcomingShifts = Shift.getUpcomingShifts;
+    respond_to do |format|
+      format.html 
+      format.json { render json: @shift }
+    end
+  end  
 end

@@ -59,4 +59,4 @@ minutes = (fraction*60).to_i
 
 
 <%= link_to 'Rediger', edit_shift_path(@shift)%> |
-<%= link_to 'Se alle skift på denne datoen', shifts_path %>
+<%= link_to 'Se alle skift på denne datoen', shifts_for_date_path(@shift.start.strftime("%Y-%m-%d")) %>

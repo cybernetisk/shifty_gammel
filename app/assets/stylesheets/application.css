@@ -183,7 +183,7 @@ blockquote{
 	width: 390px;
 	float:left;
 	display: block;
-       margin-left: 20px;
+    margin-left: 20px;
 	display: inline;
 }
 
@@ -191,64 +191,71 @@ blockquote{
 /**** Sidebar ***/
 
 
-#right {
-	width: 315px; 
+#right { 
 	float: right;
 	display:block;
-	margin-top: 10px;
+	margin-top: 0px;
 }
 
-#right .box {
-	width: 24em;/*280px*/
+#left_div { 
+	float: left;
+	display:block;
+	margin-top: 0px;
+	margin-right: 20px;
+}
+
+.box {
+	width: 20em;/*280px*/
 	background: #F6F9FB;
 	border: 1px solid #E1E1E1;
-	padding:10px 10px 15px 10px;
-	float: right;
+	padding:0px 10px 15px 15px;
+	margin-bottom: 10px;
 }
 
-#right .box h2 {
+.box h2 {
 	font-size: 1.1em;
 	margin: 0px 0 0px 0;
 	padding:0px 0 5px 0;
 }
 
-#right .box a {
+.box a {
 	margin: 10px 0 10px 0;
 	color: #93B300;
-	font-size: 10px;
+	font-size: 12px;
 }
 
-#right .box p {
+.box p {
 	margin: 5px 0 10px 0;
 	line-height: 15px;
 }
 
-#right .box ul {
+.box ul {
 	padding: 0 0 7px 20px;
 	margin:10px 0 10px 0;
 }
 
-#right .box li {
+.box li {
 	margin-top:5px;
 }
 
-#nav{ list-style: none; margin: 2.0em 0; width: 25em; float: right;}
+#nav{ list-style: none; margin: 0.0em 0; width: 25em; float: right;}
 #nav li{ padding: 0; margin: 0; }
 #nav a{
 	display: block;
 	height: 2.0em;
-	padding: 0.3em 0.3em 0.3em 0.8em;
+	padding: 0.5em 0.3em 0.2em 0.8em;
 	border-bottom: 2px; /*solid #1a1a1a*/
 	border-top: 2px; /*solid #1a1a1a*/
 	color: #93B300;
 	background-color: #F7F9FB;
 	font-weight: bold;
+	font-size: 12px;
 	text-decoration: none;
 	}
 
 #nav a:hover{
 	color: #1a1a1a;
-	background: url(../img/bg_t.gif) no-repeat;
+	background: url(bg_t.gif) no-repeat;
 	background-color: #fff;
 	font-weight: bold;
 	}	
@@ -279,4 +286,8 @@ blockquote{
 #footer p {
 	margin: 0px;
 	padding: 0;
+}
+
+.red_text{
+	color: #990005;
 }
