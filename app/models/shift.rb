@@ -8,6 +8,14 @@ class Shift < ActiveRecord::Base
       shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
       shifts
   end
+
+  def self.start_date
+    return ""
+  end
+
+  def date
+    start.strftime("%Y-%m-%d")
+  end
   
   def self.findForDate(date)
       date = date+"%";
