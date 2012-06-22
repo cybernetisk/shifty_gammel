@@ -139,13 +139,13 @@ blockquote{
 * html #menu a {width:1%;}
 
 #menu li a:hover {
-	background: url(bg_menu.gif);
+	background: url(bg_menu.gif) 0 0 fixed repeat;
 }
 
 #menu li a.current {
 	letter-spacing: 1px;
 	color: gray;
-	background: url(bg_menu.gif);
+	background: url(bg_menu.gif) 0 0 fixed repeat;
 }
 
 #menu li a.current:hover {
