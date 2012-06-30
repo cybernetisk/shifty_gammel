@@ -38,7 +38,7 @@ class Shift < ActiveRecord::Base
   end
   
   def date=(val)
-    p = DateTime.strptime(val, "%Y-%m-%d")
+    p = DateTime.strptime val, "%Y-%m-%d"
     if self.start == nil
       self.start = p
     else
