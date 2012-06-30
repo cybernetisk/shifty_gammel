@@ -14,7 +14,7 @@
   <tr>
     <td><%= task.description %></td>
     <td><%= task.title %></td>
-    <td><%= task.user_group_id %></td>
+    <td><%= task.user_group.name %></td>
     <td><%= link_to 'Show', task %></td>
     <td><%= link_to 'Edit', edit_task_path(task) %></td>
     <td><%= link_to 'Destroy', task, confirm: 'Are you sure?', method: :delete %></td>
