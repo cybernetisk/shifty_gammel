@@ -45,20 +45,16 @@ class Shift < ActiveRecord::Base
 
 
   def time
+    if self.start == nil
+      return ""
+    end
     self.start.strftime("%H:%M")
   end
   
   def time=(val)
-    #n = self.start.strftime("%Y-%m-%d ") + val
-    tmp = self.start.midnight
     hour, minute = val.split(":").map { |x| x.to_i }
-    tmp = hour.hours.since tmp
-    tmp = minute.minutes.since tmp
     
-    tmp = DateTime.now.utc_offset.seconds.since tmp
-    duration = self.duration
-    self.start = tmp
-    self.duration = duration
+    self.start = self.start.change(:hour=>hour, :min=>minute)
   end
 
   def duration

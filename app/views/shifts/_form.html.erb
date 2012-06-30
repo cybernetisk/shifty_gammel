@@ -21,16 +21,14 @@
 
   <div class="field">
     <%= f.label :date %>
-    <%= f.datetime_select :date %>
+    <%= f.text_field :date %>
     <%= f.label :start_time %>
-    <%= select(:start_hour, "hour", 0..23) %>
 
-    <%= select(:start_minute, "minute", (0..59).step(15)) %>
+    <%= f.label :time %>
+    <%= f.text_field :time %>
   </div>
   
   <div class="field">
-    <%= f.label :end %>
-    <%= f.datetime_select :end %>
     <%= f.label :shift_duration %>
     <%= select(:duration, "hours", (0.5..10).step(0.5)) %>
   </div>
@@ -55,11 +53,6 @@
 <script type="text/javascript">
 
   $(function(){
-    $("#shift_start").datepicker({dateFormat:"yy-mm-dd",
-        onClose: function(dateText, inst) {
-          var time = this.value.match(/\d{2}:\d{2}/)
-          alert(time);
-        }
-    });
+    $("#shift_date").datepicker({dateFormat:"yy-mm-dd"});
   });
 </script>

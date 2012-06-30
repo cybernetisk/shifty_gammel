@@ -76,8 +76,8 @@ class ShiftTest < ActiveSupport::TestCase
     s.time = "19:00"
 
     assert_equal "19:00", s.start.strftime("%H:%M")
-
   end
+  
   test "time_and_duration" do
 
     s = Shift.new
