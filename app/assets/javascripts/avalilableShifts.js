@@ -13,5 +13,16 @@ $(document).ready(function() {
 		$(this).addClass("picked");
 
 	});
+	
+	    $('div#calendar_start').datepicker({
+	        inline: true,
+	        firstDay: 1,
+	        showOtherMonths: true,
+	        dayNamesMin: ['Søn', 'Man', 'Tir', 'Ons', 'Tor', 'Fre', 'Lør'],
+			monthNames: ['Januar', 'Februar', 'Mars', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Desember'],
+			prevText: "Forrige",
+			nextText: "Neste"
+	    });
+
 
 });
