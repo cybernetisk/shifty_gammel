@@ -1,0 +1,22 @@
+How to start up with ruby on rails on ubuntu:
+
+1. Ruby on rails and shifty has some dependencies to other libraries
+   that will haunt you later if you don't have them installed, so make
+   sure you have libsqlite3-dev, libpq-dev and nodejs installed from
+   your repository
+
+   (should be something like apt-get install libsqlite3-dev libpq-dev nodejs)
+
+2. We need rvm to manage ruby version, so follow instructions on:
+	
+	https://rvm.io/rvm/install/
+	
+   If you don't have curl installed, you can get it from the repository.
+
+3. Make sure rails and bundler is installed:
+	gem install rails
+	gem install bundler
+
+4. In the shifty folder, run `bundle install`
+
+5. You should be finished now, try to run `rails s` to start the webserver.
