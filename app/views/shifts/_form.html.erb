@@ -20,8 +20,19 @@
   </div> -->
 
   <div class="field">
-    <%= f.label :start %>
-    <%= f.text_field :start %>
+    <%= f.label :date %>
+    <%= f.datetime_select :date %>
+    <%= f.label :start_time %>
+    <%= select(:start_hour, "hour", 0..23) %>
+
+    <%= select(:start_minute, "minute", (0..59).step(15)) %>
+  </div>
+  
+  <div class="field">
+    <%= f.label :end %>
+    <%= f.datetime_select :end %>
+    <%= f.label :shift_duration %>
+    <%= select(:duration, "hours", (0.5..10).step(0.5)) %>
   </div>
 
   <div class="field">
