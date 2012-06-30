@@ -69,11 +69,29 @@ class ShiftsController < ApplicationController
   end
   
   def showAvailable
-    @shifts = Shift.all
+    @shifts = Shift.getAvailableShifts
     
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @shift }
     end
   end
+  
+  def showForDate
+    @date = params[:date]
+    @shifts = Shift.findForDate(@date)
+    
+    respond_to do |format|
+      format.html 
+      format.json { render json: @shift }
+    end
+  end  
+  
+  def start
+    @upcomingShifts = Shift.getUpcomingShifts;
+    respond_to do |format|
+      format.html 
+      format.json { render json: @shift }
+    end
+  end  
 end

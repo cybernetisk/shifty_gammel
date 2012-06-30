@@ -1,0 +1,63 @@
+<% stylesheet_link_tag "availableShifts" %>
+<% javascript_include_tag "availableShifts" %>
+
+<% days = {"Mon"=>"Mandag", "Tue"=>"Tirsdag", "Wed"=>"Onsdag", "Thu"=>"Torsdag", "Fri"=>"Fredag", "Sat"=>"Lørdag", "Sun"=>"Søndag"} %>
+
+
+<br>
+<% date = Date.strptime(@date, "%Y-%m-%d") %>
+
+<h2>Skift i Escape <%= days[date.strftime("%a")] %> <%= date.strftime("%d/%m-%Y") %></h2>
+
+
+
+<% @shifts.each do |shift| %>
+<% 
+duration = (shift.end - shift.start)/3600
+fraction = duration.modulo(1)
+hours = (duration-fraction).to_i
+minutes = (fraction*60).to_i
+%>
+<div id='show_shift'>
+	<h3><%= shift.shift_type.title %></h3>
+	
+	<p>
+	<b>Tid:</b><br> 
+	<%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %>
+	</p>
+	
+	<p>
+	<b>Varighet:</b><br>
+	<%= hours > 0 ? "#{hours} timer" : "" %>
+    <%= minutes > 0 ? "#{minutes} minutter" : "" %>
+	</p>
+	
+	<p>
+	<b>Opplæring:</b><br> 
+	<%= shift.training ? "Ja" : "Nei" %>
+	</p>
+	
+	<p>
+	<b>Utlån:</b><br> 
+	<%= shift.leasing ? "Ja" : "Nei" %>
+	</p>
+	
+	<p>
+	<b>Kommentar:</b><br> 
+	<%= shift.comment %>
+	</p>
+	
+	<br>
+	<p>
+	<b>Bruker:</b><br>
+	<% if shift.user != nil %>
+		<span class='green_text'><%= shift.user.username %></span>
+	<% else %>
+		Dette skiftet er ledig.<br>
+		<%= button_to 'Ta skift', shifts_path, :class =>"green_button", :method => :get %>
+	<% end %>
+	</p>
+	
+</div>	
+
+<% end %>

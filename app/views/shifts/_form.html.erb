@@ -18,14 +18,23 @@
     <%= f.label :task_id %>
     <%= select("shift", :task_id, Task.all.collect {|p| [ p.title, p.id ] }, {:include_blank => true}) %>
   </div> -->
+
   <div class="field">
-    <%= f.label :start %>
-    <%= f.datetime_select :start %>
+    <%= f.label :date %>
+    <%= f.datetime_select :date %>
+    <%= f.label :start_time %>
+    <%= select(:start_hour, "hour", 0..23) %>
+
+    <%= select(:start_minute, "minute", (0..59).step(15)) %>
   </div>
+  
   <div class="field">
     <%= f.label :end %>
     <%= f.datetime_select :end %>
+    <%= f.label :shift_duration %>
+    <%= select(:duration, "hours", (0.5..10).step(0.5)) %>
   </div>
+
   <div class="field">
     <%= f.label :training %>
     <%= f.check_box :training %>
@@ -42,3 +51,15 @@
     <%= f.submit %>
   </div>
 <% end %>
+
+<script type="text/javascript">
+
+  $(function(){
+    $("#shift_start").datepicker({dateFormat:"yy-mm-dd",
+        onClose: function(dateText, inst) {
+          var time = this.value.match(/\d{2}:\d{2}/)
+          alert(time);
+        }
+    });
+  });
+</script>

@@ -1,33 +1,62 @@
-<p id="notice"><%= notice %></p>
+<% 
+duration = (@shift.end - @shift.start)/3600
+fraction = duration.modulo(1)
+hours = (duration-fraction).to_i
+minutes = (fraction*60).to_i
+%>
 
-<p>
-  <b>Shift type:</b>
-  <%= link_to @shift.shift_type.title, @shift.shift_type %>
-</p>
-<p>
-  <b>Comment:</b>
-  <%= @shift.comment %>
-</p>
+<% days = {"Mon"=>"Mandag", "Tue"=>"Tirsdag", "Wed"=>"Onsdag", "Thu"=>"Torsdag", "Fri"=>"Fredag", "Sat"=>"Lørdag", "Sun"=>"Søndag"} %>
 
-<p>
-  <b>Time:</b>
-  <%= "#{@shift.start} - #{@shift.end}" %>
-</p>
 
-<p>
-  <b>Duration:</b>
-  <%= @shift.end - @shift.start %>
-</p>
 
-<p>
-  <b>Training:</b>
-  <%= @shift.training ? "Yes" : "No" %>
-</p>
+<h2>Vis skift</h2>
 
-<p>
-  <b>Leasing:</b>
-  <%= @shift.leasing ? "Yes" : "No" %>
-</p>
 
-<%= link_to 'Edit', edit_shift_path(@shift) %> |
-<%= link_to 'Back', shifts_path %>
+<div id='show_shift'>
+	<%= days[@shift.start.strftime("%a")] %> <%= @shift.start.strftime("%d/%m-%Y") %>
+	<h3><%= @shift.shift_type.title %></h3>
+	
+	<p>
+	<b>Tid:</b><br> 
+	<%= @shift.start.strftime("%H.%M")+'-'+@shift.end.strftime("%H.%M") %>
+	</p>
+	
+	<p>
+	<b>Varighet:</b><br>
+	<%= hours > 0 ? "#{hours} timer" : "" %>
+    <%= minutes > 0 ? "#{minutes} minutter" : "" %>
+	</p>
+	
+	<p>
+	<b>Opplæring:</b><br> 
+	<%= @shift.training ? "Ja" : "Nei" %>
+	</p>
+	
+	<p>
+	<b>Utlån:</b><br> 
+	<%= @shift.leasing ? "Ja" : "Nei" %>
+	</p>
+	
+	<p>
+	<b>Kommentar:</b><br> 
+	<%= @shift.comment %>
+	</p>
+	
+	<br>
+	<p>
+	<b>Bruker:</b><br>
+	<% if @shift.user != nil %>
+		<span class='green_text'><%= @shift.user.username %></span>
+	<% else %>
+		Dette skiftet er ledig.<br>
+		<%= button_to 'Ta skift', shifts_path, :class =>"green_button", :method => :get %>
+	<% end %>
+	</p>
+	
+</div>
+
+<div id='clear'></div>
+
+
+<%= link_to 'Rediger', edit_shift_path(@shift)%> |
+<%= link_to 'Se alle skift på denne datoen', shifts_for_date_path(@shift.start.strftime("%Y-%m-%d")) %>
