@@ -49,7 +49,7 @@ $(document).ready(function() {
         // Draw the shift
         draw_shift(this); */
 
-        toggle_popup();
+        // toggle_popup();
 
         mouse_down = false;
 
