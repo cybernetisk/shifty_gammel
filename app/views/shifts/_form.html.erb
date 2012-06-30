@@ -29,8 +29,8 @@
   </div>
   
   <div class="field">
-    <%= f.label :shift_duration %>
-    <%= select(:duration, "hours", (0.5..10).step(0.5)) %>
+    <%= f.label :duration %>
+    <%= select(:shift, :duration, (0.5..10).step(0.5).map {|x| [x, x.hours]}) %>
   </div>
 
   <div class="field">
