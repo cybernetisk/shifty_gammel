@@ -12,6 +12,8 @@ $(document).ready(function() {
         // Set the start point
         start = e.pageY - $(this).offset().top;
 
+        start = Math.floor(start / 10) * 10;
+
         // Min length is 15 minutes = 10 px
         stop = start + 10;
 
@@ -22,6 +24,9 @@ $(document).ready(function() {
     }).mousemove(function(e) {
         if (mouse_down) {
             stop = e.pageY - $(this).offset().top;
+
+            stop = Math.ceil(stop / 10) * 10;
+
             if (stop - start < 10) {
                 stop = start + 10;
             }
@@ -31,7 +36,9 @@ $(document).ready(function() {
     }).mouseup(function(e) {
 
         // Calculate the end point
-        stop = e.pageY - $(this).offset().top;
+        /*stop = e.pageY - $(this).offset().top;
+
+        stop = Math.ceil(stop / 10) * 10;
 
         // Check that the endpoint is at least
         // 15 minutes from the start point
@@ -40,11 +47,13 @@ $(document).ready(function() {
         }
 
         // Draw the shift
-        draw_shift(this); 
+        draw_shift(this); */
+
+        toggle_popup();
 
         mouse_down = false;
 
-        shift = null;
+        //shift = null;
     });
 
     function draw_shift(element) {
