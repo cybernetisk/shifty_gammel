@@ -54,14 +54,14 @@ $(document).ready(function() {
 		for(i=0; i<availableDates.length; i++){
 			var a = new Date(availableDates[i].start);
 			if((date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate())==(a.getFullYear()+"-"+a.getMonth()+"-"+a.getDate())){
-				return [true, 'red'];
+				return [true, 'red', "Ledige skift"];
 			}
 		}
 		
 		for(i=0; i<unavailableDates.length; i++){
 			var a = new Date(unavailableDates[i].start);
 			if((date.getFullYear()+"-"+date.getMonth()+"-"+date.getDate())==(a.getFullYear()+"-"+a.getMonth()+"-"+a.getDate())){
-				return [true, 'green'];
+				return [true, 'green', "Ingen ledige skift"];
 			}
 		}
 		return [true, ''];					

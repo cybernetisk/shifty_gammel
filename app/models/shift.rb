@@ -5,7 +5,8 @@ class Shift < ActiveRecord::Base
   has_one :user, through: :task
 
   def self.getAvailableShifts
-      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
+      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start') 
+      #remember to remove shifts that are finished
       shifts
   end
 
@@ -16,17 +17,18 @@ class Shift < ActiveRecord::Base
   end
   
   def self.getUpcomingShifts
-      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
+      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start').limit(10) 
+      #remember to remove shifts that are finished
       shifts
   end
   
   def self.getDatesWithAvailableShifts
-    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
-    shifts
+    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id'=> nil)
   end
   
   def self.getDatesWithNoAvailableShifts
-    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id IS NOT NULL').order('shifts.start') #remember to remove shifts that are finished
+    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id IS NOT NULL') 
+    #remember to check that no shifts on this date is available
     shifts
   end
 
