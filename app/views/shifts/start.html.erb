@@ -1,11 +1,5 @@
 <% stylesheet_link_tag "availableShifts" %>
 <% javascript_include_tag "availableShifts" %>
-<script type="text/javascript" charset="utf-8">
-	$(document).ready(function() {
-
-	});
-</script>
-
 
 <% days = {"Mon"=>"Mandag", "Tue"=>"Tirsdag", "Wed"=>"Onsdag", "Thu"=>"Torsdag", "Fri"=>"Fredag", "Sat"=>"Lørdag", "Sun"=>"Søndag"} %>
 
@@ -15,13 +9,14 @@
 <ul id="nav">
 	<li><%= link_to 'Kalendervisning', shifts_path %></li>	
 	<li><%= link_to 'Liste over ledige skift', available_shifts_path %></li>
+	<li><%= link_to 'Liste over kommende skift', all_shifts_path %></li>
 	<li><%= link_to 'Opprett skift', shifts_start_path %></a></li>
 </ul>
 </div>
 <% today = Date.today %>
 <div id="left_div">
 <div class="box">
-	<h2 style="margin-top:17px"><%=t "shifts.upcoming" %></h2>
+	<h2><%=t "shifts.upcoming" %></h2>
 
 	<ul>
 		<% @upcomingShifts.each do |shift| %>
@@ -39,7 +34,7 @@
 
 <div id="left_div">
 <div class="box">
-	<h2 style="margin-top:17px">Dine skift</h2>
+	<h2>Dine skift</h2>
 
 	<ul>
 		<% @upcomingShifts.each do |shift| %>
@@ -60,9 +55,9 @@
 
 <div id='calendar_start'>
 </div>
-
+<span class='small_text'>
 <span class='red'>Rød dag</span> = Ledige skift denne dagen<br>
 <span class='green'>Grønn dag</span> = Alle skift er tatt denne dagen<br>
 Svart dag = Ingen skift denne dagen<br>
-
+</span>
 

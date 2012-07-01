@@ -22,6 +22,12 @@ class Shift < ActiveRecord::Base
       shifts
   end
   
+  def self.getAllUpcomingShifts
+      shifts = Shift.select("*").order('shifts.start')
+      #remember to remove shifts that are finished
+      shifts
+  end
+  
   def self.getDatesWithAvailableShifts
     shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id'=> nil)
   end
