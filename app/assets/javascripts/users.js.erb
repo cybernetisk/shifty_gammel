@@ -1,0 +1,36 @@
+// Place all the behaviors and hooks related to the matching controller here.
+// All this logic will automatically be available in application.js.
+
+$(document).ready(function() {
+    var req = null, prev = "";
+    $("#user_search").keyup(function() {
+        if ($(this).val() !== "") {
+            if (req && req.readyState != 4){
+                req.abort();
+            }
+
+            req = $.ajax({
+                url: 'users/find',
+                type: "POST",
+                data: { "query" : $(this).val()},
+                success: function(data) {
+                  $('#user_search_results').html("");
+                    var count = 0;
+                    $.each(data, function() {
+                      $('#user_search_results').append("<li>"+this.username+"</li>");
+                      count++;
+                    });
+                    if (count == 0) {
+                      $("#user_search_results").html("<li><%= I18n.t "users.not_found" %></li>");
+                    }
+                    //$('#user_search_results').html(data);
+                    //alert(data);
+                }
+            });
+
+            // prev = $(this).val();
+        } else {
+          $("#user_search_results").html("<li><%= I18n.t "users.type_to_search" %></li>");
+        }
+    });
+});

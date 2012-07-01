@@ -205,11 +205,24 @@ blockquote{
 	margin-right: 20px;
 }
 
+.right { 
+	float: right;
+	display:block;
+	margin-top: 0px;
+}
+
+.left_div { 
+	float: left;
+	display:block;
+	margin-top: 0px;
+	margin-right: 20px;
+}
+
 .box {
 	width: 20em;/*280px*/
 	background: #F6F9FB;
 	border: 1px solid #E1E1E1;
-	padding:0px 10px 15px 15px;
+	padding:0px 15px 15px 15px;
 	margin-bottom: 10px;
 }
 
