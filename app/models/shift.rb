@@ -1,5 +1,5 @@
 class Shift < ActiveRecord::Base
-  attr_accessible :comment, :end, :leasing, :start, :training, :shift_type_id, :date, :duration
+  attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time
   belongs_to :task
   belongs_to :shift_type
   has_one :user, through: :task
@@ -19,36 +19,46 @@ class Shift < ActiveRecord::Base
       shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
       shifts
   end
-
-  def self.start_date
-    return ""
+  
+  def start=(val)
+    duration = self.duration
+    self[:start] = val
+    self.duration = duration.seconds
+  end
+  
+  def start
+    self[:start]
   end
 
   def date
-    if self.start == nil
+    if self[:start] == nil
       return ""
     end
     self.start.strftime("%Y-%m-%d")
   end
   
   def date=(val)
-    self.start = DateTime.strptime(val, "%Y-%m-%d")
+    p = DateTime.strptime val, "%Y-%m-%d"
+    if self.start == nil
+      self.start = p
+    else
+      self.start = self.start.change :year=>p.year, :month=>p.month, :day=>p.day
+    end
   end
 
   def hour
-    self.start.hour
+    @start.hour
   end
 
   def minutes
-    self.start.minutes
+    @start.minutes
   end
-
 
   def time
     if self.start == nil
       return ""
     end
-    self.start.strftime("%H:%M")
+    self.start.strftime "%H:%M"
   end
   
   def time=(val)
@@ -56,15 +66,19 @@ class Shift < ActiveRecord::Base
     
     self.start = self.start.change(:hour=>hour, :min=>minute)
   end
-
+  
   def duration
     if self.start == nil || self.end == nil
       return 0
     end
-    self.end - self.start
+    
+    return (self.end - self.start)
   end
 
   def duration=(val)
-    self.end =  val.since self.start
+    if val.is_a?String
+      val = val.to_f.seconds
+    end
+    self.end = val.since self.start
   end
 end

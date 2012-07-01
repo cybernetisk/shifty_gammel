@@ -4,23 +4,37 @@ class ShiftTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
+  
+  test "end_check" do
+    s = Shift.new
+
+    tmp = DateTime.now
+    s.end = tmp
+    assert_equal tmp, s.end
+  end
+
   test "date_get" do
     s = Shift.new
 
     s.start = DateTime.now
 
-    assert_equal s.date, DateTime.now.strftime("%Y-%m-%d")
+    assert_equal DateTime.now.strftime("%Y-%m-%d"), s.date
   end
 
   test "date_set" do
     s = Shift.new
 
-    t = DateTime.now
+    t = Time.now
+
+    time = -4.days.from_now
+    s.start = time
+
     s.date = t.strftime("%Y-%m-%d")
     
     assert_not_nil s.start
-
+    
     assert_equal t.strftime("%Y-%m-%d"), s.start.strftime("%Y-%m-%d")
+    assert_equal time.strftime("%H:%M"), s.start.strftime("%H:%M")
   end
 
   test "get_duration" do
@@ -32,7 +46,7 @@ class ShiftTest < ActiveSupport::TestCase
     s.start = t
 
     s.end = 1.hours.since t
-
+    
     assert_equal s.duration, 1.hours
 
   end
@@ -40,22 +54,25 @@ class ShiftTest < ActiveSupport::TestCase
   test "set_duration" do
     s = Shift.new
 
-    t = DateTime.now
+    t = Time.now
 
     s.start = t
     s.duration = 1.hours
     
     assert_equal s.end, 1.hours.since(t)
     assert_equal s.duration, 1.hours
+    
+    s.duration = "#{1.hours}"
+    assert_equal s.end, 1.hours.since(t)
   end
 
-  test "duration_equals_end" do
+  test "start_plus_duration_equals_end" do
     s = Shift.new
 
     start = DateTime.now
     diff = 2.hours
     stop = diff.since start
-
+    
     s.start = start
     s.end = stop
 
@@ -79,7 +96,6 @@ class ShiftTest < ActiveSupport::TestCase
   end
   
   test "time_and_duration" do
-
     s = Shift.new
     s.start = DateTime.now
     s.duration = 8.hours
@@ -93,6 +109,21 @@ class ShiftTest < ActiveSupport::TestCase
     s = Shift.new
     t = DateTime.now
     s.start = t
-    assert_equal s.time, s.start.strftime("%H:%M")
+    assert_equal s.start.strftime("%H:%M"), s.time
+  end
+
+  test "save" do
+    s = Shift.new
+
+    s.start = DateTime.now
+    
+    s.duration = 4.hours
+    s.comment = "hei"
+    s.leasing = false
+    s.training = false
+
+    s.shift_type = ShiftType.first
+
+    s.save
   end
 end

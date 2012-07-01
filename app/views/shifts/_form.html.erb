@@ -22,15 +22,14 @@
   <div class="field">
     <%= f.label :date %>
     <%= f.text_field :date %>
-    <%= f.label :start_time %>
 
     <%= f.label :time %>
     <%= f.text_field :time %>
   </div>
   
   <div class="field">
-    <%= f.label :shift_duration %>
-    <%= select(:duration, "hours", (0.5..10).step(0.5)) %>
+    <%= f.label :duration %>
+    <%= select(:shift, :duration, (0.5..10).step(0.5).map {|x| [x, x.hours]}) %>
   </div>
 
   <div class="field">
