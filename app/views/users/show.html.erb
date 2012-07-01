@@ -1,19 +1,21 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Username:</b>
-  <%= @user.username %>
-</p>
-<p>
-  <b>Admin:</b>
-  <%= @user.admin ? 'Yes' : 'No' %>
-</p>
-<p>
-  <b>User groups:</b>
-  <% @user.user_groups.each do |user_group| %>
-    <%= user_group.name %>,
-  <% end %>
-</p>
+<div class="box">
+  <p>
+    <b>Username:</b>
+    <%= @user.username %>
+  </p>
+  <p>
+    <b>Admin:</b>
+    <%= @user.admin ? 'Yes' : 'No' %>
+  </p>
+  <p>
+    <b>User groups:</b>
+    <% @user.user_groups.each do |user_group| %>
+      <%= user_group.name %>,
+    <% end %>
+  </p>
+</div>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |
 <%= link_to 'Back', users_path %>
