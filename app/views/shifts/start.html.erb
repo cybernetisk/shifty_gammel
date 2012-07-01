@@ -1,5 +1,11 @@
 <% stylesheet_link_tag "availableShifts" %>
 <% javascript_include_tag "availableShifts" %>
+<script type="text/javascript" charset="utf-8">
+	$(document).ready(function() {
+
+	});
+</script>
+
 
 <% days = {"Mon"=>"Mandag", "Tue"=>"Tirsdag", "Wed"=>"Onsdag", "Thu"=>"Torsdag", "Fri"=>"Fredag", "Sat"=>"Lørdag", "Sun"=>"Søndag"} %>
 
@@ -55,6 +61,9 @@
 <div id='calendar_start'>
 </div>
 
+<span class='red'>Rød</span> = Ledige skift denne dagen<br>
+<span class='green'>Grønn</span> = Alle skift er tatt denne dagen<br>
+Svart = Ingen skift denne dagen<br>
 
 
 

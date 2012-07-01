@@ -11,13 +11,23 @@ class Shift < ActiveRecord::Base
 
   def self.findForDate(date)
       date = date+"%";
-      shifts = Shift.joins(:task).where("tasks.user_id IS NULL AND shifts.start LIKE ?", date) #remember to remove shifts that are finished
+      shifts = Shift.joins(:task).where("shifts.start LIKE ?", date)
       shifts
   end
   
   def self.getUpcomingShifts
       shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
       shifts
+  end
+  
+  def self.getDatesWithAvailableShifts
+    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
+    shifts
+  end
+  
+  def self.getDatesWithNoAvailableShifts
+    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id IS NOT NULL').order('shifts.start') #remember to remove shifts that are finished
+    shifts
   end
 
   def self.start_date

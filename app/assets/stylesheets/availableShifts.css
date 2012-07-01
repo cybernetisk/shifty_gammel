@@ -119,6 +119,7 @@ table#availableShifts{
     width: 294px;
     padding: 20px;
 	margin-top: 8px;
+	margin-bottom: 5px;
     cursor: default;
  
     text-transform: uppercase;
@@ -132,8 +133,8 @@ table#availableShifts{
     border-radius: 5px;
  
 
-    -moz-box-shadow: 0px 1px 1px #686868;
-    box-shadow: 0px 1px 1px #000;
+	moz-box-shadow:1px 1px 5px #686868 inset;
+	box-shadow:1px 1px 5px #686868 inset;
     -webkit-box-shadow:1px 1px 5px #686868 inset;
 }
 
@@ -225,15 +226,22 @@ table#availableShifts{
     border: 1px solid transparent;
 }
 
-#calendar_start .ui-datepicker-calendar .ui-state-active {
-    color: #93B300;
+#calendar_start .ui-datepicker-calendar .ui-datepicker-today a {
     border: 1px solid #93B300;
-	font-weight: 700;
+	font-weight: normal;
 }
  
 #calendar_start .ui-datepicker-other-month .ui-state-default { color: #a8a8a8; }
 
 
 
+
+td.red a, .red{
+	color: #AF0027 !important;
+}
+
+td.green a, .green{
+	color: #93B300 !important;
+}
 
 
