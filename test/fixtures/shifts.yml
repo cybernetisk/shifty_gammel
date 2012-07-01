@@ -1,41 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-
-one:
-  id: 1
-  shift_type_id: 1
-  task_id: 1
-  start: 2012-08-15 17:30:00
-  end: 2012-08-15 22:00:00
+<% shift_types = ShiftType.all %>
+<% 1.upto 100 do |i| %>
+shift_<%= i %>:
+  id: <%= i %>
+  shift_type_id: <%= shift_types[i % shift_types.length ].id %>
+  start: <%= i.hours.since Time.now %>
+  end: <%= (i + 4).hours.since Time.now %>
   training: false
-  comment: En barvakt
+  comment: <%= "shift id #{i}" %>
   leasing: false
-
-two:
-  id: 2
-  shift_type_id: 2
-  task_id: 2
-  start: 2012-07-21 18:00:00
-  end: 2012-07-22 02:30:00
-  training: false
-  comment: Et vaktskift
-  leasing: false
- 
-three:
-  id: 3
-  shift_type_id: 1
-  task_id: 3
-  start: 2012-08-20 21:30:00
-  end: 2012-08-21 02:30:00
-  training: false
-  comment: En barvakt
-  leasing: false
-
-four:
-  id: 4
-  shift_type_id: 2
-  task_id: 4
-  start: 2012-07-27 18:00:00
-  end: 2012-07-28 02:30:00
-  training: false
-  comment: Et vaktskift
-  leasing: false
+<% end %>

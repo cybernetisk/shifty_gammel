@@ -1,5 +1,23 @@
 <h1>Listing username</h1>
 
+<div class="right">
+  <ul id="nav">
+    <li><a href="#">Brukergrupper</a></li>
+  </ul>
+</div>
+
+<div class="box left_div">
+  <h2>Du er administrator i følgende grupper:</h2>
+</div>
+
+<div class="box left_div">
+  <h2><%= t "users.find" %></h2>
+  <input name="user_search" id="user_search" type="text" />
+  <ul id="user_search_results">
+    <li><%= t "users.type_to_search" %></li>
+  </ul>
+</div>
+
 <table>
   <tr>
     <th>Username</th>

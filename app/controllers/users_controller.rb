@@ -85,4 +85,9 @@ class UsersController < ApplicationController
       format.json { head :ok }
     end
   end
+
+  def find
+    @users = User.where("LOWER(username) LIKE ?", "#{params[:query]}%")
+    render json: @users
+  end
 end

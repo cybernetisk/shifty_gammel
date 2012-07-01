@@ -7,11 +7,7 @@ Railsdemo::Application.routes.draw do
   get 'sign_up' => 'users#new', as: 'sign_up'
   get "log_out" => "sessions#destroy", :as => "log_out"
   get "log_in" => "sessions#new", :as => "log_in"
-  get "user_groups/:id/certify" => 'user_groups#certify'
-  post "user_groups/:id/certify" => 'user_groups#update_certifications'
-  get "users/:id/groups" => "users#groups"
-  post "users/:id/groups" => "users#update_groups"
-  
+
   # Lagt til av Mari
   match 'tickets/showForUser/:id' => 'tickets#showForUser', :as => :tickets_for_user
   match 'shifts/showAvailable' => 'shifts#showAvailable', :as => :available_shifts
@@ -20,6 +16,18 @@ Railsdemo::Application.routes.draw do
   match 'shifts/getAvailableDates' => 'shifts#getAvailableDates', :as => :shift_available_dates
   match 'shifts/getUnavailableDates' => 'shifts#getUnavailableDates', :as => :shift_unavailable_dates
   
+  match 'shifts/start/' => 'shifts#start', :as => :shifts_start
+
+  # Lagt til av Sigurd
+  post "users/find" => "users#find"
+
+  # Routes with wildcards
+  get "user_groups/:id/certify" => 'user_groups#certify'
+  post "user_groups/:id/certify" => 'user_groups#update_certifications'
+  get "users/:id/groups" => "users#groups"
+  post "users/:id/groups" => "users#update_groups"
+
+
   # Default CRUD routes
   resources :shift_types
   resources :shifts

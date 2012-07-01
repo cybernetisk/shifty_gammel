@@ -12,21 +12,23 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :user_id %><br />
-    <%= f.number_field :user_id %>
+    <%= f.label :title %><br />
+    <%= f.text_field :title %>
   </div>
   <div class="field">
     <%= f.label :description %><br />
     <%= f.text_area :description %>
   </div>
+
   <div class="field">
-    <%= f.label :title %><br />
-    <%= f.text_field :title %>
+    <%= f.label :user_id %><br />
+    <%= f.select :user_id, User.all.map{ |x| [x.username, x.id] }, { :include_blank => true } %>
   </div>
   <div class="field">
     <%= f.label :user_group_id %><br />
-    <%= f.number_field :user_group_id %>
+    <%= f.select :user_group_id, UserGroup.all.map{ |x| [x.name, x.id] }, { :include_blank => true } %>
   </div>
+
   <div class="actions">
     <%= f.submit %>
   </div>
