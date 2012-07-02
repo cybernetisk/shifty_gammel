@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120518161712) do
+ActiveRecord::Schema.define(:version => 20120702230306) do
 
   create_table "certifications", :force => true do |t|
     t.integer  "shift_type_id",                    :null => false
@@ -32,15 +32,15 @@ ActiveRecord::Schema.define(:version => 20120518161712) do
   end
 
   create_table "shifts", :force => true do |t|
-    t.integer  "shift_type_id", :null => false
+    t.integer  "shift_type_id",                    :null => false
     t.integer  "task_id"
-    t.datetime "start",         :null => false
-    t.datetime "end",           :null => false
-    t.boolean  "training",      :null => false
-    t.text     "comment",       :null => false
-    t.boolean  "leasing",       :null => false
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "start",                            :null => false
+    t.datetime "end",                              :null => false
+    t.boolean  "training",      :default => false, :null => false
+    t.text     "comment"
+    t.boolean  "leasing",       :default => false, :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   create_table "tasks", :force => true do |t|
