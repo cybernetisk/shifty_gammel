@@ -2,7 +2,15 @@ class Shift < ActiveRecord::Base
   attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time
   belongs_to :task
   belongs_to :shift_type
-  has_one :user, through: :task
+  #has_one :user, through: :task
+
+  def user
+    self.task.user
+  end
+
+  def user=(new_user)
+    self.task.user = new_user
+  end
 
   def self.getAvailableShifts
       shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start') 

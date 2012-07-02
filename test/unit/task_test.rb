@@ -27,10 +27,13 @@ class TaskTest < ActiveSupport::TestCase
     cert.shift_type = st
     cert.save
 
+    st.certifications << cert
+    st.save
+
     return group, st, cert
   end
 
-  test "user_task_missing_certification" do
+  test "user_task_certification" do
     group, st, cert = setupCert
 
     s = Shift.new
@@ -52,17 +55,16 @@ class TaskTest < ActiveSupport::TestCase
     u.username = "hei"
     u.password = "lol"
     u.save
-    
+
     s.task.shift = s
-    s.task.user = u
-    assert_equal false, s.task.save, "Save failed"
-    
+    assert_raise RuntimeError do
+      s.user = u
+    end
+
     u.user_groups << group
-    u.save
-    print u.user_groups
-    print s.shift_type.certifications.where(user: u).count
-    print s.shift_type
-    print s.shift_type.certifications
-    assert_equal true, s.task.save, "Save succeded"
+
+    assert_nothing_raised do
+      s.user = u
+    end
   end
 end
