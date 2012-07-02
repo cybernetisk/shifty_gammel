@@ -6,10 +6,12 @@ class Task < ActiveRecord::Base
   has_one :shift
   has_one :ticket
 
-  validates_each :user do |record, attr, value|
-    if record.shift != nil && record.shift.shift_type.certifications.where(user: value).count == 0
-      record.errors.add(attr, "User does not have certification")
+  def user=(new_user)
+    if self.shift != nil && self.shift.shift_type.certifications.count != 0
+        if new_user.user_groups.count == 0 || self.shift.shift_type.certifications.where(user_group_id: new_user.user_groups).count == 0
+          raise "User does not meet certifications"
+        end
     end
+    super
   end
-  
 end
