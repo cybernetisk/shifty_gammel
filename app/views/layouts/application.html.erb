@@ -12,11 +12,19 @@
         <h2><a href="/" title="Back to main page">SHIFTY</a></h2>
         <div id="menu">
           <ul>
-            <li><a href="/" class="current">HJEM</a></li>
-            <li><%= link_to 'SKIFT', shifts_path %></li>
-            <li><%= link_to 'OPPGAVER', tasks_path %></li>
-            <li><%= link_to 'BONGER', tickets_path %></li>
-            <li><%= link_to 'BRUKERE', users_path %></li>
+            <% controller = request.fullpath == root_path ? "root" : params[:controller] %>
+            <li><%= link_to 'HJEM', root_path, class: (controller == "root" ? "current" : nil) %></li>
+            <li>
+                <%= link_to 'SKIFT', shifts_path, class: (controller == "shifts" ? "current" : nil) %>
+            </li>
+            <li>
+                <%= link_to 'OPPGAVER', tasks_path, class: (controller == "tasks" ? "current" : nil) %>
+            </li>
+            <li>
+                <%= link_to 'BONGER', tickets_path, class: (controller == "tickets" ? "current" : nil) %>
+            </li>
+            <li>
+              <%= link_to 'BRUKERE', users_path, class: (controller == "users" || controller == "user_groups" ? "current" : nil) %></li>
           </ul>
         </div>
       </div>
