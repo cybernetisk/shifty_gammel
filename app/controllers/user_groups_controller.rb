@@ -95,4 +95,64 @@ class UserGroupsController < ApplicationController
       end
     end
   end
+
+  def add_certification
+    @user_group = UserGroup.find(params[:id])
+    shift_type = ShiftType.find(params[:shift_type])
+
+    success = @user_group.certify_for_shift_type shift_type
+
+    if success
+      flash[:notice] = "#{@user_group.name} is now certified for #{shift_type.title}"
+    else
+      flash[:notice] = "#{@user_group.name} is already certified for #{shift_type.title}"
+    end
+
+    redirect_to @user_group
+  end
+
+  def remove_certification
+    @user_group = UserGroup.find(params[:id])
+    shift_type = ShiftType.find(params[:shift_type])
+
+    success = @user_group.remove_certification_for_shift_type shift_type
+
+    if success
+      flash[:notice] = "#{@user_group.name} is no longer certified for #{shift_type.title}"
+    else
+      flash[:notice] = "Something went wrong when removing #{@user_group.name}'s certification for #{shift_type.title}"
+    end
+
+    redirect_to @user_group
+  end
+
+  def add_user
+    @group = UserGroup.find(params[:id])
+    user = User.find(params[:user])
+
+    success = @group.add_user user
+
+    if success
+      flash[:notice] = "#{user.username} was added to #{@group.name}"
+    else
+      flash[:notice] = "#{user.username} was already in #{@group.name}"
+    end
+
+    redirect_to @group
+  end
+
+  def remove_user
+    @group = UserGroup.find(params[:id])
+    user = User.find(params[:user])
+
+    success = @group.remove_user user
+
+    if success
+      flash[:notice] = "#{user.username} was removed from #{@group.name}"
+    else
+      flash[:notice] = "#{user.username} was not removed from #{@group.name}"
+    end
+    
+    redirect_to @group
+  end
 end

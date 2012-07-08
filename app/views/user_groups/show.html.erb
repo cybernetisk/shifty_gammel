@@ -1,9 +1,50 @@
 <p id="notice"><%= notice %></p>
 
-<p>
+<%= render 'users/nav' %>
+
+<h1><%= "#{t("user_group")}: #{@user_group.name}" %></h1>
+
+<div class="box left_div">
   <b>Title:</b>
   <%= @user_group.name %>
-</p>
+  <%= link_to_unless_current("Text", {controller: "user_groups"}) %>
+</div>
+
+<div class="box left_div">
+  <h3><%= t "users.title" %></h3>
+  <% if @user_group.users.count > 0 %>
+    <ul>
+      <% @user_group.users.each do |user| %>
+        <li><%= link_to user.username, user %> (<%= link_to t("delete"), {controller: "user_groups", id: @user_group, action: "remove_user", user: user} %>)</li>
+      <% end %>
+    </ul>
+  <% else %>
+    <p><%= t "user_groups.no_users" %></p>
+  <% end %>
+
+  <%= form_tag controller: "user_groups", action: "add_user", remote: true do |f| %>
+    <%= select_tag "user", options_from_collection_for_select(User.all, "id", "username") %>
+    <%= submit_tag t("form.add") %>
+  <% end %>
+</div>
+
+<div class="box left_div">
+  <h3><%= t "user_groups.certifications" %>:</h3>
+  <% if @user_group.certifications.count > 0 %>
+    <ul>
+      <% @user_group.certifications.each do |certification| %>
+        <li><%= link_to certification.shift_type.title, certification.shift_type %> (<%= link_to t("delete"), {controller: "user_groups", id: @user_group, action: "remove_certification", shift_type: certification.shift_type} %>)</li>
+      <% end %>
+    </ul>
+  <% else %>
+    <%= t "user_groups.no_certifications" %>
+  <% end %>
+
+  <%= form_tag controller: "user_groups", action: "add_certification" do |f| %>
+    <%= select_tag "shift_type", options_from_collection_for_select(ShiftType.all, "id", "title") %>
+    <%= submit_tag t("form.add") %>
+  <% end %>
+</div>
 
 <%= link_to 'Edit', edit_user_group_path(@user_group) %> |
 <%= link_to 'Back', user_groups_path %>

@@ -1,8 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<h1>User: <%= @user.username %></h1>
-
 <%= render 'nav' %>
+
+<h1>User: <%= @user.username %></h1>
 
 <div class="box left_div">
   <p>
@@ -26,7 +26,7 @@
   <% if @user.user_groups.count > 0 %>
     <ul>
       <% @user.user_groups.each do |user_group| %>
-        <li><%= user_group.name %> (<%= link_to t("delete"), "/users/#{@user.id}/remove_group/#{user_group.id}" %>)</li>
+        <li><%= link_to user_group.name, user_group %> (<%= link_to t("delete"), {controller: "users", id: @user, action: "remove_group", user_group: user_group} %>)</li>
       <% end %>
     </ul>
   <% end %>

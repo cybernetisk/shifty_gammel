@@ -14,12 +14,19 @@ Railsdemo::Application.routes.draw do
   match 'shifts/showForDate/:date' => 'shifts#showForDate', :as => :shifts_for_date
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
 
-  # Lagt til av Sigurd
-  post "users/find" => "users#find"
+  # User groups now have the url /users/groups
+  scope '/users' do
+    resources :user_groups, path: "groups"
+    post "groups/:id/add_certification/" => "user_groups#add_certification"
+    get "groups/:id/remove_certification/:shift_type" => "user_groups#remove_certification"
+    post "groups/:id/add_user" => "user_groups#add_user"
+    get "groups/:id/remove_user/:user" => "user_groups#remove_user"
+    get "groups/:id/certify" => 'user_groups#certify'
+    post "groups/:id/certify" => 'user_groups#update_certifications'
+  end
 
-  # Routes with wildcards
-  get "user_groups/:id/certify" => 'user_groups#certify'
-  post "user_groups/:id/certify" => 'user_groups#update_certifications'
+  # User routes
+  post "users/find" => "users#find"
   post "users/:id/add_group" => "users#add_group"
   get "users/:id/remove_group/:user_group" => "users#remove_group"
   get "users/:id/groups" => "users#groups"
@@ -31,10 +38,9 @@ Railsdemo::Application.routes.draw do
   resources :shifts
   resources :users
   resources :sessions
-  resources :user_groups
   resources :tickets
   resources :tasks
-  
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
