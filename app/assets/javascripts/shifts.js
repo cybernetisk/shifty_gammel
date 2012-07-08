@@ -65,3 +65,11 @@ $(document).ready(function() {
         $(element).append(shift);
     }
 });
+
+$(document).ready(function() {
+	// only process shift-calendar pages
+	if ($(".shift_calendar").length == 0) return;
+	
+	// process all shifts to fix width and position
+	
+});

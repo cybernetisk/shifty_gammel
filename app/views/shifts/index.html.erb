@@ -1,5 +1,32 @@
-<% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
-<table>
+<h1>Skiftoversikt</h1>
+
+<% calnav='
+<div class="calendar_navigation">
+  <p class="next"><a href="#">Neste dag &gt;</a> <a href="#">Neste uke &raquo;</a></p>
+  <p class="prev"><a href="#">&laquo; Forrige uke</a> <a href="#">&lt; Forrige dag</a></p>
+</div>' %>
+
+<%=raw(calnav)%>
+
+<%
+
+days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"}
+
+# put shifts in correct days
+shift_days = Array.new
+8.times do
+  shift_days << Array.new
+end
+
+@shifts.each do |shift|
+  # FIXME ta høyde for skift som går over flere dager
+  #Integer(shift.start.strftime(%u))
+  shift_days[Integer(shift.start.strftime("%u"))] << shift
+end
+
+%>
+
+<table class="shift_calendar">
   <thead>
     <tr>
       <th class="time"></th>
@@ -17,18 +44,84 @@
         <% end %>
         </ul>
       </td>
-      <% days.keys.each do |day| %>
+      <% i=1
+      days.keys.each do |day| %>
         <td class="day <%= day %>">
+          <%
+          
+          shift_days[i].each do |shift|
+            # find top and height value for the html-element
+            # also check if this is a continuation from a day before
+            start = shift.start
+            start_num = start.hour * 3600 + start.min * 60 + start.sec
+            end_num = start_num + (shift.end - start)
+            
+            # continuation?
+            cont = false
+            if Integer(start.strftime("%u")) != i
+              # TODO: shifts over more than two days
+              start_num = 0
+              end_num -= 86400
+              
+              cont = true
+            end
+            
+            if end_num > 86400
+              end_num = 86400
+              
+              # add to next day as well
+              if i <= 6
+                shift_days[i+1] << shift
+              end
+            end
+            
+            start_pct = start_num / 86400.0 * 100
+            end_pct = end_num / 86400.0 * 100 - start_pct
+            
+            %>
+          
+          <div class="shiftwrap" style="top: <%=start_pct%>%; height: <%=end_pct%>%" data-start="<%= shift.start %>" data-end="<%= shift.end %>">
+            <div class="shiftwrapinner">
+              <div class="shift">
+                <%
+                if cont
+                %>
+                <p>(Fortsettelse fra forrige skift.)</p>
+                <%
+                else
+                %>
+                <p><%= link_to 'Shift:', shift %> <%= shift.start.strftime("%H:%M") %>-<%= shift.end.strftime("%H:%M") %><% if shift.comment %><br /> (<%= shift.comment %>)<% end %></p>
+                <% if shift.task && shift.task.user %>
+                <p>Tatt av: <%= link_to shift.task.user, shift.task.user %></p>
+                <% else %>
+                <%= button_to 'Ta skift', shifts_path, :class =>"green_button", :method => :get %>
+                <% end
+                
+                end
+                %>
+              </div>
+            </div>
+          </div>
+          <%
+          end
+          %>
+          
           <ul>
             <% 48.times do %>
               <li></li>
             <% end %>
           </ul>
         </td>
-      <% end %>
+      <%
+      i+=1
+      end
+      %>
     </tr>
   </tbody>
 </table>
+
+<%=raw(calnav)%>
+
 
 <h1>Listing shifts</h1>
 
@@ -48,15 +141,17 @@
     <th></th>
   </tr>
 
-  <% @shifts.each do |shift| %>
+  <% @shifts.each do |shift|
+    user = shift.task && shift.task.user
+  %>
     <tr>
       <td><%= link_to shift.shift_type.title, shift.shift_type %></td>
       <td><%= shift.comment %></td>
       <td><%= shift.start %></td>
       <td><%= shift.end %></td>
       <td><%= shift.end - shift.start %></td>
-      <td><%= shift.user ? shift.user.username : "No user" %></td>
-      <td><%= shift.shift_type.certifications.where(user: shift.user) ? "No certification" : "Has certification" %></td>
+      <td><%= user ? user.username : "No user" %></td>
+      <td><%= shift.shift_type.certifications.where(user: user) ? "No certification" : "Has certification" %></td>
       <td><%= shift.training ? "Yes" : "No" %></td>
       <td><%= shift.leasing ? "Yes" : "No" %></td>
       <% if current_user && current_user.can_take_shift?(shift) %>

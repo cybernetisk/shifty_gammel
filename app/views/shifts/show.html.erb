@@ -45,7 +45,7 @@ minutes = (fraction*60).to_i
 	<br>
 	<p>
 	<b>Bruker:</b><br>
-	<% if @shift.user != nil %>
+	<% if @shift.task && @shift.task.user %>
 		<span class='green_text'><%= @shift.user.username %></span>
 	<% else %>
 		Dette skiftet er ledig.<br>

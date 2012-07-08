@@ -2,7 +2,18 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
-table {
+.calendar_navigation {
+  .prev {
+    :first-child { margin-right: 8px }
+  }
+  .next {
+    float: right;
+    margin-top: 0;
+    :last-child { margin-left: 8px }
+  }
+}
+
+table.shift_calendar {
   width:100%; border-collapse:collapse; table-layout:fixed;
 
   tr {
@@ -56,7 +67,84 @@ table {
 
       li {
         height:40px; padding:4px; box-sizing:border-box;
-        border:1px solid #ddd; border-bottom:0px;					
+        border:1px solid #ddd; border-bottom:0px;
+      }
+    }
+  }
+  
+  .shiftwrap {
+    position: absolute;
+    box-sizing: border-box;
+    
+    width: 100%;
+    padding: 2px 4px 1px 3px;
+    
+    .shiftwrapinner {
+      position: relative;
+      
+      min-width: 100%;
+      min-height: 100%;
+      
+      /* box to mark shift */
+      &:hover:before {
+        /*display: none;*/
+      }
+      &:before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        
+        height: 100%;
+        background: rgb(238, 204, 102);
+      }
+      
+      /* box with shift info, shown instead of mark-box on hover */
+      &:hover .shift {
+        display: block;
+      }
+      .shift {
+        &:before {
+          content: "";
+          float: left;
+          width: 20px;
+          height: 20px;
+          border: 1px solid #888;
+          
+          background-color: rgb(238, 204, 102);
+          margin: 5px;
+        }
+        
+        
+        background: #EEE;
+        border: 1px solid #AAA;
+        box-sizing: border-box;
+        
+        /*min-height: 100%;*/
+        padding: 2px;
+        margin: 3px 0 0 6px;
+        
+        font-size: 10px;
+        line-height: 12px;
+        
+        display: none;
+        position: absolute;
+        z-index: 10;
+        max-width: 200px;
+        min-width: 130px;
+        width: 100%;
+        
+        .button_to {
+          text-align: center;
+          input {
+            margin: 5px 0;
+          }
+        }
+        p {
+          margin: 1px 0;
+          &:first-child {
+            margin-top: 0;
+          }
+        }
       }
     }
   }
