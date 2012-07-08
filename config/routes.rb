@@ -20,6 +20,8 @@ Railsdemo::Application.routes.draw do
   # Routes with wildcards
   get "user_groups/:id/certify" => 'user_groups#certify'
   post "user_groups/:id/certify" => 'user_groups#update_certifications'
+  post "users/:id/add_group" => "users#add_group"
+  get "users/:id/remove_group/:user_group" => "users#remove_group"
   get "users/:id/groups" => "users#groups"
   post "users/:id/groups" => "users#update_groups"
 

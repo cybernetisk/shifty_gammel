@@ -72,6 +72,32 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
   end
 
+  def add_group
+    @user = User.find(params[:id])
+    group = UserGroup.find(params[:user_group])
+    success = @user.add_to_group group
+
+    if success
+      flash[:notice] = "#{@user.username} added to #{group.name}"
+    else
+      flash[:notice] = "#{@user.username} is already in #{group.name}"
+    end
+    redirect_to @user
+  end
+
+  def remove_group
+    @user = User.find(params[:id])
+    group = UserGroup.find(params[:user_group])
+
+    success = @user.remove_from_group group
+    if success
+      flash[:notice] = "#{@user.username} was removed from #{group.name}"
+    else
+      flash[:notice] = "#{@user.username} was not removed from #{group.name}"
+    end
+    redirect_to @user
+  end
+
   def update_groups
     @user = User.find(params[:id])
     @user.user_groups.destroy_all

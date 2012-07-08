@@ -17,7 +17,7 @@ $(document).ready(function() {
                   $('#user_search_results').html("");
                     var count = 0;
                     $.each(data, function() {
-                      $('#user_search_results').append("<li>"+this.username+"</li>");
+                      $('#user_search_results').append("<li><a href=\"users/"+this.id+"\">"+this.username+"</a></li>");
                       count++;
                     });
                     if (count == 0) {

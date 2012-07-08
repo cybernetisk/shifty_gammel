@@ -1,6 +1,10 @@
 <p id="notice"><%= notice %></p>
 
-<div class="box">
+<h1>User: <%= @user.username %></h1>
+
+<%= render 'nav' %>
+
+<div class="box left_div">
   <p>
     <b>Username:</b>
     <%= @user.username %>
@@ -15,6 +19,21 @@
       <%= user_group.name %>,
     <% end %>
   </p>
+</div>
+
+<div class="box left_div">
+  <h3><%= t "users.groups" %></h3>
+  <% if @user.user_groups.count > 0 %>
+    <ul>
+      <% @user.user_groups.each do |user_group| %>
+        <li><%= user_group.name %> (<%= link_to t("delete"), "/users/#{@user.id}/remove_group/#{user_group.id}" %>)</li>
+      <% end %>
+    </ul>
+  <% end %>
+  <%= form_tag controller: "users", action: "add_group", remote: true do |f| %>
+    <%= select_tag "user_group", options_from_collection_for_select(UserGroup.all, "id", "name") %>
+    <%= submit_tag t("form.add") %>
+  <% end %>
 </div>
 
 <%= link_to 'Edit', edit_user_path(@user) %> |

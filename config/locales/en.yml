@@ -3,9 +3,12 @@
 
 en:
   hello: "Hello world"
+  delete: "Delete"
   shifts: 
-      upcoming: "Upcoming available shifts"
+    upcoming: "Upcoming available shifts"
   users:
-      find: "Find users:"
-      type_to_search: "Start typing to search"
-      not_found: "Couldn't find user"
+    find: "Find users:"
+    type_to_search: "Start typing to search"
+    not_found: "Couldn't find user"
+  form:
+    add: "Add"

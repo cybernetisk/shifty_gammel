@@ -44,5 +44,25 @@ class User < ActiveRecord::Base
         end
       end
       tickets
-  end  
+  end
+
+  # TODO: Check that the user was actually added to the group
+  def add_to_group(group)
+    if self.user_groups.include? group or !(group.is_a? UserGroup)
+      return false
+    else
+      self.user_groups << group
+      return true
+    end
+  end
+
+  # TODO: Check that the user was actually removed from the group
+  def remove_from_group(group)
+    if self.user_groups.include? group and group.is_a? UserGroup
+      self.user_groups.delete group
+      return true
+    else
+      return false
+    end
+  end
 end
