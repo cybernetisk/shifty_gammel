@@ -1,12 +1,26 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-<% shift_types = ShiftType.all %>
-<% 1.upto 100 do |i| %>
+<%
+
+shift_types = ShiftType.all
+tasks = Task.all
+
+start = 2.hours.since Time.now.beginning_of_week
+dur = 1.hours
+
+1.upto 20 do |i|
+  endt = dur.since start
+%>
 shift_<%= i %>:
   id: <%= i %>
-  shift_type_id: <%= shift_types[i % shift_types.length ].id %>
-  start: <%= i.hours.since Time.now %>
-  end: <%= (i + 4).hours.since Time.now %>
+  shift_type_id: <%= shift_types[i % shift_types.length].id %>
+  start: <%= start %>
+  end: <%= endt %>
   training: false
-  comment: <%= "shift id #{i}" %>
+  comment: <%= "Shift #{i}" %>
   leasing: false
-<% end %>
+  task_id: <%= tasks[i % tasks.length].id %>
+<%
+  start = 3.hours.since start
+  dur += 15.minutes
+end
+%>
