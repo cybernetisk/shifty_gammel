@@ -17,5 +17,6 @@ pickle-email-*.htmltmp
 Gemfile.lock
 *.swp
 .project
+.settings
 .DS_Store
 /doc/*.svg
