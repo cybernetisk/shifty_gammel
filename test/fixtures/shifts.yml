@@ -7,7 +7,7 @@ tasks = Task.all
 start = 2.hours.since Time.now.beginning_of_week
 dur = 1.hours
 
-1.upto 20 do |i|
+1.upto 30 do |i|
   endt = dur.since start
 %>
 shift_<%= i %>:
