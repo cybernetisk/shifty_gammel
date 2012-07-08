@@ -65,4 +65,8 @@ class User < ActiveRecord::Base
       return false
     end
   end
+  
+  def to_s
+    self.username
+  end
 end
