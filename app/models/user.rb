@@ -5,8 +5,9 @@ class User < ActiveRecord::Base
   attr_accessor :password
   before_save :encrypt_password
 
-  has_many :shifts, dependent: :nullify, inverse_of: :user
-  has_many :tickets, through: :shifts, inverse_of: :user
+  has_many :tasks, dependent: :nullify, inverse_of: :user
+  has_many :shifts, through: :tasks
+  has_many :tickets, through: :tasks
   has_many :certifications, dependent: :destroy, inverse_of: :user
   has_and_belongs_to_many :user_groups
 
@@ -68,5 +69,28 @@ class User < ActiveRecord::Base
   
   def to_s
     self.username
+  end
+
+  def withdraw(total)
+    if total > @sum_ticket
+      return false
+    end
+
+    # TODO: make this in db
+    # Should withdraw oldest tickets first.
+  end
+
+  def tickets_used()
+    # TODO: do this in db and properly
+    sum = 0
+    self.tickets.collect{|t| t.used ? sum += t.value : 0}
+    return sum
+  end
+  
+  def tickets_sum()
+    # TODO: do this in db and properly
+    sum = 0
+    self.tickets.collect{|t| t.used ? 0:sum += t.value}
+    return sum
   end
 end

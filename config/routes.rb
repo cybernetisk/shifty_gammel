@@ -8,6 +8,9 @@ Railsdemo::Application.routes.draw do
   get "log_out" => "sessions#destroy", :as => "log_out"
   get "log_in" => "sessions#new", :as => "log_in"
 
+  #lagt til av øyvind
+  match '/users/:id/tickets' => 'users#ticket', :as => 'user_ticket'
+
   # Lagt til av Mari
   match 'tickets/showForUser/:id' => 'tickets#showForUser', :as => :tickets_for_user
   match 'shifts/showAvailable' => 'shifts#showAvailable', :as => :available_shifts

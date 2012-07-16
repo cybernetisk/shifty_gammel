@@ -1,0 +1,29 @@
+<%#
+# To change this template, choose Tools | Templates
+# and open the template in the editor.
+%>
+
+<dl>
+  <dt>Total tickets:</dt>
+  <dd><%= @user.tickets_sum %> </dd>
+  <dt>Used tickets:</dt>
+  <dd><%= @user.tickets_used %></dd>
+</dl>
+
+<div>
+  <form method="post">
+    <h2>Withdraw ticket</h2>
+    <input type="text" />
+    <input type="submit" />
+  </form>
+</div>
+
+<table>
+  <% @user.tickets.each do |ticket| %>
+  <tr>
+    <td><%= ticket.task.title %></td>
+    <td><%= ticket.value %> </td>
+    <td><%= ticket.used ? "Used" : "Unused" %></td>
+  </tr>
+  <% end %>
+</table>
