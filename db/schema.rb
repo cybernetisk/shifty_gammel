@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120702230306) do
+ActiveRecord::Schema.define(:version => 20120719141916) do
 
   create_table "certifications", :force => true do |t|
     t.integer  "shift_type_id",                    :null => false
@@ -41,6 +41,8 @@ ActiveRecord::Schema.define(:version => 20120702230306) do
     t.boolean  "leasing",       :default => false, :null => false
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
+    t.integer  "user_id"
+    t.integer  "ticket_id"
   end
 
   create_table "tasks", :force => true do |t|
@@ -56,8 +58,11 @@ ActiveRecord::Schema.define(:version => 20120702230306) do
     t.integer  "task_id"
     t.float    "value"
     t.boolean  "used"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.integer  "user_id"
+    t.text     "comment"
+    t.integer  "issued_by_id"
   end
 
   create_table "user_groups", :force => true do |t|
