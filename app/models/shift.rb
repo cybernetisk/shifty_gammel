@@ -1,11 +1,24 @@
 class Shift < ActiveRecord::Base
-  attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time, ticket_id
+  attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time
   #belongs_to :task
   belongs_to :shift_type
   belongs_to :ticket
   belongs_to :user
   #has_one :user, through: :task
-  
+
+  before_save :add_ticket
+
+  def add_ticket
+    if self.ticket == nil
+      self.ticket = Ticket.new do |ticket|
+        ticket.value = self.shift_type.ticket_value
+        ticket.save
+      end
+    end
+  end
+
+
+
   def user
     self.task.user
   end
