@@ -81,6 +81,7 @@ class User < ActiveRecord::Base
     t = Ticket.new
     t.value = -total
     t.task_id = nil
+    
     #t.user = self
     t.save
 

@@ -7,7 +7,7 @@ class Shift < ActiveRecord::Base
   #has_one :user, through: :task
 
   before_save :add_ticket
-
+  
   def add_ticket
     if self.ticket == nil
       self.ticket = Ticket.new do |ticket|
@@ -17,7 +17,19 @@ class Shift < ActiveRecord::Base
     end
   end
 
+  def signed_by=(user)
+    self.ticket.user = self.user
+    self[:signed_by] = user
+    
+  end
 
+  def signed_by
+    if self.ticket.user != self.user
+      return nil
+    end
+
+    return self[:signed_by]
+  end
 
   def user
     self.task.user
