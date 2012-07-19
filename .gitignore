@@ -20,3 +20,4 @@ Gemfile.lock
 .settings
 .DS_Store
 /doc/*.svg
+nbproject
