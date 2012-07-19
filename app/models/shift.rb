@@ -1,9 +1,11 @@
 class Shift < ActiveRecord::Base
-  attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time
-  belongs_to :task
+  attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time, ticket_id
+  #belongs_to :task
   belongs_to :shift_type
+  belongs_to :ticket
+  belongs_to :user
   #has_one :user, through: :task
-
+  
   def user
     self.task.user
   end
