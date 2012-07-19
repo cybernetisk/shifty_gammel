@@ -8,6 +8,8 @@ class User < ActiveRecord::Base
   has_many :tasks, dependent: :nullify, inverse_of: :user
   has_many :shifts, through: :tasks
   has_many :tickets, through: :tasks
+  #has_many :used_tickets, source: :ticket,  through: :tasks, include:[:value], conditions:{:used=>true}
+  #has_many :unused_tickets, source: :ticket,  through: :tasks, include: [:value], conditions:{:used => false}
   has_many :certifications, dependent: :destroy, inverse_of: :user
   has_and_belongs_to_many :user_groups
 
@@ -72,25 +74,33 @@ class User < ActiveRecord::Base
   end
 
   def withdraw(total)
-    if total > @sum_ticket
+    if total > self.tickets_sum
       return false
     end
 
-    # TODO: make this in db
-    # Should withdraw oldest tickets first.
+    t = Ticket.new
+    t.value = -total
+    t.task_id = nil
+    #t.user = self
+    t.save
+
+    return true
   end
+
+  #def unused_tickets()
+  #  return self.tickets.find(:all, :conditions=>{:used=>0})
+  #end
+
+  #def used_tickets()
+  #  return self.tickets.find(:all, :conditions=>{:user=>1})
+  #end
 
   def tickets_used()
     # TODO: do this in db and properly
-    sum = 0
-    self.tickets.collect{|t| t.used ? sum += t.value : 0}
-    return sum
+    self.used_tickets.sum(:value)
   end
   
   def tickets_sum()
-    # TODO: do this in db and properly
-    sum = 0
-    self.tickets.collect{|t| t.used ? 0:sum += t.value}
-    return sum
+    self.tickets.sum(:value)
   end
 end

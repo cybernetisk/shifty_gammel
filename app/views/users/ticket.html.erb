@@ -6,18 +6,20 @@
 <dl>
   <dt>Total tickets:</dt>
   <dd><%= @user.tickets_sum %> </dd>
-  <dt>Used tickets:</dt>
-  <dd><%= @user.tickets_used %></dd>
 </dl>
-
 <div>
+  <%#= form_for @user do |f| %>
   <form method="post">
-    <h2>Withdraw ticket</h2>
-    <input type="text" />
-    <input type="submit" />
+     <div class="field">
+    <%#= f.label "withdraw" %><br />
+    <%= text_field_tag "withdraw", 0 %>
+    </div>
+    <%= submit_tag "Withdraw" %>
   </form>
+    <%#= f.submit %>
+  <%# end %>
 </div>
-
+<%= @withdraw %>
 <table>
   <% @user.tickets.each do |ticket| %>
   <tr>
