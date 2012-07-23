@@ -2,7 +2,7 @@
 
 <table>
   <tr>
-    <th>Task</th>
+    <th>Comment</th>
     <th>Used</th>
     <th>Value</th>
     <th>Type</th>
@@ -13,13 +13,11 @@
 
 <% @tickets.each do |ticket| %>
   <tr>
-    <td><%= ticket.task_id %></td>
+    <td><%= ticket.comment %></td>
     <td><%= ticket.used %></td>
     <td><%= ticket.value %></td>
-	<% if ticket.task != nil %>
-		<% if ticket.task.shift != nil %>
-			<%= ticket.task.shift.shift_type.title %>
-		<% end %>
+	<% if ticket.shift != nil %>
+		<%= ticket.shift.shift_type.title %>
 	<% end %>
     <td><%= link_to 'Show', ticket %></td>
     <td><%= link_to 'Edit', edit_ticket_path(ticket) %></td>
