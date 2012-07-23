@@ -4,7 +4,30 @@ class ShiftTest < ActiveSupport::TestCase
   # test "the truth" do
   #   assert true
   # end
-  
+
+  test "ticket_creation" do
+    # Create a shift, and check that the ticket is created as it should.
+    s = Shift.new
+    s.start = DateTime.now
+    s.duration = 3.hour
+    s.comment = "abc"
+    s.leasing = false
+    s.training = false
+    st = ShiftType.first
+    s.shift_type = st
+    s.save
+
+    assert_not_nil s.ticket "Ticket should be created"
+    assert_equal s.ticket.value,st.ticket_value, "Ticket should have default value"
+
+    m = Ticket.new
+    m.value = 38
+    s.ticket = m
+    s.save
+
+    assert_equal s.ticket, m, "Existing ticket was replaced"
+  end
+
   test "end_check" do
     s = Shift.new
 

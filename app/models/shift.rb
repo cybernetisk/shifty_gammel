@@ -1,30 +1,49 @@
 class Shift < ActiveRecord::Base
   attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time
-  belongs_to :task
+  #belongs_to :task
   belongs_to :shift_type
+  belongs_to :ticket
+  belongs_to :user
   #has_one :user, through: :task
 
-  def user
-    self.task.user
+  before_save :add_ticket
+  
+  def add_ticket
+    if self.ticket == nil
+      self.ticket = Ticket.new do |ticket|
+        ticket.value = self.shift_type.ticket_value
+        ticket.save
+      end
+    end
   end
 
-  def user=(new_user)
-    self.task.user = new_user
+  def signed_by=(user)
+    self.ticket.user = self.user
+    self[:signed_by] = user
+    
+  end
+
+  def signed_by
+    if self.ticket.user != self.user
+      return nil
+    end
+
+    return self[:signed_by]
   end
 
   def self.getAvailableShifts
-      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
+      shifts = Shift.where('user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
       shifts
   end
 
   def self.findForDate(date)
       date = date+"%";
-      shifts = Shift.joins(:task).where("tasks.user_id IS NULL AND shifts.start LIKE ?", date) #remember to remove shifts that are finished
+      shifts = Shift.where("user_id IS NULL AND shifts.start LIKE ?", date) #remember to remove shifts that are finished
       shifts
   end
   
   def self.getUpcomingShifts
-      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
+      shifts = Shift.where('user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
       shifts
   end
   

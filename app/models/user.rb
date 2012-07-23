@@ -5,11 +5,8 @@ class User < ActiveRecord::Base
   attr_accessor :password
   before_save :encrypt_password
 
-  has_many :tasks, dependent: :nullify, inverse_of: :user
-  has_many :shifts, through: :tasks
-  has_many :tickets, through: :tasks
-  #has_many :used_tickets, source: :ticket,  through: :tasks, include:[:value], conditions:{:used=>true}
-  #has_many :unused_tickets, source: :ticket,  through: :tasks, include: [:value], conditions:{:used => false}
+  has_many :shifts
+  has_many :tickets
   has_many :certifications, dependent: :destroy, inverse_of: :user
   has_and_belongs_to_many :user_groups
 
@@ -39,14 +36,7 @@ class User < ActiveRecord::Base
   end
 
   def countUnusedTickets
-      tasks = Task.where(user_id: self.id); # husk å legg til at skíftet også skal være signert
-      tickets = 0;
-      tasks.each do |task|
-        if task.ticket != nil
-          tickets += task.ticket.value
-        end
-      end
-      tickets
+      self.tickets_sum
   end
 
   # TODO: Check that the user was actually added to the group
@@ -80,20 +70,12 @@ class User < ActiveRecord::Base
 
     t = Ticket.new
     t.value = -total
-    t.task_id = nil
-    #t.user = self
+
+    t.user = self
     t.save
 
     return true
   end
-
-  #def unused_tickets()
-  #  return self.tickets.find(:all, :conditions=>{:used=>0})
-  #end
-
-  #def used_tickets()
-  #  return self.tickets.find(:all, :conditions=>{:user=>1})
-  #end
 
   def tickets_used()
     # TODO: do this in db and properly

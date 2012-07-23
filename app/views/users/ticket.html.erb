@@ -23,7 +23,8 @@
 <table>
   <% @user.tickets.each do |ticket| %>
   <tr>
-    <td><%= ticket.task.title %></td>
+    <td><%= ticket.comment %></td>
+    <td><%= ticket.shift ? ticket.shift.shift_type.name: "" %></td>
     <td><%= ticket.value %> </td>
     <td><%= ticket.used ? "Used" : "Unused" %></td>
   </tr>
