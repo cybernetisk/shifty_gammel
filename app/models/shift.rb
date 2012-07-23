@@ -31,27 +31,19 @@ class Shift < ActiveRecord::Base
     return self[:signed_by]
   end
 
-  def user
-    self.task.user
-  end
-
-  def user=(new_user)
-    self.task.user = new_user
-  end
-
   def self.getAvailableShifts
-      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
+      shifts = Shift.where('user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
       shifts
   end
 
   def self.findForDate(date)
       date = date+"%";
-      shifts = Shift.joins(:task).where("tasks.user_id IS NULL AND shifts.start LIKE ?", date) #remember to remove shifts that are finished
+      shifts = Shift.where("user_id IS NULL AND shifts.start LIKE ?", date) #remember to remove shifts that are finished
       shifts
   end
   
   def self.getUpcomingShifts
-      shifts = Shift.joins(:task).where('tasks.user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
+      shifts = Shift.where('user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
       shifts
   end
   

@@ -1,8 +1,10 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Task:</b>
-  <%= @ticket.task_id %>
+  <b>Shift:</b>
+  <% if @ticket.shift != nil %>
+  <%= @ticket.shift.id %>
+  <% end %>
 </p>
 
 <p>
