@@ -40,3 +40,8 @@
 6. Set up the database: `rake db:migrate`
 
 7. Everything should now be ready, run `rails s` and go to http://localhost:3000/
+
+
+### Fixtures
+
+To get testdata, run `rake db:data:load`.

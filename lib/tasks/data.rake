@@ -1,5 +1,19 @@
 namespace :data do
-  desc "TODO"
+  desc "Assign tickets to random people"
+  task :tickets => :environment do
+    users = User.all
+
+    300.times do
+      Ticket.new do |t|
+        t.value = rand(4) + 1
+        t.user = users.sample
+        t.comment = "lol"
+        t.save
+      end
+    end
+  end
+
+  desc "Generate an example week"
   task :generate => :environment do
     today = DateTime.now.beginning_of_week
     print "Making shift types\n"
