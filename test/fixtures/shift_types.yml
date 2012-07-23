@@ -1,13 +1,1 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-
-one:
-  id: 1
-  title: Barfunk
-  description: Skift i baren
-  location: Escape
-
-two:
-  id: 2
-  title: Vakt
-  description: Vakt
-  location: Escape
