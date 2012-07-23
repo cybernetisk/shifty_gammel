@@ -5,11 +5,8 @@ class User < ActiveRecord::Base
   attr_accessor :password
   before_save :encrypt_password
 
-  has_many dependent: :nullify, inverse_of: :user
   has_many :shifts
   has_many :tickets
-  #has_many :used_tickets, source: :ticket,  through: :tasks, include:[:value], conditions:{:used=>true}
-  #has_many :unused_tickets, source: :ticket,  through: :tasks, include: [:value], conditions:{:used => false}
   has_many :certifications, dependent: :destroy, inverse_of: :user
   has_and_belongs_to_many :user_groups
 
@@ -79,14 +76,6 @@ class User < ActiveRecord::Base
 
     return true
   end
-
-  #def unused_tickets()
-  #  return self.tickets.find(:all, :conditions=>{:used=>0})
-  #end
-
-  #def used_tickets()
-  #  return self.tickets.find(:all, :conditions=>{:user=>1})
-  #end
 
   def tickets_used()
     # TODO: do this in db and properly
