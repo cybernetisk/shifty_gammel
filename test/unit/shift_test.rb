@@ -19,7 +19,7 @@ class ShiftTest < ActiveSupport::TestCase
 
     assert_not_nil s.ticket "Ticket should be created"
     assert_equal s.ticket.value,st.ticket_value, "Ticket should have default value"
-
+    
     m = Ticket.new
     m.value = 38
     s.ticket = m
@@ -146,7 +146,15 @@ class ShiftTest < ActiveSupport::TestCase
     s.training = false
 
     s.shift_type = ShiftType.first
-
+    
     s.save
+  end
+
+  test "signed_by" do
+    s = Shift.new
+
+    s.signed_by = User.first
+
+    assert_not_nil s.signed_by
   end
 end

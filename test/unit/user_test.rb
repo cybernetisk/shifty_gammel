@@ -7,7 +7,7 @@ class UserTest < ActiveSupport::TestCase
   #test "test_ticket_sum" do
     #fail "Not implemented?"
   #end
-  def getUser(reset=false)
+  def getUser(reset=true)
     return User.new do |u|
       if reset
         u.tickets.clear
@@ -19,11 +19,11 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  def makeTicket(u, expires)
+  def makeTicket(u, expires=0.day, value=400)
     Ticket.new do |t|
       t.user = u
-      t.expires = expires
-      t.value = 400
+      t.expires = expires.since Date.today
+      t.value = value
       t.save
     end
   end
@@ -37,7 +37,7 @@ class UserTest < ActiveSupport::TestCase
 
   test "expired_ticket" do
     u = getUser
-    makeTicket u, -1.day.since( DateTime.now)
+    makeTicket u, -1.day
     assert_equal 0, u.tickets_sum, "Still shouldn't have any tickets"
     assert !u.withdraw(30), "Should not be able to withdraw ticket that has expired"
   end
@@ -45,7 +45,7 @@ class UserTest < ActiveSupport::TestCase
 
   test "valid_ticket" do
     u = getUser
-    makeTicket u, 2.day.since(Date.today)
+    makeTicket u, 2.day
     
     assert_equal 400, u.tickets_sum, "Should have 400 ticets"
     assert u.withdraw(200), "Should be able to withdraw 200 tokens"
@@ -55,8 +55,8 @@ class UserTest < ActiveSupport::TestCase
   test "tickets_with_different_dates" do
     u = getUser
     
-    a = makeTicket u, 2.day.since(Date.today)
-    b = makeTicket u, 4.day.since(Date.today)
+    a = makeTicket u, 2.day
+    b = makeTicket u, 4.day
 
     assert_equal 800, u.tickets_sum, "Should have 800 tickets"
     assert u.withdraw(500)

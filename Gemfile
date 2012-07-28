@@ -1,13 +1,14 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.3'
-gem 'yaml_db'
-
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 group :development, :test do
   gem 'sqlite3'
+  gem 'rake'
+  gem 'yaml_db'
+  gem 'ar_fixtures'
 end
 group :production do
   gem 'pg'

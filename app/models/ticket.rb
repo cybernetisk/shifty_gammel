@@ -1,5 +1,5 @@
 class Ticket < ActiveRecord::Base
-  attr_accessible :used, :value, :comment, :expires
+  attr_accessible :used, :value, :comment, :expires, :user
 
   #belongs_to :task
   belongs_to :user
@@ -12,8 +12,12 @@ class Ticket < ActiveRecord::Base
   end
 
 
-  #def user=(val)
-  #  self[:user] = val
-  #  self.expires = 6.months.since date.now
-  #end
+  def user=(val)
+    self[:user]=(val)
+    if self.expires == nil
+      self.expires = 6.months.since Date.today
+    end
+  end
+
+  attr_reader :user
 end

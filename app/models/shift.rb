@@ -20,7 +20,6 @@ class Shift < ActiveRecord::Base
   def signed_by=(user)
     self.ticket.user = self.user
     self[:signed_by] = user
-    
   end
 
   def signed_by

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120719141916) do
+ActiveRecord::Schema.define(:version => 20120726165139) do
 
   create_table "certifications", :force => true do |t|
     t.integer  "shift_type_id",                    :null => false
@@ -63,6 +63,7 @@ ActiveRecord::Schema.define(:version => 20120719141916) do
     t.integer  "user_id"
     t.text     "comment"
     t.integer  "issued_by_id"
+    t.date     "expires"
   end
 
   create_table "user_groups", :force => true do |t|
