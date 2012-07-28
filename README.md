@@ -1,4 +1,4 @@
-# Shifty
+# Shifty [![Build Status](https://secure.travis-ci.org/cybrairai/shifty.png?branch=master)]
 ======
 
 ## Install instructions
