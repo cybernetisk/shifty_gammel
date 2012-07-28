@@ -13,12 +13,11 @@ class ShiftTest < ActiveSupport::TestCase
     s.comment = "abc"
     s.leasing = false
     s.training = false
-    st = ShiftType.first
-    s.shift_type = st
+    s.shift_type = FactoryGirl.create(:shift_type)
     s.save
-
+    
     assert_not_nil s.ticket "Ticket should be created"
-    assert_equal s.ticket.value,st.ticket_value, "Ticket should have default value"
+    assert_equal s.ticket.value,s.shift_type.ticket_value, "Ticket should have default value"
     
     m = Ticket.new
     m.value = 38
@@ -135,26 +134,26 @@ class ShiftTest < ActiveSupport::TestCase
     assert_equal s.start.strftime("%H:%M"), s.time
   end
 
-  test "save" do
+  test "set_ticket" do
     s = Shift.new
 
     s.start = DateTime.now
-    
+
     s.duration = 4.hours
     s.comment = "hei"
     s.leasing = false
     s.training = false
 
-    s.shift_type = ShiftType.first
-    
+    s.shift_type = FactoryGirl.create(:shift_type)
     s.save
   end
 
   test "signed_by" do
-    s = Shift.new
-
-    s.signed_by = User.first
-
+    s = FactoryGirl.build(:shift)
+    u = FactoryGirl.build(:user)
+    
+    s.signed_by = u
+    
     assert_not_nil s.signed_by
   end
 end

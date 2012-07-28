@@ -1,34 +1,32 @@
 class Shift < ActiveRecord::Base
-  attr_accessible :comment, :end, :leasing, :training, :shift_type_id, :start, :date, :duration, :time
+  attr_accessible :comment, :end, :leasing, :training, :start, :date, :duration, :time
   #belongs_to :task
   belongs_to :shift_type
   belongs_to :ticket
   belongs_to :user
+  belongs_to :signed_by, :foreign_key=>'signed_by_id', :class_name=>'User'
   #has_one :user, through: :task
 
   before_save :add_ticket
   
   def add_ticket
     if self.ticket == nil
-      self.ticket = Ticket.new do |ticket|
-        ticket.value = self.shift_type.ticket_value
-        ticket.save
-      end
+      ticket = Ticket.new
+      ticket.value = self.shift_type.ticket_value
+      ticket.save
+      self.ticket = ticket
     end
   end
 
+  attr_reader :signed_by
   def signed_by=(user)
-    self.ticket.user = self.user
-    self[:signed_by] = user
-  end
-
-  def signed_by
-    if self.ticket.user != self.user
-      return nil
+    # TODO: check if user can sign shift?
+    @signed_by = user
+    if self.ticket != nil
+      self.ticket.user = self.user # give ticket to user
     end
-
-    return self[:signed_by]
   end
+
 
   def self.getAvailableShifts
       shifts = Shift.where('user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
@@ -45,19 +43,15 @@ class Shift < ActiveRecord::Base
       shifts = Shift.where('user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
       shifts
   end
-  
+
   def start=(val)
     duration = self.duration
-    self[:start] = val
+    super(val)
     self.duration = duration.seconds
   end
   
-  def start
-    self[:start]
-  end
-
   def date
-    if self[:start] == nil
+    if self.start == nil
       return ""
     end
     self.start.strftime("%Y-%m-%d")
@@ -73,11 +67,11 @@ class Shift < ActiveRecord::Base
   end
 
   def hour
-    @start.hour
+    self.start.hour
   end
 
   def minutes
-    @start.minutes
+    self.start.minutes
   end
 
   def time

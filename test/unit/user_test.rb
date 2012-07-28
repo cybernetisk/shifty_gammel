@@ -19,33 +19,24 @@ class UserTest < ActiveSupport::TestCase
     end
   end
 
-  def makeTicket(u, expires=0.day, value=400)
-    Ticket.new do |t|
-      t.user = u
-      t.expires = expires.since Date.today
-      t.value = value
-      t.save
-    end
-  end
-
   test "withdraw_ticket" do
     u = getUser
     
     assert !u.withdraw(30), "Should not be able to withdraw tokens"
-
   end
 
   test "expired_ticket" do
-    u = getUser
-    makeTicket u, -1.day
+    u = FactoryGirl.create(:user)
+    FactoryGirl.create(:ticket, expires:2.days.ago, value:400, user:u)
     assert_equal 0, u.tickets_sum, "Still shouldn't have any tickets"
     assert !u.withdraw(30), "Should not be able to withdraw ticket that has expired"
   end
   
 
   test "valid_ticket" do
-    u = getUser
-    makeTicket u, 2.day
+    u = FactoryGirl.create(:user)
+    
+    FactoryGirl.create(:ticket, expires:2.days.from_now, value:400, user:u)
     
     assert_equal 400, u.tickets_sum, "Should have 400 ticets"
     assert u.withdraw(200), "Should be able to withdraw 200 tokens"
@@ -53,16 +44,16 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test "tickets_with_different_dates" do
-    u = getUser
+    u = FactoryGirl.create(:user)
     
-    a = makeTicket u, 2.day
-    b = makeTicket u, 4.day
-
+    a = FactoryGirl.create(:ticket, expires:2.days.from_now.to_date, value:400, user:u)
+    b = FactoryGirl.create(:ticket, expires:4.days.from_now.to_date, value:400, user:u)
+    
     assert_equal 800, u.tickets_sum, "Should have 800 tickets"
     assert u.withdraw(500)
 
     tickets = u.tickets.find(:all, :conditions=>['value < 0'])
-
+    
     # check order of withdrawls and sum
     assert_equal [-400,-100], tickets.map{ |t| t.value }, "Should have one ticket on -400 and one with -100"
     assert_equal [a.expires, b.expires], tickets.map{|t| t.expires}, "First ticket should be charged first"

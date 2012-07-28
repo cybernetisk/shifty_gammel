@@ -51,4 +51,5 @@ gem 'cancan'
 # Railroady genererer diagrammer av bl.a. modellene
 group :development, :test do
   gem 'railroady'
+  gem 'factory_girl_rails'
 end
