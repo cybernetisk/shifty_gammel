@@ -9,6 +9,7 @@ class TicketTest < ActiveSupport::TestCase
 
     u = User.new
 
+    assert_nil m.expires, "Expires should not have been set yet"
     m.user = u
 
     assert_not_nil m.expires, "Expires should be set"

@@ -1,26 +1,8 @@
 require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
-  #test "test_ticket_sum" do
-    #fail "Not implemented?"
-  #end
-  def getUser(reset=true)
-    return User.new do |u|
-      if reset
-        u.tickets.clear
-      end
-      u.username = "lol"
-      u.password = "hei"
-      u.admin = false
-      assert u.save
-    end
-  end
-
   test "withdraw_ticket" do
-    u = getUser
+    u = FactoryGirl.create(:user)
     
     assert !u.withdraw(30), "Should not be able to withdraw tokens"
   end
@@ -52,8 +34,11 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 800, u.tickets_sum, "Should have 800 tickets"
     assert u.withdraw(500)
 
-    tickets = u.tickets.find(:all, :conditions=>['value < 0'])
+    assert_equal 4, u.tickets.count, "Should have four tickets now"
     
+    tickets = u.tickets.find(:all, :conditions=>['value < 0'])
+
+    assert_equal 2, tickets.count, "Two of them should be negative"
     # check order of withdrawls and sum
     assert_equal [-400,-100], tickets.map{ |t| t.value }, "Should have one ticket on -400 and one with -100"
     assert_equal [a.expires, b.expires], tickets.map{|t| t.expires}, "First ticket should be charged first"
