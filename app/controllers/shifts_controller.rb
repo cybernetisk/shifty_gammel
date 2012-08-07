@@ -88,10 +88,35 @@ class ShiftsController < ApplicationController
   end  
   
   def start
-    @upcomingShifts = Shift.getUpcomingShifts;
+    @upcomingShifts = Shift.getUpcomingShifts
     respond_to do |format|
       format.html 
       format.json { render json: @shift }
     end
   end  
+  
+  def getAvailableDates
+    @availableDates = Shift.getDatesWithAvailableShifts
+    respond_to do |format|
+      format.html 
+      format.json { render json: @availableDates }
+    end
+  end
+  
+  def getUnavailableDates
+    @availableDates = Shift.getDatesWithNoAvailableShifts
+    respond_to do |format|
+      format.html 
+      format.json { render json: @availableDates }
+    end
+  end
+  
+  def showAll
+    @shifts = Shift.getAllUpcomingShifts
+    respond_to do |format|
+      format.html 
+      format.json { render json: @shifts }
+    end
+  end
+  
 end

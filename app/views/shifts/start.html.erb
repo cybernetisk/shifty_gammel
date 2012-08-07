@@ -8,14 +8,15 @@
 <div id="right">
 <ul id="nav">
 	<li><%= link_to 'Kalendervisning', shifts_path %></li>	
-	<li><%= link_to 'Liste over alle ledige skift', available_shifts_path %></li>
+	<li><%= link_to 'Liste over ledige skift', available_shifts_path %></li>
+	<li><%= link_to 'Liste over kommende skift', all_shifts_path %></li>
 	<li><%= link_to 'Opprett skift', shifts_start_path %></a></li>
 </ul>
 </div>
 <% today = Date.today %>
 <div id="left_div">
 <div class="box">
-	<h2 style="margin-top:17px"><%=t "shifts.upcoming" %></h2>
+	<h2><%=t "shifts.upcoming" %></h2>
 
 	<ul>
 		<% @upcomingShifts.each do |shift| %>
@@ -23,7 +24,7 @@
 			<% if shift.start.to_date <= today-3 %> 
 				<span class='red_text'><i><%= shift.start.strftime("%d/%m-%Y") %></i></span>
 			<% else %>
-				<i><%= shift.start.strftime("%d/%m-%Y") %> <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i>
+				<i><%= shift.start.strftime("%d/%m-%Y") %> | <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i>
 			<% end %>
 		</li>
 		<% end %>
@@ -33,7 +34,7 @@
 
 <div id="left_div">
 <div class="box">
-	<h2 style="margin-top:17px">Dine skift</h2>
+	<h2>Dine skift</h2>
 
 	<ul>
 		<% @upcomingShifts.each do |shift| %>
@@ -41,7 +42,7 @@
 			<% if shift.start.to_date <= today-3 %> 
 				<span class='red_text'><i><%= shift.start.strftime("%d/%m-%Y") %> <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i></span>
 			<% else %>
-				<i><%= shift.start.strftime("%d/%m-%Y") %> <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i>
+				<i><%= shift.start.strftime("%d/%m-%Y") %> | <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i>
 			<% end %>
 		</li>
 		<% end %>
@@ -51,3 +52,12 @@
 <div id="clear"></div></div>
 <br>
 <h2>Kalender</h2>
+
+<div id='calendar_start'>
+</div>
+<span class='small_text'>
+<span class='red'>Rød dag</span> = Ledige skift denne dagen<br>
+<span class='green'>Grønn dag</span> = Alle skift er tatt denne dagen<br>
+Svart dag = Ingen skift denne dagen<br>
+</span>
+
