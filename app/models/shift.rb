@@ -31,7 +31,7 @@ class Shift < ActiveRecord::Base
   def self.getAvailableShifts
       shifts = Shift.where('user_id'=> nil).order('shifts.start') #remember to remove shifts that are finished
   #has_one :user, through: :task
-
+  end
 
 
   def self.findForDate(date)
