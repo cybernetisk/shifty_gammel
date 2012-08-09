@@ -7,10 +7,10 @@
 
 <div id="right">
 <ul id="nav">
-	<li><%= link_to 'Kalendervisning', shifts_path %></li>	
+	<li><%= link_to 'Kalendervisning', :shifts_calendar %></li>	
 	<li><%= link_to 'Liste over ledige skift', available_shifts_path %></li>
 	<li><%= link_to 'Liste over kommende skift', all_shifts_path %></li>
-	<li><%= link_to 'Opprett skift', shifts_start_path %></a></li>
+	<li><%= link_to 'Opprett skift', :new_shift %></a></li>
 </ul>
 </div>
 <% today = Date.today %>
