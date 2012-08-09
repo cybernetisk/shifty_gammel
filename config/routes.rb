@@ -10,6 +10,7 @@ Railsdemo::Application.routes.draw do
 
   #lagt til av øyvind
   match '/users/:id/tickets' => 'users#ticket', :as => 'user_ticket'
+  match 'ticket' => 'users#ticket', :as=>:user_personal_ticket
 
   # Lagt til av Mari
   match 'tickets/showForUser/:id' => 'tickets#showForUser', :as => :tickets_for_user
@@ -25,6 +26,7 @@ Railsdemo::Application.routes.draw do
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
   
   match 'admin' => 'users#admin', :as=>:admin
+  
   
   # User groups now have the url /users/groups
   scope '/users' do

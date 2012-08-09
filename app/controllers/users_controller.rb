@@ -118,18 +118,28 @@ class UsersController < ApplicationController
   end
 
   def ticket
-    @user = User.find(params[:id])
     
-    sum = params[:withdraw].to_f
-    if sum > 0 && sum <= @user.tickets_sum
-      if @user.withdraw(sum)
-        flash[:notice] = "Withdraw successful"
+    if params.has_key?(:id)
+      @user = User.find(params[:id])
+      
+      sum = params[:withdraw].to_f
+      if sum > 0 && sum <= @user.tickets_sum
+        if @user.withdraw(sum)
+          flash[:notice] = "Withdraw successful"
+        else
+          flash[:notice] = "Withdraw failed"
+        end
       else
-        flash[:notice] = "Withdraw failed"
+        flash[:notice] = "Not enough tickets"
       end
+      
+      @can_withdraw = true
     else
-      flash[:notice] = "Not enough tickets"
+      @user = User.find(session[:user_id])
+      @can_withdraw = false
     end
+    
+    
 
     render html: {user:@user}
   end

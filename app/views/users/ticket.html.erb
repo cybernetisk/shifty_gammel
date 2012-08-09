@@ -10,6 +10,8 @@
   <dt>Total tickets:</dt>
   <dd><%= @user.tickets_sum %> </dd>
 </dl>
+
+<% if @can_withdraw %>
 <div>
   <%#= form_for @user do |f| %>
   <form method="post">
@@ -22,7 +24,8 @@
     <%#= f.submit %>
   <%# end %>
 </div>
-<%= @withdraw %>
+<% end %>
+
 <table>
   <% @user.tickets.each do |ticket| %>
   <tr>
