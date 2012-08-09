@@ -49,7 +49,7 @@ minutes = (fraction*60).to_i
 		<span class='green_text'><%= @shift.user.username %></span>
 	<% else %>
 		Dette skiftet er ledig.<br>
-		<%= button_to 'Ta skift', shifts_path, :class =>"green_button", :method => :get %>
+		<%= button_to 'Ta skift', :shifts_take, :class =>"green_button", :method => :post %>
 	<% end %>
 	</p>
 	
