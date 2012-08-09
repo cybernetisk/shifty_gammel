@@ -133,4 +133,8 @@ class UsersController < ApplicationController
 
     render html: {user:@user}
   end
+  
+  def admin
+    
+  end
 end

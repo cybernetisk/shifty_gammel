@@ -24,6 +24,8 @@ Railsdemo::Application.routes.draw do
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
   
+  match 'admin' => 'users#admin', :as=>:admin
+  
   # User groups now have the url /users/groups
   scope '/users' do
     resources :user_groups, path: "groups"

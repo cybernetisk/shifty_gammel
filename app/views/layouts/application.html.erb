@@ -18,10 +18,10 @@
                 <%= link_to 'SKIFT', shifts_path, class: (controller == "shifts" ? "current" : nil) %>
             </li>
             <li>
-                <%= link_to 'BONGER', tickets_path, class: (controller == "tickets" ? "current" : nil) %>
-            </li>
-            <li>
-              <%= link_to 'BRUKERE', users_path, class: (controller == "users" || controller == "user_groups" ? "current" : nil) %></li>
+              <%= link_to 'MIN SIDE', users_path, class: (controller == "users" || controller == "user_groups" ? "current" : nil) %></li>
+          	 <li>
+              <%= link_to 'ADMIN', :admin %></li>
+          
           </ul>
         </div>
       </div>
