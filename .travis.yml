@@ -3,3 +3,8 @@ rvm:
   - 1.9.3
 script:
   - RAILS_ENV=test bundle exec rake --trace db:migrate test
+notifications:
+  email:
+    - olivaq@gmail.com
+  irc:
+    - "irc.ifi.uio.no#cybwebdev"
