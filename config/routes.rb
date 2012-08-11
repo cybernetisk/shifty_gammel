@@ -16,6 +16,7 @@ Railsdemo::Application.routes.draw do
   match 'tickets/showForUser/:id' => 'tickets#showForUser', :as => :tickets_for_user
   match 'shifts/showAvailable' => 'shifts#showAvailable', :as => :available_shifts
   match 'shifts/showAll' => 'shifts#showAll', :as => :all_shifts
+  match 'shifts/showUpcoming' => 'shifts#showUpcoming', :as => :upcoming_shifts  
   match 'shifts/showForDate/:date' => 'shifts#showForDate', :as => :shifts_for_date
   match 'shifts/' => 'shifts#start', :as => :shifts_start
   match 'shifts/getAvailableDates' => 'shifts#getAvailableDates', :as => :shift_available_dates

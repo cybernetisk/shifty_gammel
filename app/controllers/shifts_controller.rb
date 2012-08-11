@@ -121,6 +121,14 @@ class ShiftsController < ApplicationController
       format.json { render json: @availableDates }
     end
   end
+
+  def showUpcoming
+    @shifts = Shift.getAllUpcomingShifts
+    respond_to do |format|
+      format.html 
+      format.json { render json: @shifts }
+    end
+  end
   
   def showAll
     @shifts = Shift.getAllUpcomingShifts

@@ -1,4 +1,4 @@
-<% content_for :title, I18n.t("titles.shifts_available") %>
+<% content_for :title, I18n.t("titles.shifts_upcoming") %>
 <% stylesheet_link_tag "availableShifts" %>
 <% javascript_include_tag "availableShifts" %>
 
@@ -7,7 +7,7 @@
 
 <br>
 
-<h2>Ledige skift i Escape</h2>
+<h2>Alle kommende skift i Escape</h2>
 
 <br>
 <div class='pickType picked' shift_type="0">Alle</div>
@@ -27,7 +27,7 @@
 	<th>Skift</th>
 	<th>Utlån</th>
 	<th>Detaljer</th>
-	<th>Ta skift</th>
+	<th>Status</th>
   <% @shifts.each do |shift| %>
     <tr class="type_<%= shift.shift_type.id %>">
 		<td><%= shift.start.strftime("%d/%m %Y") %></td>
@@ -37,7 +37,13 @@
 		<td><%= shift.shift_type.title %></td>
 		<td><%= shift.leasing ? "Ja" : "Nei" %></td>
 		<td><%= link_to 'Se mer', shift %></td>
-		<td></td>
+		<td>
+			<% if(shift.user_id) %>
+			Tatt av <span class='green'><%= shift.user.username %></span>
+			<% else %>
+			<span class='red'>Ledig</span>
+			<% end %>
+		</td>
     </tr>
   <% end %>
 </table>

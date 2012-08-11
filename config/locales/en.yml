@@ -19,3 +19,8 @@ en:
     no_certifications: "This group has no certifications"
   form:
     add: "Add"
+  titles:
+    shifts_start: "SHIFTY | Shifts"
+    shifts_available: "SHIFTY | Available shifts"
+    shifts_upcoming: "SHIFTY | Upcoming shifts"
+    shifts_calendar: "SHIFTY | Shift calendar"
