@@ -51,11 +51,11 @@ class Shift < ActiveRecord::Base
   end
   
   def self.getDatesWithAvailableShifts
-    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id'=> nil)
+    shifts = Shift.select("shifts.start").where('shifts.user_id'=> nil)
   end
   
   def self.getDatesWithNoAvailableShifts
-    shifts = Shift.select("shifts.start").joins(:task).where('tasks.user_id IS NOT NULL') 
+    shifts = Shift.select("shifts.start").where('shifts.user_id IS NOT NULL')
     #remember to check that no shifts on this date is available
     shifts
   end
