@@ -35,6 +35,13 @@ class User < ActiveRecord::Base
     Certification.exists?(shift_type_id: shift.shift_type, user_group_id: user_groups)
   end
 
+  def can_manage_group?(group)
+    user.user_groups.each do |g|
+      return true if g.managed_groups.includes? group
+    end
+    return false
+  end
+
   def countUnusedTickets
       self.tickets_sum
   end

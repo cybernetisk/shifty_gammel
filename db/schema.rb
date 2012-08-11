@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120728135148) do
+ActiveRecord::Schema.define(:version => 20120811164618) do
 
   create_table "certifications", :force => true do |t|
     t.integer  "shift_type_id",                    :null => false
@@ -21,6 +21,14 @@ ActiveRecord::Schema.define(:version => 20120728135148) do
     t.boolean  "user",          :default => false
     t.boolean  "manager",       :default => false
   end
+
+  create_table "managed_user_groups", :force => true do |t|
+    t.integer "manager_id", :null => false
+    t.integer "group_id",   :null => false
+  end
+
+  add_index "managed_user_groups", ["group_id"], :name => "index_managed_user_groups_on_group_id"
+  add_index "managed_user_groups", ["manager_id"], :name => "index_managed_user_groups_on_manager_id"
 
   create_table "shift_types", :force => true do |t|
     t.string   "title",        :null => false
