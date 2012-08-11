@@ -40,7 +40,7 @@ class Shift < ActiveRecord::Base
   end
   
   def self.getUpcomingShifts
-      shifts = Shift.where('user_id'=> nil).order('shifts.start').limit(10) #remember to remove shifts that are finished
+      shifts = Shift.where('user_id IS NULL AND start > ?', Time.now).order('shifts.start').limit(10)
       shifts
   end
   

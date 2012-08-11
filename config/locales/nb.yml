@@ -1,0 +1,44 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+nb:
+  hello: "Hello world"
+  delete: "Slett"
+  shifts:
+    shifts: "Skift"
+    new: "Opprett skift"
+    upcoming: "Kommende ledige skift"
+    your: "Dine skift"
+    calendar: "Kalender"
+    calendar_day1: "Rød dag"    
+    calendar_day2: "Grønn dag"    
+    calendar_day3: "Svart dag"
+    calendar_info1: "Ledige skift denne dagen"
+    calendar_info2: "Alle skift er tatt denne dagen"
+    calendar_info3: "Ingen skift denne dagen"
+    calendar_view: "Kalendervisning" 
+    available_list: "Liste over ledige skift"
+    upcoming_list: "Liste over alle kommende shifts"                 
+  users:
+    title: "Users"
+    empty: "No users"
+    find: "Find users:"
+    type_to_search: "Start typing to search"
+    not_found: "Couldn't find user"
+  user_group: "User group"
+  user_groups:
+    no_users: "There's no users in this group"
+    certifications: "Certifications"
+    no_certifications: "This group has no certifications"
+  form:
+    add: "Add"    
+  titles:
+    start: SHIFTY
+    shifts_show: "SHIFTY | Vis skift"
+    shifts_start: "SHIFTY | Skift"
+    shifts_available: "SHIFTY | Ledige skift"
+    shifts_upcoming: "SHIFTY | Kommende skift"
+    shifts_calendar: "SHIFTY | Skift kalender"
+    shifts_showDate: "SHIFTY | Skift den %{date}" 
+    shifts_new: "SHIFTY | Opprett skift"   
+    users_start: "SHIFTY | Min side"    

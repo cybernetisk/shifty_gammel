@@ -1,17 +1,18 @@
+<% I18n.locale = "nb" %>
 <% content_for :title, I18n.t("titles.shifts_start") %>
 <% stylesheet_link_tag "availableShifts" %>
 <% javascript_include_tag "availableShifts" %>
 
 <% days = {"Mon"=>"Mandag", "Tue"=>"Tirsdag", "Wed"=>"Onsdag", "Thu"=>"Torsdag", "Fri"=>"Fredag", "Sat"=>"Lørdag", "Sun"=>"Søndag"} %>
 
-<h1>Skift</h1>
+<h1><%=t "shifts.shifts" %></h1>
 
 <div id="right">
 <ul id="nav">
-	<li><%= link_to 'Kalendervisning', :shifts_calendar %></li>	
-	<li><%= link_to 'Liste over ledige skift', available_shifts_path %></li>
-	<li><%= link_to 'Liste over kommende skift', upcoming_shifts_path %></li>
-	<li><%= link_to 'Opprett skift', :new_shift %></a></li>
+	<li><%= link_to t("shifts.calendar_view"), :shifts_calendar %></li>	
+	<li><%= link_to t("shifts.available_list"), available_shifts_path %></li>
+	<li><%= link_to t("shifts.upcoming_list"), upcoming_shifts_path %></li>
+	<li><%= link_to t("shifts.new"), :new_shift %></a></li>
 </ul>
 </div>
 <% today = Date.today %>
@@ -23,7 +24,7 @@
 		<% @upcomingShifts.each do |shift| %>
 		<li><%= link_to shift.shift_type.title, shift_path(shift) %>
 			<% if shift.start.to_date <= today-3 %> 
-				<span class='red_text'><i><%= shift.start.strftime("%d/%m-%Y") %></i></span>
+				<span class='red_text'><i><%= shift.start.strftime("%d/%m-%Y") %> | <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i></span>
 			<% else %>
 				<i><%= shift.start.strftime("%d/%m-%Y") %> | <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i>
 			<% end %>
@@ -35,30 +36,22 @@
 
 <div id="left_div">
 <div class="box">
-	<h2>Dine skift</h2>
+	<h2><%=t "shifts.your" %></h2>
 
 	<ul>
-		<% @upcomingShifts.each do |shift| %>
-		<li><%= link_to shift.shift_type.title, shift_path(shift) %>
-			<% if shift.start.to_date <= today-3 %> 
-				<span class='red_text'><i><%= shift.start.strftime("%d/%m-%Y") %> <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i></span>
-			<% else %>
-				<i><%= shift.start.strftime("%d/%m-%Y") %> | <%= shift.start.strftime("%H.%M")+'-'+shift.end.strftime("%H.%M") %></i>
-			<% end %>
-		</li>
-		<% end %>
+		<li>TODO</li>
 	</ul>
 </div>
 </div>
 <div id="clear"></div></div>
 <br>
-<h2>Kalender</h2>
+<h2><%=t "shifts.calendar" %></h2>
 
 <div id='calendar_start'>
 </div>
 <span class='small_text'>
-<span class='red'>Rød dag</span> = Ledige skift denne dagen<br>
-<span class='green'>Grønn dag</span> = Alle skift er tatt denne dagen<br>
-Svart dag = Ingen skift denne dagen<br>
+<span class='red'><%=t "shifts.calendar_day1" %></span> = <%=t "shifts.calendar_info1" %><br>
+<span class='green'><%=t "shifts.calendar_day2" %></span> = <%=t "shifts.calendar_info2" %><br>
+<%=t "shifts.calendar_day3" %> = <%=t "shifts.calendar_info3" %><br>
 </span>
 

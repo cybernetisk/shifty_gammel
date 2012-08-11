@@ -5,7 +5,20 @@ en:
   hello: "Hello world"
   delete: "Delete"
   shifts: 
+    shifts: "Shifts"
+    new: "New shift"      
     upcoming: "Upcoming available shifts"
+    your: "Your shifts"
+    calendar: "Calendar"
+    calendar_day1: "Red day"    
+    calendar_day2: "Green day"    
+    calendar_day3: "Black day"
+    calendar_info1: "Available shifts today"
+    calendar_info2: "No available shifts today"
+    calendar_info3: "No shifts today"
+    calendar_view: "Calendar view"
+    available_list: "List available shifts"
+    upcoming_list: "List all upcoming shifts"                     
   users:
     title: "Users"
     empty: "No users"
@@ -18,9 +31,14 @@ en:
     certifications: "Certifications"
     no_certifications: "This group has no certifications"
   form:
-    add: "Add"
+    add: "Add"    
   titles:
+    start: SHIFTY
+    shifts_show: "SHIFTY | Show shift"          
     shifts_start: "SHIFTY | Shifts"
     shifts_available: "SHIFTY | Available shifts"
     shifts_upcoming: "SHIFTY | Upcoming shifts"
     shifts_calendar: "SHIFTY | Shift calendar"
+    shifts_showDate: "SHIFTY | Shifts on %{date}"
+    shifts_new: "SHIFTY | New shift"
+    users_start: "SHIFTY | Users"
