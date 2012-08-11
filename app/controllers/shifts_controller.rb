@@ -4,12 +4,13 @@ class ShiftsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @shifts }
+      format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
     end
   end
 
   def take_shift
     @shift = Shift.find(params[:id])
+
     
     #if params[:confirm]
       @shift.user = User.find(session[:user_id])

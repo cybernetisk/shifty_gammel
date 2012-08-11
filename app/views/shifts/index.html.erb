@@ -74,4 +74,41 @@
 
 <br />
 
+
+<div id="calendar">
+  
+</div>
+<style type="text/css">
+  #calendar .shift
+  {
+    position:absolute;
+    border:1px solid black;
+    margin:3px;
+}
+#calendar
+{
+  position:absolute;
+  height:1000px;
+  width:100%;
+}
+</style>
 <%= link_to 'New shift', new_shift_path %>
+<script id="shift" type="text/html">
+<div class="shift">
+  {{shift_type.title}}
+  {{user.username}}
+  <div>{{start}}</div>
+  <div>{{end}}</div>
+</div>
+</script>
+
+<script id="shift_start" type="text/html">
+<div class="shift">
+  {{shift_type.title}}
+</div>
+</script>
+<script id="shift_stop" type="text/html">
+<div class="shift">
+  {{shift_type.title}} continues..
+</div>
+</script>
