@@ -20,7 +20,7 @@
             <li>
               <%= link_to 'MIN SIDE', users_path, class: (controller == "users" || controller == "user_groups" ? "current" : nil) %></li>
           	 <li>
-              <%= link_to 'ADMIN', :admin %></li>
+              <%= link_to 'ADMIN', :admin, class: (controller == "admin") %></li>
           
           </ul>
         </div>
