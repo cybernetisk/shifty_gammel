@@ -36,8 +36,8 @@ class User < ActiveRecord::Base
   end
 
   def can_manage_group?(group)
-    user.user_groups.each do |g|
-      return true if g.managed_groups.includes? group
+    self.user_groups.each do |g|
+      return true if g.managed_groups.exists?(group)
     end
     return false
   end

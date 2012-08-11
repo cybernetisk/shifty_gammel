@@ -1,7 +1,7 @@
 class UserGroup < ActiveRecord::Base
   attr_accessible :name
   has_and_belongs_to_many :users
-  has_and_belongs_to_many :managed_groups, join_table: :managed_user_groups, class_name: :user_groups, foreign_key: "manager_id", association_foreign_key: "group_id"
+  has_and_belongs_to_many :managed_groups, join_table: "managed_user_groups", class_name: "UserGroup", foreign_key: "manager_id", association_foreign_key: "group_id"
   has_many :certifications
 
   def add_user(user)
