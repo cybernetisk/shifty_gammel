@@ -93,22 +93,27 @@
 }
 </style>
 <%= link_to 'New shift', new_shift_path %>
+
+<script type="text/javascript">
+  $(function(){
+    $.get('/shifts/calendar.json', function(data)
+  {
+    var m = new ShiftManager();
+
+    for(var i in data)
+    {
+      m.addShift(data[i]);
+    }
+
+    for(var i in m.shifts)
+      render_shift(m.shifts[i]);
+  });
+});
+</script>
 <script id="shift" type="text/html">
 <div class="shift">
   {{shift_type.title}}
   {{user.username}}
-  <div>{{start}}</div>
-  <div>{{end}}</div>
-</div>
-</script>
-
-<script id="shift_start" type="text/html">
-<div class="shift">
-  {{shift_type.title}}
-</div>
-</script>
-<script id="shift_stop" type="text/html">
-<div class="shift">
-  {{shift_type.title}} continues..
+  <div>{{day}}</div>
 </div>
 </script>

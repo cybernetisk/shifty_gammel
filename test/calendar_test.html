@@ -1,0 +1,58 @@
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title></title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../app/assets/javascripts/ICanHaz.js"></script>
+    <script type="text/javascript" src="../app/assets/javascripts/shifts.js"></script>
+  </head>
+  <body>
+      <div id="results">
+          
+      </div>
+  <style type="text/css">
+      #results .failed{ background-color:red;}
+      #results .success{ background-color:green;}
+      </style>
+      <script type="text/javascript">
+var m = new ShiftManager();
+function assert(v,c){
+        if(!v) cn = "failed";
+        else cn = "success";
+            $("#results").append("<div class=\""+ cn +"\">" + c + "</div>")}
+assert(m, "Shift created");
+
+shift = {"id":1,"start":"2012-01-01 12:00:00", "end":"2012-01-01 14:00:00"}
+m.addShift(shift);
+
+
+assert(true, "Shift added");
+shift2 = {"id":2,"start":"2012-01-01 13:00:00", "end":"2012-01-01 14:00:00"}
+m.addShift(shift2);
+
+assert(shift.columns == 2 && shift2.columns == 2, "Collision detected");
+assert(shift.index == 1 && shift2.index == 0, "Indexes ok");
+
+shift3 = {"id":3, "start":"2012-01-01 15:00", "end":"2012-01-01 16:00"}
+m.addShift(shift3);
+assert(shift3.columns == 1 && shift3.index == 0, "Last index is ok");
+
+
+shift4 = {"id":4,"start":"2012-01-01 13:00:00", "end":"2012-01-01 14:00:00"}
+m.addShift(shift4);
+assert(shift4.columns == 3 && shift4.index == 2, "added another");
+
+
+shift5 = {"id":5,"start":"2012-01-01 13:00:00", "end":"2012-01-01 16:00:00"}
+m.addShift(shift5);
+alert(shift5.index);
+
+assert(shift5.columns == 5 && shift5.index == 5, "added another");
+</script>
+  </body>
+</html>
