@@ -114,13 +114,12 @@ function render_shift(shift)
     var start = getDate(shift.t_start);
     var stop = getDate(shift.t_end);
     
-    var round = Math.round;
     $("shift_" + shift.id).remove()
     shift.day = shift.t_start.getDay();
     if(start != stop)
     {
         var s = ich.shift(shift);
-        s.css('top', round(shift.t_start.getHours() / 24 * 100) + "%");
+        s.css('top', (shift.t_start.getHours() / 24 * 100).toFixed(3) + "%");
         s.css('bottom', "0%");
         s.addClass("column_" + shift.index + "of" + shift.columns);
         setXAxis(shift, s, shift.t_start);
@@ -131,7 +130,7 @@ function render_shift(shift)
         {
             var s = ich.shift(shift);
             s.css('top', "0%");
-            s.css('bottom', round(100 - shift.t_end.getHours() / 24 * 100) + "%");
+            s.css('bottom', (100 - shift.t_end.getHours() / 24 * 100).toFixed(3) + "%");
             s.addClass("column_" + shift.index + "of" + shift.columns);
             setXAxis(shift, s, shift.t_end);
             s.addClass("shift_" + shift.id);
@@ -141,8 +140,8 @@ function render_shift(shift)
     else
     {
         var s = ich.shift(shift);
-        s.css('top', round(shift.t_start.getHours() / 24 * 100) + "%");
-        s.css('bottom', round(100 - shift.t_end.getHours() / 24 * 100) + "%");
+        s.css('top', (shift.t_start.getHours() / 24 * 100).toFixed(3) + "%");
+        s.css('bottom', (100 - shift.t_end.getHours() / 24 * 100).toFixed(3) + "%");
         s.addClass("shift_" + shift.id);
         s.addClass("column_" + shift.index + "of" + shift.columns);
         setXAxis(shift, s, shift.t_start);
@@ -156,7 +155,7 @@ function setXAxis(e, s, d)
 
     var p = parseFloat(e.index) / e.columns;
 
-    var per = Math.round(p * 1.0 / 7 * 100 + day);
-    s.css('width', Math.round(1 / 7 / e.columns * 100) + "%");
+    var per = p / 7.0 * 100 + day;
+    s.css('width', (1.0 / 7 / e.columns * 100).toFixed(3) + "%");
     s.css("left", per + "%");
 }
