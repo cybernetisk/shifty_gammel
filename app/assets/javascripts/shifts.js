@@ -127,13 +127,16 @@ function render_shift(shift)
         s.addClass("shift_" + shift.id);
         $("#calendar").append(s);
 
-        var s = ich.shift(shift);
-        s.css('top', "0%");
-        s.css('bottom', round(100 - shift.t_end.getHours() / 24 * 100) + "%");
-        s.addClass("column_" + shift.index + "of" + shift.columns);
-        setXAxis(shift, s, shift.t_end);
-        s.addClass("shift_" + shift.id);
-        $("#calendar").append(s)
+        if(!(shift.t_end.getHours() == 0 && shift.t_end.getMinutes() == 0))
+        {
+            var s = ich.shift(shift);
+            s.css('top', "0%");
+            s.css('bottom', round(100 - shift.t_end.getHours() / 24 * 100) + "%");
+            s.addClass("column_" + shift.index + "of" + shift.columns);
+            setXAxis(shift, s, shift.t_end);
+            s.addClass("shift_" + shift.id);
+            $("#calendar").append(s)
+        }
     }
     else
     {
