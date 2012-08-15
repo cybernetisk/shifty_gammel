@@ -135,7 +135,7 @@ function render_shift(shift)
             s.addClass("column_" + shift.index + "of" + shift.columns);
             setXAxis(shift, s, shift.t_end);
             s.addClass("shift_" + shift.id);
-            $("#calendar").append(s)
+            $("#calendar").append(s);
         }
     }
     else
@@ -152,11 +152,11 @@ function render_shift(shift)
 
 function setXAxis(e, s, d)
 {
-    var day = d.getDay() * 200;
+    var day = (d.getDay() - 1) / 7.0 * 100;
 
     var p = parseFloat(e.index) / e.columns;
 
-    var per = Math.round(p * 200 + day);
-    s.css('width', Math.round(200 / e.columns) + "px");
-    s.css("left", per + "px");
+    var per = Math.round(p * 1.0 / 7 * 100 + day);
+    s.css('width', Math.round(1 / 7 / e.columns * 100) + "%");
+    s.css("left", per + "%");
 }
