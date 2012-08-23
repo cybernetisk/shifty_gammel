@@ -149,6 +149,7 @@ function render_shift(shift)
         s.addClass("column_" + shift.index + "of" + shift.columns);
         setXAxis(shift, s, shift.t_start);
         s.addClass("shift_" + shift.id);
+        s.data('shift', shift);
         $("#calendar").append(s);
 
         if(!(shift.t_end.getHours() == 0 && shift.t_end.getMinutes() == 0))
@@ -159,6 +160,7 @@ function render_shift(shift)
             s.addClass("column_" + shift.index + "of" + shift.columns);
             setXAxis(shift, s, shift.t_end);
             s.addClass("shift_" + shift.id);
+            s.data('shift', shift);
             $("#calendar").append(s);
         }
     }

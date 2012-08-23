@@ -79,16 +79,16 @@
   
 </div>
 <style type="text/css">
-  #calendar .shift
-  {
-    position:absolute;
-  overflow:hidden;
+#calendar .shift
+{
+  position:absolute;
 }
 #calendar
 {
-  position:absolute;
+  position:relative;
   height:1000px;
   width:100%;
+  overflow:hidden;
 }
 .dayline
 {
@@ -108,12 +108,41 @@
   right:0px;
 }
 
+
 .shift .content
 {
+  overflow:hidden;
   margin:1px;
   padding:4px;
   background-color:rgb(200,200,200);
+  border-radius:5px;
 
+  position:absolute;
+  top:0px;
+  bottom:0px;
+  left:0px;
+  right:0px;
+
+  border-left:2px solid red;
+  border-right: 1px solid gray;
+}
+
+.ui-resizable-n
+{
+  height:15px;
+  position:absolute;
+  top:0px;
+  left:0px;
+  right:0px;
+}
+
+.ui-resizable-s
+{
+  height:15px;
+  position:absolute;
+  left:0px;
+  right:0px;
+  bottom:0px;
 }
 
 </style>
@@ -135,18 +164,27 @@
     
     for(var i in m.shifts)
       render_shift(m.shifts[i]);
-
+    
+    $(".shift").resizable(
+      {
+        handles: "n, s",
+        grid: [10, 1000/24/4],
+        stop: function(event, ui)
+              {
+                
+              }
+       });
   });
 });
 </script>
 <script id="shift" type="text/html">
 <div class="shift">
   <div class="content">
-  {{shift_type.title}}
-  {{user.username}}
-  <div>{{day}}</div>
-  <div>{{start}}</div>
-  <div>{{end}}</div>
+    {{shift_type.title}}
+    {{user.username}}
+    <div>{{day}}</div>
+    <div>{{start}}</div>
+    <div>{{end}}</div>
   </div>
 </div>
 </script>
