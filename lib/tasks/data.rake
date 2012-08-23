@@ -99,10 +99,10 @@ namespace :data do
 
   def makeweekday(date)
     st = gs "Kafevakt"
-    makeshift date.change(:hour=>8), 6.hours, st, rand(2) == 1
-    makeshift date.change(:hour=>9), 6.hours, st, rand(2) == 1
-    makeshift date.change(:hour=>15), 6.hours, st, rand(2) == 1
-    makeshift date.change(:hour=>16), 6.hours, st, rand(2) == 1
+    makeshift date.change(:hour=>8), 4.hours, st, rand(2) == 1
+    makeshift date.change(:hour=>9), 4.hours, st, rand(2) == 1
+    makeshift date.change(:hour=>12), 4.hours, st, rand(2) == 1
+    makeshift date.change(:hour=>13), 4.hours, st, rand(2) == 1
   end
 
   def makepub(date)

@@ -3,10 +3,35 @@ function getDate(date)
     return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
 }
 
+function TimeAxis()
+{
+    this.start = 0;
+    this.stop = 24*60;
+
+    this.intervals = 60;
+
+    this.lines = function(){
+        var result = Array();
+        for(var i = this.start; i < this.stop; i+= this.intervals)
+            result.push(i);
+        return result;
+    };
+
+    this.convert = function(date){
+        var hour = date.getHour();
+        var minute = date.getMinute();
+        return (hour * 60 + minute - this.start) / (this.stop - this.start);
+    };
+
+    this.c = this.convert;
+}
+
 function ShiftManager()
 {
     this.shifts = {};
     this.by_date = {};
+
+    this.axis = new TimeAxis()
 
     this.updateColumns = function(shift, high)
     {
@@ -119,7 +144,7 @@ function render_shift(shift)
     if(start != stop)
     {
         var s = ich.shift(shift);
-        s.css('top', (shift.t_start.getHours() / 24 * 100).toFixed(3) + "%");
+        s.css('top', getPT(shift.t_start) + "%");
         s.css('bottom', "0%");
         s.addClass("column_" + shift.index + "of" + shift.columns);
         setXAxis(shift, s, shift.t_start);
@@ -130,7 +155,7 @@ function render_shift(shift)
         {
             var s = ich.shift(shift);
             s.css('top', "0%");
-            s.css('bottom', (100 - shift.t_end.getHours() / 24 * 100).toFixed(3) + "%");
+            s.css('bottom', (100 - getPT(shift.t_end)) + "%");
             s.addClass("column_" + shift.index + "of" + shift.columns);
             setXAxis(shift, s, shift.t_end);
             s.addClass("shift_" + shift.id);
@@ -140,13 +165,42 @@ function render_shift(shift)
     else
     {
         var s = ich.shift(shift);
-        s.css('top', (shift.t_start.getHours() / 24 * 100).toFixed(3) + "%");
-        s.css('bottom', (100 - shift.t_end.getHours() / 24 * 100).toFixed(3) + "%");
+        s.css('top', getPT(shift.t_start) + "%");
+        s.css('bottom', (100 - getPT(shift.t_end)) + "%");
         s.addClass("shift_" + shift.id);
         s.addClass("column_" + shift.index + "of" + shift.columns);
         setXAxis(shift, s, shift.t_start);
         $("#calendar").append(s);
     }
+}
+
+function makeDayGrid()
+{
+    for(var i = 0; i < 7; i++)
+    {
+        var l = (i / 7.0 * 100).toFixed(3);
+        var d = $("<div />");
+        d.addClass("dayline");
+        d.css('left', l + "%");
+        $("#calendar").append(d);
+    }
+}
+
+function makeHourGrid()
+{
+    for(var i = 0; i < 25; i++)
+    {
+        var h = (i / 24.0 * 100).toFixed(3);
+        var d = $("<div />");
+        d.addClass("hourline");
+        d.css('top', h+'%');
+        $("#calendar").append(d);
+    }
+}
+
+function getPT(s)
+{
+    return ((s.getHours() + s.getMinutes() / 60.0)/24.0*100).toFixed(3);
 }
 
 function setXAxis(e, s, d)
@@ -156,6 +210,7 @@ function setXAxis(e, s, d)
     var p = parseFloat(e.index) / e.columns;
 
     var per = p / 7.0 * 100 + day;
-    s.css('width', (1.0 / 7 / e.columns * 100).toFixed(3) + "%");
+    var width= (1.0 / 7 / e.columns * 100).toFixed(3);
+    s.css('right', (100 - per - width) + "%");
     s.css("left", per + "%");
 }

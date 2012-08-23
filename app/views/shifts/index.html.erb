@@ -82,8 +82,7 @@
   #calendar .shift
   {
     position:absolute;
-    border:1px solid black;
-    margin:3px;
+  overflow:hidden;
 }
 #calendar
 {
@@ -91,6 +90,32 @@
   height:1000px;
   width:100%;
 }
+.dayline
+{
+
+  border-left:1px solid gray;
+  position:absolute;
+  top:0px;
+  bottom:0px;
+  width:0px;
+}
+.hourline
+{
+  border-top:1px solid gray;
+  position:absolute;
+  height:0px;
+  left:0px;
+  right:0px;
+}
+
+.shift .content
+{
+  margin:1px;
+  padding:4px;
+  background-color:rgb(200,200,200);
+
+}
+
 </style>
 <%= link_to 'New shift', new_shift_path %>
 
@@ -105,17 +130,23 @@
       m.addShift(data[i]);
     }
 
+    makeHourGrid();
+    makeDayGrid();
+    
     for(var i in m.shifts)
       render_shift(m.shifts[i]);
+
   });
 });
 </script>
 <script id="shift" type="text/html">
 <div class="shift">
-  <div style="float:left;">
+  <div class="content">
   {{shift_type.title}}
   {{user.username}}
   <div>{{day}}</div>
+  <div>{{start}}</div>
+  <div>{{end}}</div>
   </div>
 </div>
 </script>
