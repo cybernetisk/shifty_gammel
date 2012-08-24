@@ -158,23 +158,55 @@
     {
       m.addShift(data[i]);
     }
+      drawChanged()
 
     makeHourGrid();
     makeDayGrid();
-    
-    for(var i in m.shifts)
-      render_shift(m.shifts[i]);
-    
-    $(".shift").resizable(
+
+    function resized(event, ui)
+    {
+      var e = ui.element;
+      var top = e.position().top;
+      var bottom = top + e.height();
+
+      var start = top / 1000 * 24;
+      var end = bottom / 1000 * 24;
+      var s = e.data('shift');
+      s.changed = true;
+      
+      s.t_start.setHours(start.toFixed(0));
+      s.t_end.setHours(end.toFixed(0));
+
+
+      var k = new ShiftManager();
+      for(var i in m.shifts)
+        k.addShift(m.shifts[i]);
+      m = k;
+      drawChanged();
+    }
+
+    function drawChanged()
+    {
+      for(var i in m.shifts)
+      if(m.shifts[i].changed)
       {
-        handles: "n, s",
-        grid: [10, 1000/24/4],
-        stop: function(event, ui)
-              {
-                
-              }
-       });
+        m.shifts[i].changed = false;
+        render_shift(m.shifts[i]);
+      }
+
+      $(".shift").not(".ui-resizable").resizable(
+        {
+          handles: "n, s",
+          grid: [10, 1000/24/4],
+          stop: resized
+         });
+    }
+    
+    drawChanged();
+    
   });
+
+
 });
 </script>
 <script id="shift" type="text/html">
@@ -182,7 +214,8 @@
   <div class="content">
     {{shift_type.title}}
     {{user.username}}
-    <div>{{day}}</div>
+
+    <div>{{id}} - {{index}}/{{columns}}</div>
     <div>{{start}}</div>
     <div>{{end}}</div>
   </div>

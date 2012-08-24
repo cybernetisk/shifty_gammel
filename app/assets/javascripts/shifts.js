@@ -25,11 +25,101 @@ function TimeAxis()
 
     this.c = this.convert;
 }
+function collides(a,b)
+{
+    if(a.t_start <= b.t_start &&
+        a.t_end > b.t_start)
+            return true;
+    if(b.t_start <= a.t_start &&
+        b.t_end > a.t_start)
+            return true;
+
+    return false;
+}
+
+function Group(shift)
+{
+    this.columns = Array(new Column());
+    
+    this.t_start = shift.t_start;
+    this.t_end = shift.t_end;
+    this.shifts = Array();
+    
+    this.fits = function(shift)
+    {
+        return collides(this, shift);
+        var a = this;
+        var b = shift;
+        
+        if(a.t_start <= b.t_start &&
+            a.t_end >= b.t_start)
+                return true;
+        if(b.t_start <= a.t_start &&
+            b.t_end >= a.t_start)
+                return true;
+    }
+
+    this.merge = function(group)
+    {
+        for(var i in group.shifts)
+            this.push(group.shifts[i]);
+    }
+    
+    this.push = function(shift)
+    {
+        if(this.t_start == undefined || this.t_start < shift.t_start)
+            this.t_start = shift.t_start;
+
+        if(this.t_end == undefined || this.t_end < shift.t_end)
+            this.t_end = shift.t_end;
+        
+        this.shifts.push(shift);
+        
+        for(var i in this.columns)
+            if(this._push(i, shift)) return true;
+        
+        this.columns.push( new Column() );
+        this._push(this.columns.length - 1, shift);
+        
+        return true;
+    }
+
+    this._push = function(i, shift)
+    {
+        if(this.columns[i].push(shift))
+        {
+            shift.group = this;
+            shift.index = i;
+            return true;
+        }
+        return false;
+    }
+    
+    if(shift != undefined)
+        this._push(0, shift);
+    
+}
+
+function Column()
+{
+    this.shifts = Array();
+
+    this.push = function(shift)
+    {
+        for(var i in this.shifts)
+            if(collides(this.shifts[i], shift))
+                return false;
+
+        this.shifts.push(shift);
+        return true;
+    }
+}
 
 function ShiftManager()
 {
     this.shifts = {};
-    this.by_date = {};
+    
+    this.groups = Array();
 
     this.axis = new TimeAxis()
 
@@ -38,81 +128,55 @@ function ShiftManager()
         if(shift.columns < high)
         {
             shift.columns = high;
+            shift.changed = true;
             this.setIndex(shift);
+            
             for(var i in shift.collisions)
-                this.updateColumns(shift.collisions[i], high);
-            return high;
+                this.columns = this.updateColumns(shift.collisions[i], high);
+            
+            return this.columns;
         }
         else
         {
-            return shift.columns;
+            return high;
         }
     }
 
-    this.setIndex = function(shift)
+    this.updateShift = function(shift)
     {
-        for(var i = 0; i < shift.columns; i++)
-        {
-            var free = true;
-            for(var j in shift.collisions)
-                if(shift.collisions[j].index != undefined &&
-                    shift.collisions[j].index == i)
-                        free = false;
-            if(free)
-            {
-                shift.index = i;
-                return;
-            }
-        }
-
+        
     }
+
     this.addShift = function(shift)
     {
-        shift.t_start = new Date(shift.start);
-        shift.t_end = new Date(shift.end);
-        
-        if(!(shift.id in this.shifts))
+        if(shift.t_start == undefined)
         {
-
-            this.shifts[shift.id] = shift;
-            
-            //this.render_shift(shift);
-
-            shift.collisions = this.collisions(shift);
-
-            shift.columns = 0;
-            this.updateColumns(shift, shift.collisions.length);
-
-            this.setIndex(shift);
+            shift.t_start = new Date(shift.start);
+            shift.t_end = new Date(shift.end);
         }
+        shift.changed = true;
 
+        var matches = Array();
+        for(var i in this.groups)
+                if(this.groups[i].fits(shift))
+                    matches.push(this.groups[i]);
         
-//        if(!(shift.id in this.shifts) || shift != this.shifts[shift.id])
-//        {
-//
-//            this.shifts[shift.id] = shift;
-//            this.render_shift(shift)
-//        }
-
-
+        if(matches.length > 0)
+        {
+            for(var i = 1; i < matches.length; i++)
+            {
+                matches[0].merge(matches[i]);
+                this.groups.splice(this.groups.indexof(matches[i]));
+            }
+            matches[0].push(shift);
+            this.shifts[shift.id] = shift;
+            return;
+        }
+        
+        this.groups.push(new Group(shift));
+        this.shifts[shift.id] = shift;
     }
 
-    this.collides = function(a,b)
-    {
-        if(a.t_start <= b.t_start &&
-             a.t_end > b.t_start)
-             return true;
-
-        if(a.t_start <= b.t_end &&
-            a.t_end > b.t_end)
-             return true;
-
-        if(a.t_start >= b.t_start &&
-               a.t_end <= b.t_end)
-               return true;
-           
-        return false;
-    }
 
     this.fix_columns = function(shift)
     {
@@ -138,9 +202,11 @@ function render_shift(shift)
 {
     var start = getDate(shift.t_start);
     var stop = getDate(shift.t_end);
+//    shift.columns = shift.group.columns.length;
     
-    $("shift_" + shift.id).remove()
+    $(".shift_" + shift.id).remove()
     shift.day = shift.t_start.getDay();
+    shift.columns = shift.group.columns.length;
     if(start != stop)
     {
         var s = ich.shift(shift);
@@ -171,6 +237,7 @@ function render_shift(shift)
         s.css('bottom', (100 - getPT(shift.t_end)) + "%");
         s.addClass("shift_" + shift.id);
         s.addClass("column_" + shift.index + "of" + shift.columns);
+            s.data('shift', shift);
         setXAxis(shift, s, shift.t_start);
         $("#calendar").append(s);
     }
