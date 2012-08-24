@@ -48,15 +48,6 @@ function Group(shift)
     this.fits = function(shift)
     {
         return collides(this, shift);
-        var a = this;
-        var b = shift;
-        
-        if(a.t_start <= b.t_start &&
-            a.t_end >= b.t_start)
-                return true;
-        if(b.t_start <= a.t_start &&
-            b.t_end >= a.t_start)
-                return true;
     }
 
     this.merge = function(group)
@@ -123,30 +114,6 @@ function ShiftManager()
 
     this.axis = new TimeAxis()
 
-    this.updateColumns = function(shift, high)
-    {
-        if(shift.columns < high)
-        {
-            shift.columns = high;
-            shift.changed = true;
-            this.setIndex(shift);
-            
-            for(var i in shift.collisions)
-                this.columns = this.updateColumns(shift.collisions[i], high);
-            
-            return this.columns;
-        }
-        else
-        {
-            return high;
-        }
-    }
-
-    this.updateShift = function(shift)
-    {
-        
-    }
-
     this.addShift = function(shift)
     {
         if(shift.t_start == undefined)
@@ -176,26 +143,6 @@ function ShiftManager()
         this.groups.push(new Group(shift));
         this.shifts[shift.id] = shift;
     }
-
-
-    this.fix_columns = function(shift)
-    {
-        shift.collisions = this.collisions(shift);
-        
-    }
-
-    this.collisions = function(shift)
-    {
-        var collides = [];
-        for(var i in this.shifts)
-        {
-            if(this.collides(this.shifts[i], shift))
-                collides.push(this.shifts[i]);
-        }
-
-        return collides;
-    }
-
 }
 
 function render_shift(shift)
@@ -211,7 +158,7 @@ function render_shift(shift)
     {
         var s = ich.shift(shift);
         s.css('top', getPT(shift.t_start) + "%");
-        s.css('bottom', "0%");
+        s.css('height', (100 - getPT(shift.t_start)) + "%");
         s.addClass("column_" + shift.index + "of" + shift.columns);
         setXAxis(shift, s, shift.t_start);
         s.addClass("shift_" + shift.id);
@@ -222,7 +169,7 @@ function render_shift(shift)
         {
             var s = ich.shift(shift);
             s.css('top', "0%");
-            s.css('bottom', (100 - getPT(shift.t_end)) + "%");
+            s.css('height', (getPT(shift.t_end)) + "%");
             s.addClass("column_" + shift.index + "of" + shift.columns);
             setXAxis(shift, s, shift.t_end);
             s.addClass("shift_" + shift.id);
@@ -234,7 +181,7 @@ function render_shift(shift)
     {
         var s = ich.shift(shift);
         s.css('top', getPT(shift.t_start) + "%");
-        s.css('bottom', (100 - getPT(shift.t_end)) + "%");
+        s.css('height', (getPT(shift.t_end) - getPT(shift.t_start)) + "%");
         s.addClass("shift_" + shift.id);
         s.addClass("column_" + shift.index + "of" + shift.columns);
             s.data('shift', shift);

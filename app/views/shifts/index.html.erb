@@ -1,36 +1,9 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
 <% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
-<table>
-  <thead>
-    <tr>
-      <th class="time"></th>
-      <% days.values.each do |day| %>
-        <th><%= day.camelcase %></th>
-      <% end %>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td class="time">
-        <ul>
-        <% for i in 0..23 do %>
-          <li><%= "%02d" % i %></li>
-        <% end %>
-        </ul>
-      </td>
-      <% days.keys.each do |day| %>
-        <td class="day <%= day %>">
-          <ul>
-            <% 48.times do %>
-              <li></li>
-            <% end %>
-          </ul>
-        </td>
-      <% end %>
-    </tr>
-  </tbody>
-</table>
 
+<div id="calendar">
+
+</div>
 <h1>Listing shifts</h1>
 
 <table>
@@ -74,10 +47,6 @@
 
 <br />
 
-
-<div id="calendar">
-  
-</div>
 <style type="text/css">
 #calendar .shift
 {
@@ -144,6 +113,10 @@
   right:0px;
   bottom:0px;
 }
+.ui-selected .content
+{
+  background-color:rgb(200,240,240) !important;
+}
 
 </style>
 <%= link_to 'New shift', new_shift_path %>
@@ -165,17 +138,19 @@
 
     function resized(event, ui)
     {
-      var e = ui.element;
+      var e = $(this);
       var top = e.position().top;
       var bottom = top + e.height();
-
-      var start = top / 1000 * 24;
-      var end = bottom / 1000 * 24;
+      
+      var start = (top / 1000 * 24 * 4).toFixed(0);
+      var end = (bottom / 1000 * 24 * 4).toFixed(0);
       var s = e.data('shift');
       s.changed = true;
       
-      s.t_start.setHours(start.toFixed(0));
-      s.t_end.setHours(end.toFixed(0));
+      s.t_start.setHours(start / 4);
+      s.t_start.setMinutes((start%4)*15)
+      s.t_end.setHours(end / 4);
+      s.t_end.setMinutes((end%4)*15)
 
 
       var k = new ShiftManager();
@@ -193,6 +168,11 @@
         m.shifts[i].changed = false;
         render_shift(m.shifts[i]);
       }
+      $(".shift").not(".ui-draggable").draggable(
+          { axis: "y",
+          grid: [10, 1000/24/4],
+          stop: resized,
+          distance: 40 });
 
       $(".shift").not(".ui-resizable").resizable(
         {
@@ -200,6 +180,8 @@
           grid: [10, 1000/24/4],
           stop: resized
          });
+
+         $( "#calendar").selectable({'filter':'.shift'});
     }
     
     drawChanged();
