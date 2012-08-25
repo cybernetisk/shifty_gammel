@@ -133,7 +133,7 @@ function ShiftManager()
             for(var i = 1; i < matches.length; i++)
             {
                 matches[0].merge(matches[i]);
-                this.groups.splice(this.groups.indexof(matches[i]));
+                this.groups.splice(this.groups.indexOf(matches[i]));
             }
             matches[0].push(shift);
             this.shifts[shift.id] = shift;
@@ -209,6 +209,18 @@ function makeHourGrid()
         var h = (i / 24.0 * 100).toFixed(3);
         var d = $("<div />");
         d.addClass("hourline");
+        d.css('top', h+'%');
+        $("#calendar").append(d);
+    }
+}
+
+function makeHalfHourGrid()
+{
+    for(var i = 0.5; i < 25; i++)
+    {
+        var h = (i / 24.0 * 100).toFixed(3);
+        var d = $("<div />");
+        d.addClass("halfhourline");
         d.css('top', h+'%');
         $("#calendar").append(d);
     }

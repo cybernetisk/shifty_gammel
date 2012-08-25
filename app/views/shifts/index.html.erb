@@ -77,6 +77,14 @@
   right:0px;
 }
 
+.halfhourline
+{
+  border-top:1px dashed gray;
+  position:absolute;
+  height:0px;
+  left:0px;
+  right:0px;
+}
 
 .shift .content
 {
@@ -127,32 +135,68 @@
   {
     var m = new ShiftManager();
 
+    makeHourGrid();
+    makeHalfHourGrid();
+    makeDayGrid();
     for(var i in data)
     {
       m.addShift(data[i]);
     }
       drawChanged()
 
-    makeHourGrid();
-    makeDayGrid();
 
     function resized(event, ui)
     {
       var e = $(this);
-      var top = e.position().top;
-      var bottom = top + e.height();
       
-      var start = (top / 1000 * 24 * 4).toFixed(0);
-      var end = (bottom / 1000 * 24 * 4).toFixed(0);
       var s = e.data('shift');
-      s.changed = true;
+      if(ui.position.top != ui.originalPosition.top)
+      {
+        var diff = (ui.originalPosition.top - ui.position.top)
+        diff = (diff / 1000 * 24 * 4).toFixed(0) * 15 * 60 * 1000;
+        
+        s.t_start = new Date(s.t_start.valueOf() - diff);
+      }
+      else
+      {
+        var diff = (ui.originalSize.height - ui.size.height)
+        diff = (diff / 1000 * 24 * 4).toFixed(0) * 15 * 60 * 1000;
+
+        s.t_end = new Date(s.t_end.valueOf() - diff);
+
+      }
+      <%#*var top = e.position().top;%>
+      <%#*var bottom = top + e.height();%>
       
-      s.t_start.setHours(start / 4);
-      s.t_start.setMinutes((start%4)*15)
-      s.t_end.setHours(end / 4);
-      s.t_end.setMinutes((end%4)*15)
+      <%#*var start = (top / 1000 * 24 * 4).toFixed(0);%>
+      <%#*var end = (bottom / 1000 * 24 * 4).toFixed(0);%>
+      <%#*var s = e.data('shift');%>
+      <%#*s.changed = true;%>
+      
+      <%#*s.t_start.setHours(start / 4);%>
+      <%#*s.t_start.setMinutes((start%4)*15)%>
+      <%#*s.t_end.setHours(end / 4);%>
+      <%#*s.t_end.setMinutes((end%4)*15)%>
 
 
+      var k = new ShiftManager();
+      for(var i in m.shifts)
+        k.addShift(m.shifts[i]);
+      m = k;
+      drawChanged();
+    }
+
+    function moved(event, ui)
+    {
+      var e = $(this);
+      var s = e.data('shift');
+
+      var diff = (ui.originalPosition.top - ui.position.top)
+      diff = (diff / 1000 * 24 * 4).toFixed(0) * 15 * 60 * 1000;
+
+      s.t_start = new Date(s.t_start.valueOf() - diff);
+      s.t_end = new Date(s.t_end.valueOf() - diff);
+      
       var k = new ShiftManager();
       for(var i in m.shifts)
         k.addShift(m.shifts[i]);
@@ -171,7 +215,7 @@
       $(".shift").not(".ui-draggable").draggable(
           { axis: "y",
           grid: [10, 1000/24/4],
-          stop: resized,
+          stop: moved,
           distance: 40 });
 
       $(".shift").not(".ui-resizable").resizable(
