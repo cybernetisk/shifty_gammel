@@ -130,20 +130,6 @@
 <%= link_to 'New shift', new_shift_path %>
 
 <script type="text/javascript">
-  $(function(){
-    $.get('/shifts/calendar.json', function(data)
-  {
-    var m = new ShiftManager();
-
-    makeHourGrid();
-    makeHalfHourGrid();
-    makeDayGrid();
-    for(var i in data)
-    {
-      m.addShift(data[i]);
-    }
-      drawChanged()
-
 
     function resized(event, ui)
     {
@@ -165,25 +151,9 @@
         s.t_end = new Date(s.t_end.valueOf() - diff);
 
       }
-      <%#*var top = e.position().top;%>
-      <%#*var bottom = top + e.height();%>
-      
-      <%#*var start = (top / 1000 * 24 * 4).toFixed(0);%>
-      <%#*var end = (bottom / 1000 * 24 * 4).toFixed(0);%>
-      <%#*var s = e.data('shift');%>
-      <%#*s.changed = true;%>
-      
-      <%#*s.t_start.setHours(start / 4);%>
-      <%#*s.t_start.setMinutes((start%4)*15)%>
-      <%#*s.t_end.setHours(end / 4);%>
-      <%#*s.t_end.setMinutes((end%4)*15)%>
 
-
-      var k = new ShiftManager();
-      for(var i in m.shifts)
-        k.addShift(m.shifts[i]);
-      m = k;
-      drawChanged();
+      cv.refresh();
+      makeEditable()
     }
 
     function moved(event, ui)
@@ -196,22 +166,14 @@
 
       s.t_start = new Date(s.t_start.valueOf() - diff);
       s.t_end = new Date(s.t_end.valueOf() - diff);
-      
-      var k = new ShiftManager();
-      for(var i in m.shifts)
-        k.addShift(m.shifts[i]);
-      m = k;
-      drawChanged();
+
+      cv.refresh();
+      makeEditable()
     }
 
-    function drawChanged()
+    function makeEditable()
     {
-      for(var i in m.shifts)
-      if(m.shifts[i].changed)
-      {
-        m.shifts[i].changed = false;
-        render_shift(m.shifts[i]);
-      }
+      
       $(".shift").not(".ui-draggable").draggable(
           { axis: "y",
           grid: [10, 1000/24/4],
@@ -228,19 +190,23 @@
          $( "#calendar").selectable({'filter':'.shift'});
     }
     
-    drawChanged();
-    
-  });
 
+var cv = new CalendarView("lol",1,2);
 
-});
+$(function(){
+  cv.fetch();
+  cv.refresh();
+
+  makeEditable();
+})
 </script>
 <script id="shift" type="text/html">
 <div class="shift">
   <div class="content">
+    <div>
     {{shift_type.title}}
     {{user.username}}
-
+    </div>
     <div>{{id}} - {{index}}/{{columns}}</div>
     <div>{{start}}</div>
     <div>{{end}}</div>

@@ -58,7 +58,7 @@ function Group(shift)
     
     this.push = function(shift)
     {
-        if(this.t_start == undefined || this.t_start < shift.t_start)
+        if(this.t_start == undefined || this.t_start > shift.t_start)
             this.t_start = shift.t_start;
 
         if(this.t_end == undefined || this.t_end < shift.t_end)
@@ -108,6 +108,7 @@ function Column()
 
 function ShiftManager()
 {
+
     this.shifts = {};
     
     this.groups = Array();
@@ -145,50 +146,6 @@ function ShiftManager()
     }
 }
 
-function render_shift(shift)
-{
-    var start = getDate(shift.t_start);
-    var stop = getDate(shift.t_end);
-//    shift.columns = shift.group.columns.length;
-    
-    $(".shift_" + shift.id).remove()
-    shift.day = shift.t_start.getDay();
-    shift.columns = shift.group.columns.length;
-    if(start != stop)
-    {
-        var s = ich.shift(shift);
-        s.css('top', getPT(shift.t_start) + "%");
-        s.css('height', (100 - getPT(shift.t_start)) + "%");
-        s.addClass("column_" + shift.index + "of" + shift.columns);
-        setXAxis(shift, s, shift.t_start);
-        s.addClass("shift_" + shift.id);
-        s.data('shift', shift);
-        $("#calendar").append(s);
-
-        if(!(shift.t_end.getHours() == 0 && shift.t_end.getMinutes() == 0))
-        {
-            var s = ich.shift(shift);
-            s.css('top', "0%");
-            s.css('height', (getPT(shift.t_end)) + "%");
-            s.addClass("column_" + shift.index + "of" + shift.columns);
-            setXAxis(shift, s, shift.t_end);
-            s.addClass("shift_" + shift.id);
-            s.data('shift', shift);
-            $("#calendar").append(s);
-        }
-    }
-    else
-    {
-        var s = ich.shift(shift);
-        s.css('top', getPT(shift.t_start) + "%");
-        s.css('height', (getPT(shift.t_end) - getPT(shift.t_start)) + "%");
-        s.addClass("shift_" + shift.id);
-        s.addClass("column_" + shift.index + "of" + shift.columns);
-            s.data('shift', shift);
-        setXAxis(shift, s, shift.t_start);
-        $("#calendar").append(s);
-    }
-}
 
 function makeDayGrid()
 {
@@ -225,6 +182,26 @@ function makeHalfHourGrid()
         $("#calendar").append(d);
     }
 }
+var display_start = 0;
+var calendar_height = 1000;
+
+function timeToOffset(time)
+{
+    var i = time.valueOf() - display_start;
+
+    var aday = 24*60*60*1000;
+    var day = (i / aday).toFixed(0);
+    var time = i - day * aday;
+    
+    
+}
+
+function offsetToTime(x,y)
+{
+    var aday = 24*60*60*1000;
+    
+}
+
 
 function getPT(s)
 {
@@ -241,4 +218,87 @@ function setXAxis(e, s, d)
     var width= (1.0 / 7 / e.columns * 100).toFixed(3);
     s.css('right', (100 - per - width) + "%");
     s.css("left", per + "%");
+}
+
+
+function CalendarView(div, start, stop)
+{
+    this.div = div;
+    this.start = start;
+    this.stop = stop;
+
+    var duration = this.stop.valueOf() - this.start.valueOf();
+    this.aday = 24 * 60 * 60 * 1000;
+
+    this.days = (duration / this.aday).toFixed(0);
+
+    this.shiftManager = new ShiftManager();
+    this.shifts = Array();
+    
+    this.refresh = function()
+    {
+        this.shiftManager = new ShiftManager();
+        
+        for(var i in this.shifts)
+            this.shiftManager.addShift(this.shifts[i]);
+        
+        for(var i in this.shifts)
+            this.renderShift(this.shifts[i]);
+
+    };
+
+    this.fetch = function()
+    {
+        
+        var res = $.ajax('/shifts/calendar.json', {async:   false});
+
+        data = jQuery.parseJSON(res.responseText);
+        for(var i in data)
+            this.shifts.push(data[i]);
+    };
+    
+    this.renderShift = function(shift)
+    {
+        var start = getDate(shift.t_start);
+        var stop = getDate(shift.t_end);
+    //    shift.columns = shift.group.columns.length;
+
+        $(".shift_" + shift.id).remove()
+        shift.day = shift.t_start.getDay();
+        shift.columns = shift.group.columns.length;
+        if(start != stop)
+        {
+            var s = ich.shift(shift);
+            s.css('top', getPT(shift.t_start) + "%");
+            s.css('height', (100 - getPT(shift.t_start)) + "%");
+            s.addClass("column_" + shift.index + "of" + shift.columns);
+            setXAxis(shift, s, shift.t_start);
+            s.addClass("shift_" + shift.id);
+            s.data('shift', shift);
+            $("#calendar").append(s);
+
+            if(!(shift.t_end.getHours() == 0 && shift.t_end.getMinutes() == 0))
+            {
+                var s = ich.shift(shift);
+                s.css('top', "0%");
+                s.css('height', (getPT(shift.t_end)) + "%");
+                s.addClass("column_" + shift.index + "of" + shift.columns);
+                setXAxis(shift, s, shift.t_end);
+                s.addClass("shift_" + shift.id);
+                s.data('shift', shift);
+                $("#calendar").append(s);
+            }
+        }
+        else
+        {
+            var s = ich.shift(shift);
+            s.css('top', getPT(shift.t_start) + "%");
+            s.css('height', (getPT(shift.t_end) - getPT(shift.t_start)) + "%");
+            s.addClass("shift_" + shift.id);
+            s.addClass("column_" + shift.index + "of" + shift.columns);
+                s.data('shift', shift);
+            setXAxis(shift, s, shift.t_start);
+            $("#calendar").append(s);
+        }
+    };
 }
