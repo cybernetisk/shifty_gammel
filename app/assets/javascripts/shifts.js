@@ -209,27 +209,7 @@ function makeHalfHourGrid()
     }
 }
 
-function getPT(s)
-{
-    // converts hours and minutes into a top value
-    return ((s.getHours() + s.getMinutes() / 60.0)/24.0*100).toFixed(3);
-}
 
-function setXAxis(e, s, d)
-{
-    /*
-     *  a hack to convert time into a horizontal coordinate. Should be handled
-     *  in the calendar view relative to start and stop values set there.
-     */
-    var day = (d.getDay() - 1) / 7.0 * 100;
-
-    var p = parseFloat(e.index) / e.columns;
-
-    var per = p / 7.0 * 100 + day;
-    var width= (1.0 / 7 / e.columns * 100).toFixed(3);
-    s.css('right', (100 - per - width) + "%");
-    s.css("left", per + "%");
-}
 
 
 function CalendarView(div, start, stop)
@@ -285,16 +265,16 @@ function CalendarView(div, start, stop)
         {
             var s = ich.shift(shift);
             //find the top coordinate for the shift
-            s.css('top', getPT(shift.t_start) + "%");
+            s.css('top', this.getPT(shift.t_start) + "%");
             // get the height. Can't use bottom coordinate as this
             // messes up moving the shifts.
-            s.css('height', (getPT(shift.t_end) - getPT(shift.t_start)) + "%");
+            s.css('height', (this.getPT(shift.t_end) - this.getPT(shift.t_start)) + "%");
             s.addClass("shift_" + shift.id);
             s.addClass("column_" + shift.index + "of" + shift.columns);
                 s.data('shift', shift);
 
-            // sets the x coordinate.
-            setXAxis(shift, s, shift.t_start);
+            // sets the x coordinate. 
+            this.setXAxis(shift, s, shift.t_start);
             $("#calendar").append(s);
         }
         else
@@ -307,10 +287,10 @@ function CalendarView(div, start, stop)
              * Shifts spanning over more than one day is not supported.
              */
             var s = ich.shift(shift);
-            s.css('top', getPT(shift.t_start) + "%");
-            s.css('height', (100 - getPT(shift.t_start)) + "%");
+            s.css('top', this.getPT(shift.t_start) + "%");
+            s.css('height', (100 - this.getPT(shift.t_start)) + "%");
             s.addClass("column_" + shift.index + "of" + shift.columns);
-            setXAxis(shift, s, shift.t_start);
+            this.setXAxis(shift, s, shift.t_start);
             s.addClass("shift_" + shift.id);
             s.data('shift', shift);
             $("#calendar").append(s);
@@ -323,13 +303,37 @@ function CalendarView(div, start, stop)
                  */
                 var s = ich.shift(shift);
                 s.css('top', "0%");
-                s.css('height', (getPT(shift.t_end)) + "%");
+                s.css('height', (this.getPT(shift.t_end)) + "%");
                 s.addClass("column_" + shift.index + "of" + shift.columns);
-                setXAxis(shift, s, shift.t_end);
+                this.setXAxis(shift, s, shift.t_end);
                 s.addClass("shift_" + shift.id);
                 s.data('shift', shift);
                 $("#calendar").append(s);
             }
         }
     };
+
+
+    this.setXAxis = function (e, s, d)
+    {
+        /*
+         *  a hack to convert time into a horizontal coordinate. Should be handled
+         *  in the calendar view relative to start and stop values set there.
+         */
+        var day = (d.getDay() - 1) / 7.0 * 100;
+
+        var p = parseFloat(e.index) / e.columns;
+
+        var per = p / 7.0 * 100 + day;
+        var width= (1.0 / 7 / e.columns * 100).toFixed(3);
+        s.css('right', (100 - per - width) + "%");
+        s.css("left", per + "%");
+    }
+
+
+    this.getPT = function (s)
+    {
+        // converts hours and minutes into a top value
+        return ((s.getHours() + s.getMinutes() / 60.0)/24.0*100).toFixed(3);
+    }
 }
