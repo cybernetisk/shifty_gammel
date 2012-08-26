@@ -108,7 +108,20 @@ function Column()
 
 function ShiftManager()
 {
-
+    /*
+     * The shift manager class handles layout of shifts, checking where they
+     * collide and splitting them into columns so that all is visible.
+     *
+     * A group is a set of shifts that overlap in some manner. A group splits the
+     * shifts into n columns, where they are organized so that no two shifts 
+     * within the same column overlap. If there's not free space in a column, it 
+     * just makes a new one.
+     *
+     * Right now we reload all the data into the shift manager each time we have
+     * a change. This runs well on chrome, but could lead to performance issues.
+     * We should just reorder the affected groups, and merge/split them when
+     * required.
+     */
     this.shifts = {};
     
     this.groups = Array();
@@ -182,34 +195,19 @@ function makeHalfHourGrid()
         $("#calendar").append(d);
     }
 }
-var display_start = 0;
-var calendar_height = 1000;
-
-function timeToOffset(time)
-{
-    var i = time.valueOf() - display_start;
-
-    var aday = 24*60*60*1000;
-    var day = (i / aday).toFixed(0);
-    var time = i - day * aday;
-    
-    
-}
-
-function offsetToTime(x,y)
-{
-    var aday = 24*60*60*1000;
-    
-}
-
 
 function getPT(s)
 {
+    // converts hours and minutes into a top value
     return ((s.getHours() + s.getMinutes() / 60.0)/24.0*100).toFixed(3);
 }
 
 function setXAxis(e, s, d)
 {
+    /*
+     *  a hack to convert time into a horizontal coordinate. Should be handled
+     *  in the calendar view relative to start and stop values set there.
+     */
     var day = (d.getDay() - 1) / 7.0 * 100;
 
     var p = parseFloat(e.index) / e.columns;
@@ -223,6 +221,10 @@ function setXAxis(e, s, d)
 
 function CalendarView(div, start, stop)
 {
+    /*
+     * This class handles fetching calendar info, feeding the shift manager for layout
+     * and rendering the shifts.
+     */
     this.div = div;
     this.start = start;
     this.stop = stop;
@@ -266,8 +268,31 @@ function CalendarView(div, start, stop)
         $(".shift_" + shift.id).remove()
         shift.day = shift.t_start.getDay();
         shift.columns = shift.group.columns.length;
-        if(start != stop)
+        if(start == stop)
         {
+            var s = ich.shift(shift);
+            //find the top coordinate for the shift
+            s.css('top', getPT(shift.t_start) + "%");
+            // get the height. Can't use bottom coordinate as this
+            // messes up moving the shifts.
+            s.css('height', (getPT(shift.t_end) - getPT(shift.t_start)) + "%");
+            s.addClass("shift_" + shift.id);
+            s.addClass("column_" + shift.index + "of" + shift.columns);
+                s.data('shift', shift);
+
+            // sets the x coordinate.
+            setXAxis(shift, s, shift.t_start);
+            $("#calendar").append(s);
+        }
+        else
+        {
+            /*
+             * this handles the shift when it's split across two days,
+             * it's basically the same as oneday shifts, but just draws it two
+             * times (one on each day).
+             *
+             * Shifts spanning over more than one day is not supported.
+             */
             var s = ich.shift(shift);
             s.css('top', getPT(shift.t_start) + "%");
             s.css('height', (100 - getPT(shift.t_start)) + "%");
@@ -279,6 +304,10 @@ function CalendarView(div, start, stop)
 
             if(!(shift.t_end.getHours() == 0 && shift.t_end.getMinutes() == 0))
             {
+                /*
+                 * skip if shifts only runs til midnight, we don't need to redraw
+                 * them on the second day.
+                 */
                 var s = ich.shift(shift);
                 s.css('top', "0%");
                 s.css('height', (getPT(shift.t_end)) + "%");
@@ -288,17 +317,6 @@ function CalendarView(div, start, stop)
                 s.data('shift', shift);
                 $("#calendar").append(s);
             }
-        }
-        else
-        {
-            var s = ich.shift(shift);
-            s.css('top', getPT(shift.t_start) + "%");
-            s.css('height', (getPT(shift.t_end) - getPT(shift.t_start)) + "%");
-            s.addClass("shift_" + shift.id);
-            s.addClass("column_" + shift.index + "of" + shift.columns);
-                s.data('shift', shift);
-            setXAxis(shift, s, shift.t_start);
-            $("#calendar").append(s);
         }
     };
 }
