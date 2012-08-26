@@ -194,6 +194,10 @@
 var cv = new CalendarView("lol",1,2);
 
 $(function(){
+  makeDayGrid();
+  makeHourGrid();
+  makeHalfHourGrid();
+
   cv.fetch();
   cv.refresh();
 

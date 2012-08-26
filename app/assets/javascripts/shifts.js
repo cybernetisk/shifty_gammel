@@ -39,6 +39,10 @@ function collides(a,b)
 
 function Group(shift)
 {
+    /*
+     * A group of shifts that overlap and needs to be sorted into columns.
+     */
+    
     this.columns = Array(new Column());
     
     this.t_start = shift.t_start;
@@ -47,6 +51,7 @@ function Group(shift)
     
     this.fits = function(shift)
     {
+        // a shift fits into a group if it's within the time range.
         return collides(this, shift);
     }
 
@@ -58,6 +63,9 @@ function Group(shift)
     
     this.push = function(shift)
     {
+        /*
+         * Add a shift to this group.
+         */
         if(this.t_start == undefined || this.t_start > shift.t_start)
             this.t_start = shift.t_start;
 
@@ -65,10 +73,15 @@ function Group(shift)
             this.t_end = shift.t_end;
         
         this.shifts.push(shift);
-        
+
+        /*
+         * We try to push it into each column, if one returns true it fitted.
+         * If not we have to try the next.
+         */
         for(var i in this.columns)
             if(this._push(i, shift)) return true;
-        
+
+        // No column fitted, let's make a new one.
         this.columns.push( new Column() );
         this._push(this.columns.length - 1, shift);
         
