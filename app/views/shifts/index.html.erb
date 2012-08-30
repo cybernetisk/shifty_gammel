@@ -171,11 +171,13 @@
       var e = $(this);
       var s = e.data('shift');
 
-      var diff = (ui.originalPosition.top - ui.position.top)
-      diff = (diff / 1000 * 24 * 4).toFixed(0) * 15 * 60 * 1000;
+      var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, ui.position.top / $("#calendar").height() * 100);
+      
+      var diff = t.valueOf() - s.t_start.valueOf();
 
-      s.t_start = new Date(s.t_start.valueOf() - diff);
-      s.t_end = new Date(s.t_end.valueOf() - diff);
+
+      s.t_start = new Date(s.t_start.valueOf() + diff);
+      s.t_end = new Date(s.t_end.valueOf() + diff);
 
       cv.refresh();
       makeEditable()
@@ -185,8 +187,8 @@
     {
       
       $(".shift").not(".ui-draggable").draggable(
-          { axis: "y",
-          grid: [10, 1000/24/4],
+          {// axis: "y",
+          grid: [100/7, 1000/24/4],
           stop: moved,
           distance: 40 });
 
@@ -218,6 +220,8 @@ $(function(){
 <div class="shift">
   <div class="content">
     <div>
+
+    <div>{{test}}</div>
     {{shift_type.title}}
     {{user.username}}
     </div>

@@ -219,14 +219,14 @@ function CalendarView(div, start, stop)
      * and rendering the shifts.
      */
     this.div = div;
-    this.start = start;
-    this.stop = stop;
+    this.start = new Date('2012-08-13');// start;
+    this.stop = new Date('2012-08-20');
 
     var duration = this.stop.valueOf() - this.start.valueOf();
     this.aday = 24 * 60 * 60 * 1000;
 
     this.days = (duration / this.aday).toFixed(0);
-
+    
     this.shiftManager = new ShiftManager();
     this.shifts = Array();
     
@@ -261,58 +261,90 @@ function CalendarView(div, start, stop)
         $(".shift_" + shift.id).remove()
         shift.day = shift.t_start.getDay();
         shift.columns = shift.group.columns.length;
-        if(start == stop)
-        {
-            var s = ich.shift(shift);
-            //find the top coordinate for the shift
-            s.css('top', this.getPT(shift.t_start) + "%");
-            // get the height. Can't use bottom coordinate as this
-            // messes up moving the shifts.
-            s.css('height', (this.getPT(shift.t_end) - this.getPT(shift.t_start)) + "%");
-            s.addClass("shift_" + shift.id);
-            s.addClass("column_" + shift.index + "of" + shift.columns);
-                s.data('shift', shift);
 
-            // sets the x coordinate. 
-            this.setXAxis(shift, s, shift.t_start);
-            $("#calendar").append(s);
-        }
-        else
+        var width = 100 / this.days / shift.columns;
+        var pos = this.timeToOffset(shift.t_start);
+
+        var i_offset = 100 / this.days / shift.columns * shift.index;
+
+        var left = pos[0] + i_offset;
+        //shift.test = typeof pos[0] + "," + typeof left + "," + typeof i_offset;
+        var top = pos[1];
+        
+        shift.test = left + "," + top
+        var height = (shift.t_end.valueOf() - shift.t_start.valueOf()) / this.aday * 100;
+        
+        var css = {'top':top.toFixed(2) + "%",
+            'left':left.toFixed(2) + "%",
+            'width':width.toFixed(2) + "%",
+            'height':height.toFixed(2) + "%"};
+        
+        var s = ich.shift(shift);
+        //find the top coordinate for the shift
+        //s.css('top', this.getPT(shift.t_start) + "%");
+        var pos = this.timeToOffset(shift.t_start);
+        
+        s.css(css);
+
+        s.addClass("shift_" + shift.id);
+        s.addClass("column_" + shift.index + "of" + shift.columns);
+            s.data('shift', shift);
+
+        // sets the x coordinate.
+        //this.setXAxis(shift, s, shift.t_start);
+        $("#calendar").append(s);
+//
+        if(top + height > 100)
         {
-            /*
-             * this handles the shift when it's split across two days,
-             * it's basically the same as oneday shifts, but just draws it two
-             * times (one on each day).
-             *
-             * Shifts spanning over more than one day is not supported.
-             */
+            css.top = (top - 100).toFixed(2) + "%"
+            css.left = (left + 1 / this.days * 100).toFixed(2) + "%"
             var s = ich.shift(shift);
-            s.css('top', this.getPT(shift.t_start) + "%");
-            s.css('height', (100 - this.getPT(shift.t_start)) + "%");
+
+            s.css(css);
+
             s.addClass("column_" + shift.index + "of" + shift.columns);
-            this.setXAxis(shift, s, shift.t_start);
             s.addClass("shift_" + shift.id);
             s.data('shift', shift);
             $("#calendar").append(s);
-
-            if(!(shift.t_end.getHours() == 0 && shift.t_end.getMinutes() == 0))
-            {
-                /*
-                 * skip if shifts only runs til midnight, we don't need to redraw
-                 * them on the second day.
-                 */
-                var s = ich.shift(shift);
-                s.css('top', "0%");
-                s.css('height', (this.getPT(shift.t_end)) + "%");
-                s.addClass("column_" + shift.index + "of" + shift.columns);
-                this.setXAxis(shift, s, shift.t_end);
-                s.addClass("shift_" + shift.id);
-                s.data('shift', shift);
-                $("#calendar").append(s);
-            }
         }
     };
 
+    this.timeToOffset = function(time)
+    {
+        var s = time.valueOf() - this.start.valueOf();
+
+        var day = Math.floor(s / this.aday);
+        var time = s - day * this.aday;
+
+        var x = (day / this.days * 100);
+        var y = (time / this.aday * 100);
+
+        return Array(x,y);
+    }
+
+    this.offsetToTime = function(x,y)
+    {
+        var day = Math.round(x / 100.0 * this.days);
+        var time = y / 100.0;
+        
+        time = day + time;
+        
+        time = Math.round(time * this.aday);
+        time += this.start.valueOf();
+
+        return new Date(time);
+    }
+
+    this.positionShift = function(s, n)
+    {
+        if(n == undefined)
+            n = false;
+
+        var s = s.t_start.valueOf() - this.start.valueOf();
+
+        day = s / this.aday;
+        
+    }
 
     this.setXAxis = function (e, s, d)
     {
