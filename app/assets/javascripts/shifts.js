@@ -222,8 +222,8 @@ function CalendarView(div, start, stop)
      * and rendering the shifts.
      */
     this.div = div;
-    this.start = new Date('2012-08-27');// start;
-    this.stop = new Date('2012-09-03');
+    this.start = start;//new Date('2012-08-27');// start;
+    this.stop = stop;// new Date('2012-09-03');
 
     var duration = this.stop.valueOf() - this.start.valueOf();
     this.aday = 24 * 60 * 60 * 1000;
@@ -302,7 +302,8 @@ function CalendarView(div, start, stop)
         var css = {'top':top.toFixed(2) + "%",
             'left':left.toFixed(2) + "%",
             'width':width.toFixed(2) + "%",
-            'height':height.toFixed(2) + "%"};
+            'height':height.toFixed(2) + "%",
+            'z-index':top.toFixed(0)};
 
         var cmp = css.top + css.left + css.width + css.height;
 
@@ -326,6 +327,7 @@ function CalendarView(div, start, stop)
         {
             css.top = (top - 100).toFixed(2) + "%"
             css.left = (left + 1 / this.days * 100).toFixed(2) + "%"
+            css['z-index'] = (top - 100).toFixed(2);
             var s = ich.shift(shift);
 
             s.css(css);

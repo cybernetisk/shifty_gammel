@@ -170,8 +170,12 @@
 
     }
     
+var s = new Date();
+s.setHours(0);
 
-var cv = new CalendarView("lol",1,2);
+s = new Date(s.valueOf() - (s.getDay() - 1) * 24 * 3600 * 1000);
+var e = new Date(s.valueOf() + 7 * 24*3600*1000);
+var cv = new CalendarView("lol",s,e);
 
 $(function(){
   makeDayGrid();
