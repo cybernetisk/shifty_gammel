@@ -10,10 +10,14 @@
 }
 
 table#availableShifts{
-	width: 930px;
+	width: 100%;
 	margin-top: 0px;
 	font: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	color: #373737;
+}
+
+#mr {
+	margin-right: 15px;
 }
 
 #availableShifts td{
