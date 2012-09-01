@@ -22,6 +22,7 @@
 
 body {
 	margin: 0px;
+	padding-left: 15px;
 	background: url(top_bg.gif);
 	background-repeat: repeat-x;
 	font-family: Verdana, Arial, sans-serif;
