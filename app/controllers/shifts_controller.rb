@@ -1,12 +1,25 @@
 class ShiftsController < ApplicationController
   def index
-    @shifts = Shift.all
+    
+    if params[:start] and params[:stop]
+      if params[:updated]
+        @shifts = Shift.where("updated_at > :updated AND ((start >= :start AND start <= :end) or (end >= :start AND end <= :end))", {:start=>params[:start], :end=>params[:stop], :updated=>params[:updated]})
 
+      else
+
+        @shifts = Shift.where("(start >= :start AND start <= :end) or (end >= :start AND end <= :end)", {:start=>params[:start], :end=>params[:stop]})
+
+      end
+      respond_to do |format|
+        format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
+      end
+      return
+    end
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
     end
   end
+
 
   def take_shift
     @shift = Shift.find(params[:id])

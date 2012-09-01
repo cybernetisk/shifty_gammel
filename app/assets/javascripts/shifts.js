@@ -1,37 +1,47 @@
 function getDate(date)
 {
-    return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+    var y = date.getFullYear();
+    var m = date.getMonth() + 1;
+    var d = date.getDate();
+    if(m < 10) m = "0" + m;
+    if(d < 10) d  = "0" + d;
+
+    return y + "-" + m + "-" + d;
 }
 
-function TimeAxis()
-{
-    this.start = 0;
-    this.stop = 24*60;
+function getISODateTime(d){
+    // padding function
+    var s = function(a,b){return(1e15+a+"").slice(-b)};
 
-    this.intervals = 60;
-
-    this.lines = function(){
-        var result = Array();
-        for(var i = this.start; i < this.stop; i+= this.intervals)
-            result.push(i);
-        return result;
+    // default date parameter
+    if (typeof d === 'undefined'){
+        d = new Date();
     };
 
-    this.convert = function(date){
-        var hour = date.getHour();
-        var minute = date.getMinute();
-        return (hour * 60 + minute - this.start) / (this.stop - this.start);
-    };
-
-    this.c = this.convert;
+    // return ISO datetime
+    return d.getFullYear() + '-' +
+        s(d.getMonth()+1,2) + '-' +
+        s(d.getDate(),2) + ' ' +
+        s(d.getHours(),2) + ':' +
+        s(d.getMinutes(),2) + ':' +
+        s(d.getSeconds(),2);
 }
+
 function collides(a,b)
 {
-    if(a.t_start <= b.t_start &&
-        a.t_end > b.t_start)
+    if(a.start <= b.start &&
+        a.end > b.start)
             return true;
-    if(b.t_start <= a.t_start &&
-        b.t_end > a.t_start)
+    if(b.start <= a.start &&
+        b.end > a.start)
+            return true;
+
+    if(b.start < a.start &&
+        b.end > a.end)
+            return true;
+
+    if(a.start < b.start &&
+        a.end > b.end)
             return true;
 
     return false;
@@ -45,8 +55,8 @@ function Group(shift)
     
     this.columns = Array(new Column());
     
-    this.t_start = shift.t_start;
-    this.t_end = shift.t_end;
+    this.start = shift.start;
+    this.end = shift.end;
     this.shifts = Array();
     
     this.fits = function(shift)
@@ -66,11 +76,11 @@ function Group(shift)
         /*
          * Add a shift to this group.
          */
-        if(this.t_start == undefined || this.t_start > shift.t_start)
-            this.t_start = shift.t_start;
+        if(this.start == undefined || this.start > shift.start)
+            this.start = shift.start;
 
-        if(this.t_end == undefined || this.t_end < shift.t_end)
-            this.t_end = shift.t_end;
+        if(this.end == undefined || this.end < shift.end)
+            this.end = shift.end;
         
         this.shifts.push(shift);
 
@@ -139,15 +149,8 @@ function ShiftManager()
     
     this.groups = Array();
 
-    this.axis = new TimeAxis()
-
     this.addShift = function(shift)
     {
-        if(shift.t_start == undefined)
-        {
-            shift.t_start = new Date(shift.start);
-            shift.t_end = new Date(shift.end);
-        }
         shift.changed = true;
 
         var matches = Array();
@@ -219,8 +222,8 @@ function CalendarView(div, start, stop)
      * and rendering the shifts.
      */
     this.div = div;
-    this.start = new Date('2012-08-13');// start;
-    this.stop = new Date('2012-08-20');
+    this.start = new Date('2012-08-27');// start;
+    this.stop = new Date('2012-09-03');
 
     var duration = this.stop.valueOf() - this.start.valueOf();
     this.aday = 24 * 60 * 60 * 1000;
@@ -228,7 +231,7 @@ function CalendarView(div, start, stop)
     this.days = (duration / this.aday).toFixed(0);
     
     this.shiftManager = new ShiftManager();
-    this.shifts = Array();
+    this.shifts = {};
     
     this.refresh = function()
     {
@@ -236,53 +239,80 @@ function CalendarView(div, start, stop)
         
         for(var i in this.shifts)
             this.shiftManager.addShift(this.shifts[i]);
-        
-        for(var i in this.shifts)
-            this.renderShift(this.shifts[i]);
 
+        this.render();
     };
 
+    this.render = function()
+    {
+        for(var i in this.shifts)
+            if(this.shifts[i].changed)
+                this.renderShift(this.shifts[i]);
+    }
+
+    this.last_update = false;
+
+    this.update = function()
+    {
+        if(this.fetch())
+            this.refresh();
+    }
+    
     this.fetch = function()
     {
+        var data = {start:getDate(this.start), stop:getDate(this.stop) };
+        if(this.last_update)
+            data['updated'] = this.last_update;
         
-        var res = $.ajax('/shifts/calendar.json', {async:   false});
-
+        var res = $.ajax('/shifts/calendar.json', {type:'post',
+            data:data, async:   false});
+            
         data = jQuery.parseJSON(res.responseText);
         for(var i in data)
-            this.shifts.push(data[i]);
+        {
+            var shift = data[i];
+
+            if(this.last_update == false || shift.updated_at > this.last_update)
+                this.last_update = shift.updated_at;
+
+            shift.start = new Date(shift.start);
+            shift.end = new Date(shift.end);
+            this.shifts[shift.id] = shift;
+        }
+
+        return data.length > 0;
     };
     
     this.renderShift = function(shift)
     {
-        var start = getDate(shift.t_start);
-        var stop = getDate(shift.t_end);
-    //    shift.columns = shift.group.columns.length;
-
-        $(".shift_" + shift.id).remove()
-        shift.day = shift.t_start.getDay();
+        shift.day = shift.start.getDay();
         shift.columns = shift.group.columns.length;
 
         var width = 100 / this.days / shift.columns;
-        var pos = this.timeToOffset(shift.t_start);
+        var pos = this.timeToOffset(shift.start);
 
         var i_offset = 100 / this.days / shift.columns * shift.index;
 
         var left = pos[0] + i_offset;
-        //shift.test = typeof pos[0] + "," + typeof left + "," + typeof i_offset;
         var top = pos[1];
         
         shift.test = left + "," + top
-        var height = (shift.t_end.valueOf() - shift.t_start.valueOf()) / this.aday * 100;
+        var height = (shift.end.valueOf() - shift.start.valueOf()) / this.aday * 100;
         
         var css = {'top':top.toFixed(2) + "%",
             'left':left.toFixed(2) + "%",
             'width':width.toFixed(2) + "%",
             'height':height.toFixed(2) + "%"};
-        
+
+        var cmp = css.top + css.left + css.width + css.height;
+
+        if(cmp == shift.last)
+            return;
+        shift.last = cmp;
+
+        $(".shift_" + shift.id).remove()
         var s = ich.shift(shift);
-        //find the top coordinate for the shift
-        //s.css('top', this.getPT(shift.t_start) + "%");
-        var pos = this.timeToOffset(shift.t_start);
+        var pos = this.timeToOffset(shift.start);
         
         s.css(css);
 
@@ -290,8 +320,6 @@ function CalendarView(div, start, stop)
         s.addClass("column_" + shift.index + "of" + shift.columns);
             s.data('shift', shift);
 
-        // sets the x coordinate.
-        //this.setXAxis(shift, s, shift.t_start);
         $("#calendar").append(s);
 //
         if(top + height > 100)
@@ -325,7 +353,8 @@ function CalendarView(div, start, stop)
     this.offsetToTime = function(x,y)
     {
         var day = Math.round(x / 100.0 * this.days);
-        var time = y / 100.0;
+
+        var time = Math.round(y / 100.0 * 900) / 900;
         
         time = day + time;
         
@@ -333,39 +362,5 @@ function CalendarView(div, start, stop)
         time += this.start.valueOf();
 
         return new Date(time);
-    }
-
-    this.positionShift = function(s, n)
-    {
-        if(n == undefined)
-            n = false;
-
-        var s = s.t_start.valueOf() - this.start.valueOf();
-
-        day = s / this.aday;
-        
-    }
-
-    this.setXAxis = function (e, s, d)
-    {
-        /*
-         *  a hack to convert time into a horizontal coordinate. Should be handled
-         *  in the calendar view relative to start and stop values set there.
-         */
-        var day = (d.getDay() - 1) / 7.0 * 100;
-
-        var p = parseFloat(e.index) / e.columns;
-
-        var per = p / 7.0 * 100 + day;
-        var width= (1.0 / 7 / e.columns * 100).toFixed(3);
-        s.css('right', (100 - per - width) + "%");
-        s.css("left", per + "%");
-    }
-
-
-    this.getPT = function (s)
-    {
-        // converts hours and minutes into a top value
-        return ((s.getHours() + s.getMinutes() / 60.0)/24.0*100).toFixed(3);
     }
 }

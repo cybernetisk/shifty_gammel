@@ -22,7 +22,7 @@ Railsdemo::Application.routes.draw do
   match 'shifts/getAvailableDates' => 'shifts#getAvailableDates', :as => :shift_available_dates
   match 'shifts/getUnavailableDates' => 'shifts#getUnavailableDates', :as => :shift_unavailable_dates
   match 'shifts/calendar' => 'shifts#index', :as => :shifts_calendar
-  
+
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
   
