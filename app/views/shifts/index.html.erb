@@ -113,10 +113,9 @@
       }
       else
       {
-        var diff = (ui.originalSize.height - ui.size.height)
-        diff = (diff / 1000 * 24 * 4).toFixed(0) * 15 * 60 * 1000;
 
-        s.end = new Date(s.end.valueOf() - diff);
+        var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, (ui.position.top + ui.size.height) / $("#calendar").height() * 100);
+        s.end = t;
       }
 
       cv.refresh();
@@ -195,7 +194,7 @@ $(function(){
     
   });
 
-  //window.setInterval(function(){cv.update();}, 5000);
+  window.setInterval(function(){cv.update();makeEditable()}, 5000);
 })
 </script>
 <div id="changes"></div>

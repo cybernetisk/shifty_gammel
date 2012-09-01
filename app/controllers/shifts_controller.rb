@@ -3,6 +3,7 @@ class ShiftsController < ApplicationController
     
     if params[:start] and params[:stop]
       if params[:updated]
+        params[:updated] = DateTime.parse params[:updated]
         @shifts = Shift.where("updated_at > :updated AND ((start >= :start AND start <= :end) or (end >= :start AND end <= :end))", {:start=>params[:start], :end=>params[:stop], :updated=>params[:updated]})
 
       else
