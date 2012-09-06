@@ -1,6 +1,6 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
 <% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
-
+<div id="picker"></div>
 <div id="calendar">
 
 </div>
@@ -25,7 +25,7 @@
   position:absolute;
   top:0px;
   bottom:0px;
-  width:0px;
+  /*width:0px;*/
 }
 .hourline
 {
@@ -115,7 +115,7 @@
       {
 
         var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, (ui.position.top + ui.size.height) / $("#calendar").height() * 100);
-        s.end = t;
+        s.end = t;WeekPicker
       }
 
       cv.refresh();
@@ -169,16 +169,22 @@
          });
 
     }
-    
-var s = new Date();
-s.setHours(0);
 
-s = new Date(s.valueOf() - (s.getDay() - 1) * 24 * 3600 * 1000);
-var e = new Date(s.valueOf() + 7 * 24*3600*1000);
-var cv = new CalendarView("lol",s,e);
+var cv = false;
+
 
 $(function(){
-  makeDayGrid();
+  var s = new Date();
+  s.setHours(0);
+
+  s = new Date().moveToDayOfWeek(1, -1);
+  
+ 
+  var e = new Date(s).add(7).days();
+
+  cv = new CalendarView($("#calendar"),s,e);
+  new WeekPicker($("#picker"), s, e, cv);
+  //makeDayGrid();
   makeHourGrid();
   makeHalfHourGrid();
 
@@ -187,7 +193,9 @@ $(function(){
 
   makeEditable();
   //$( "#calendar").selectable({'filter':'.shift'});
-
+   
+   
+   
   $("#calendar").mousedown(function(e){
     p = e.srcElement;
     while(p != this && !$(p).hasClass("shift"))

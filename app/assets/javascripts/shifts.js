@@ -176,17 +176,7 @@ function ShiftManager()
 }
 
 
-function makeDayGrid()
-{
-    for(var i = 0; i < 7; i++)
-    {
-        var l = (i / 7.0 * 100).toFixed(3);
-        var d = $("<div />");
-        d.addClass("dayline");
-        d.css('left', l + "%");
-        $("#calendar").append(d);
-    }
-}
+
 
 function makeHourGrid()
 {
@@ -222,13 +212,6 @@ function CalendarView(div, start, stop)
      * and rendering the shifts.
      */
     this.div = div;
-    this.start = start;//new Date('2012-08-27');// start;
-    this.stop = stop;// new Date('2012-09-03');
-
-    var duration = this.stop.valueOf() - this.start.valueOf();
-    this.aday = 24 * 60 * 60 * 1000;
-
-    this.days = (duration / this.aday).toFixed(0);
     
     this.shiftManager = new ShiftManager();
     this.shifts = {};
@@ -249,7 +232,7 @@ function CalendarView(div, start, stop)
             if(this.shifts[i].changed)
                 this.renderShift(this.shifts[i]);
     }
-
+    
     this.last_update = false;
 
     this.update = function()
@@ -365,4 +348,99 @@ function CalendarView(div, start, stop)
 
         return new Date(time);
     }
+
+    this.makeDayGrid = function ()
+    {
+        for(var i = 0.0; i < this.days; i++)
+        {
+        }
+    }
+
+    this.setTime = function(start, stop)
+    {
+        this.start = start;//new Date('2012-08-27');// start;
+        this.stop = stop;// new Date('2012-09-03');
+
+        var duration = this.stop.valueOf() - this.start.valueOf();
+        this.aday = 24 * 60 * 60 * 1000;
+
+        this.days = (duration / this.aday).toFixed(0);
+        
+        this.fetch();
+        this.refresh();
+    }
+    this.setTime(start, stop);
+
+
+    //new WeekGrid(this.div, this.start, this.stop);
+}
+
+
+function WeekGrid(div, start, stop)
+{
+    this.div = div;
+    this.start = start;
+    this.stop = stop;
+    this.days = (this.stop.valueOf() - this.start.valueOf()) / (24 * 3600 * 1000);
+
+    this.refresh = function()
+    {
+        for(var i = 0; i < this.days; i++)
+        {
+            $(".dayline").remove()
+            var l = (i / this.days * 100).toFixed(3);
+            var d = $("<div />");
+            d.addClass("dayline");
+            d.css('left', l + "%");
+
+            var date = new Date(this.start).add(i).days();
+            d.text(date.toString("d/M/yyyy"));
+
+            $(this.div).append(d);
+        }
+    }
+}
+
+
+function WeekPicker(div, start, end, cv)
+{
+
+    this.start = start;
+    this.end = end;
+    this.cv = cv;
+    this.div = div;
+    
+    this.prev = function()
+    {
+        this.start.add(-1).days();
+        this.end.add(-1).days();
+        this.cv.setTime(this.start, this.end);
+        this.update();
+    }
+    
+    this.next = function()
+    {
+        this.start.add(1).days();
+        this.end.add(1).days();
+        this.cv.setTime(this.start, this.end);
+        this.update();
+    }
+    
+    this.update = function()
+    {
+        var c = $("<div>");
+        
+        var p = $('<a href="#">Prev</a>');
+        
+        var m = this;
+        p.click(function(){m.prev();});
+        
+        var n = $('<a href="#">Next</a>');
+        n.click(function(){m.next();});
+        
+        c.append(p);
+        c.append(n);
+        $(this.div).html(c);
+    }
+    this.update();
 }
