@@ -3,13 +3,12 @@ class ShiftsController < ApplicationController
     
     if params[:start] and params[:stop]
       if params[:updated]
-        params[:updated] = DateTime.parse params[:updated]
+        params[:updated] = 1.seconds.since DateTime.parse params[:updated]
         @shifts = Shift.where("updated_at > :updated AND ((start >= :start AND start <= :end) or (end >= :start AND end <= :end))", {:start=>params[:start], :end=>params[:stop], :updated=>params[:updated]})
 
       else
 
         @shifts = Shift.where("(start >= :start AND start <= :end) or (end >= :start AND end <= :end)", {:start=>params[:start], :end=>params[:stop]})
-
       end
       respond_to do |format|
         format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }

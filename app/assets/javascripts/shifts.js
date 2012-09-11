@@ -203,6 +203,43 @@ function makeHalfHourGrid()
 }
 
 
+function DataSource(uri, start, stop)
+{
+    this.uri = uri;
+    this.start = start;
+    this.stop = stop;
+    
+    this.fetch = function()
+    {
+        if(cancelable == undefined) cancelable = true;
+        var data = {start:getDate(this.start), stop:getDate(this.stop) };
+        if(this.last_update)
+            data['updated'] = this.last_update;
+        
+        var cv = this;
+        if(this.query != undefined)
+        {
+            if(!this.cancelable)
+                return;
+            this.query.abort();
+        }
+        
+        this.cancelable = cancelable;
+        
+        
+        this.query = $.post('/shifts/calendar.json',data,
+        
+        function(data)
+        { 
+            cv.handleData(data);
+        });
+    }
+    
+    this.handleData(data)
+    {
+        
+    }
+}
 
 
 function CalendarView(div, start, stop)
@@ -215,6 +252,7 @@ function CalendarView(div, start, stop)
     
     this.shiftManager = new ShiftManager();
     this.shifts = {};
+    this.weekgrid = new WeekGrid(div, start, stop);
     
     this.refresh = function()
     {
@@ -224,6 +262,7 @@ function CalendarView(div, start, stop)
             this.shiftManager.addShift(this.shifts[i]);
 
         this.render();
+        this.weekgrid.refresh();
     };
 
     this.render = function()
@@ -241,16 +280,35 @@ function CalendarView(div, start, stop)
             this.refresh();
     }
     
-    this.fetch = function()
+    
+    this.fetch = function(cancelable)
     {
+        if(cancelable == undefined) cancelable = true;
         var data = {start:getDate(this.start), stop:getDate(this.stop) };
         if(this.last_update)
             data['updated'] = this.last_update;
         
-        var res = $.ajax('/shifts/calendar.json', {type:'post',
-            data:data, async:   false});
-            
-        data = jQuery.parseJSON(res.responseText);
+        var cv = this;
+        if(this.query != undefined)
+        {
+            if(!this.cancelable)
+                return;
+            this.query.abort();
+        }
+        
+        this.cancelable = cancelable;
+        
+        
+        this.query = $.post('/shifts/calendar.json',data,
+        
+            function(data)
+            { 
+                cv.handleData(data);
+            });
+    };
+    
+    this.handleData = function(data)
+    {
         for(var i in data)
         {
             var shift = data[i];
@@ -263,8 +321,11 @@ function CalendarView(div, start, stop)
             this.shifts[shift.id] = shift;
         }
 
-        return data.length > 0;
-    };
+        if(data.length > 0)
+            this.refresh();
+        
+        this.query = undefined;
+    }
     
     this.renderShift = function(shift)
     {
@@ -291,7 +352,9 @@ function CalendarView(div, start, stop)
         var cmp = css.top + css.left + css.width + css.height;
 
         if(cmp == shift.last)
+        {
             return;
+        }
         shift.last = cmp;
 
         $(".shift_" + shift.id).remove()
@@ -365,14 +428,13 @@ function CalendarView(div, start, stop)
         this.aday = 24 * 60 * 60 * 1000;
 
         this.days = (duration / this.aday).toFixed(0);
+        this.last_update = false;
         
-        this.fetch();
-        this.refresh();
+        this.fetch(false);
     }
     this.setTime(start, stop);
 
 
-    //new WeekGrid(this.div, this.start, this.stop);
 }
 
 
@@ -385,9 +447,9 @@ function WeekGrid(div, start, stop)
 
     this.refresh = function()
     {
+        $(".dayline").remove()
         for(var i = 0; i < this.days; i++)
         {
-            $(".dayline").remove()
             var l = (i / this.days * 100).toFixed(3);
             var d = $("<div />");
             d.addClass("dayline");
@@ -410,7 +472,7 @@ function WeekPicker(div, start, end, cv)
     this.cv = cv;
     this.div = div;
     
-    this.prev = function()
+    this.prevDay = function()
     {
         this.start.add(-1).days();
         this.end.add(-1).days();
@@ -418,10 +480,26 @@ function WeekPicker(div, start, end, cv)
         this.update();
     }
     
-    this.next = function()
+    this.nextDay = function()
     {
         this.start.add(1).days();
         this.end.add(1).days();
+        this.cv.setTime(this.start, this.end);
+        this.update();
+    }
+    
+    this.prevWeek = function()
+    {
+        this.start.add(-7).days();
+        this.end.add(-7).days();
+        this.cv.setTime(this.start, this.end);
+        this.update();
+    }
+    
+    this.nextWeek = function()
+    {
+        this.start.add(7).days();
+        this.end.add(7).days();
         this.cv.setTime(this.start, this.end);
         this.update();
     }
@@ -430,16 +508,20 @@ function WeekPicker(div, start, end, cv)
     {
         var c = $("<div>");
         
-        var p = $('<a href="#">Prev</a>');
-        
         var m = this;
-        p.click(function(){m.prev();});
         
-        var n = $('<a href="#">Next</a>');
-        n.click(function(){m.next();});
+        function addLink(text, func)
+        {
+            var p = $('<a href="#">' + text + '</a>');
+            p.click(func);
+            c.append(p);
+        }
         
-        c.append(p);
-        c.append(n);
+        addLink('Previous week', function(){m.prevWeek();});
+        addLink('Prev day', function(){m.prevDay();});
+        addLink('Next day', function(){m.nextDay();});
+        addLink('Next week', function(){m.nextWeek();});
+        
         $(this.div).html(c);
     }
     this.update();

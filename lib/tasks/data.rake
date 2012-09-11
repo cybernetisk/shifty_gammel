@@ -12,6 +12,24 @@ namespace :data do
       end
     end
   end
+  
+  desc "Generate example half a year"
+  task :halfyear => :environment do
+    today = 6.months.since DateTime.now.beginning_of_year
+    today = today.beginning_of_week
+    print "Making shift types\n"
+    makeshifts
+    print "Making users\n"
+    genusers
+    
+    year = today.year
+    while year == today.year
+        today = 1.week.since(today)
+        print today
+        makeweek(today)
+    end
+    
+  end
 
   desc "Generate an example week"
   task :generate => :environment do
