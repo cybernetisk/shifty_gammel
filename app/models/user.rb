@@ -31,6 +31,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def getUpcomingShifts
+    
+  end
+
   def can_take_shift?(shift)
     Certification.exists?(shift_type_id: shift.shift_type, user_group_id: user_groups)
   end

@@ -114,6 +114,12 @@ class ShiftsController < ApplicationController
   
   def start
     @upcomingShifts = Shift.getUpcomingShifts
+    if current_user
+      @yourshifts = current_user.shifts.where('start > :midnight', {:midnight => Time.now.yesterday.midnight}).limit(10)
+    else
+      @yourshifts = []
+    end
+    
     respond_to do |format|
       format.html 
       format.json { render json: @shift }
