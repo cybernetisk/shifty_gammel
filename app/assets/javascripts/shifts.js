@@ -1,3 +1,9 @@
+function assert(value, str)
+{
+    if(!value)
+    throw "Assert failed";
+}
+
 function getDate(date)
 {
     var y = date.getFullYear();
@@ -390,8 +396,10 @@ function CalendarView(div, start, stop)
         var s = time.valueOf() - this.start.valueOf();
 
         var day = Math.floor(s / this.aday);
-        var time = s - day * this.aday;
-
+        var time = s % this.aday;
+        
+        assert(time < this.aday);
+        
         var x = (day / this.days * 100);
         var y = (time / this.aday * 100);
 
