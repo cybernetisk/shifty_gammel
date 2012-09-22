@@ -25,6 +25,7 @@ Railsdemo::Application.routes.draw do
 
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
+  match 'shifts/:id/duplicate' => 'shifts#duplicate', :as=>:shift_duplicate
   
   match 'admin' => 'users#admin', :as=>:admin
   

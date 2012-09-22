@@ -45,6 +45,14 @@ class ShiftsController < ApplicationController
     end
   end
 
+  def duplicate
+    @shift = Shift.find(params[:id])
+
+    @dup = @shift.dup
+    @dup.save
+
+    redirect_to @dup
+  end
 
   def take_shift
     @shift = Shift.find(params[:id])
