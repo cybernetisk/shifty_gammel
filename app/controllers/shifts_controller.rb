@@ -25,6 +25,7 @@ class ShiftsController < ApplicationController
       return
     end
     @shifttypes = ShiftType.all
+    
     respond_to do |format|
       format.html # index.html.erb
     end

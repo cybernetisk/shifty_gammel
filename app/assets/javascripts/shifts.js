@@ -558,3 +558,40 @@ function WeekPicker(div, start, end, cv)
     }
     this.update();
 }
+
+function FilterList(con, name, options, cv)
+{
+    this.cv = cv;
+    this.options = options;
+
+    this.element = $('<div />');
+    x.addClass("picker")
+
+    if("multiple" in options)
+    {
+        delete options['multiple'];
+        x.addClass("multiple")
+    }
+
+    for(var i in options)
+    {
+        var tmp = $('<div />');
+        tmp.addClass('option');
+        tmp.html(options[i]);
+        tmp.data('id', i);
+
+        x.append(tmp)
+    }
+
+    var a = this;
+    var tmp = function(){
+        var selected = $(".option.selected", a.element).data('id');
+        var tmp = {}
+        tmp[a.name] = selected;
+        cv.filter(tmp);
+    }
+
+    $(".option", x).live('click', function(){ this.toggleClass('selected');});
+
+    con.append(x)
+}
