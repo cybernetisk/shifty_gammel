@@ -72,6 +72,8 @@ class UserGroupsController < ApplicationController
     @user_group = UserGroup.find(params[:id])
   end
 
+
+
   def update_certifications
     @user_group = UserGroup.find(params[:id])
     @user_group.certifications.destroy_all
@@ -125,6 +127,15 @@ class UserGroupsController < ApplicationController
 
     redirect_to @user_group
   end
+
+  def adduser
+    @group = UserGroup.find(params[:id])
+
+    @users = User.select("id not in :usergroup", @group.users)
+    
+    
+  end
+
 
   def add_user
     @group = UserGroup.find(params[:id])

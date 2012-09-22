@@ -10,10 +10,14 @@ class ShiftsController < ApplicationController
 
         @shifts = Shift.where("(start >= :start AND start <= :end) or (end >= :start AND end <= :end)", {:start=>params[:start], :end=>params[:stop]})
       end
-
-      if params[:filter] and params[:filter][:shift_type]
-        
-        @shifts = @shifts.where("shift_type_id = ?", params[:filter][:shift_type])
+      
+      if params[:filter] 
+        if params[:filter][:shift_type]
+          @shifts = @shifts.where("shift_type_id IN (?)", params[:filter][:shift_type])
+        end
+        if params[:filter][:user_id]
+          @shifts = @shifts.where("user_id IN (?)", params[:filter][:user_id])
+        end
       end
       respond_to do |format|
         format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
