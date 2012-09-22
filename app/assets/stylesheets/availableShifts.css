@@ -39,7 +39,7 @@ table#availableShifts{
 	color: #3E4C00;
 }
 
-.pickType {
+.pickType, .picker .option {
 	width: 125px;
 	float: left;
 	margin: 10px 5px 10px 0px;
@@ -54,7 +54,26 @@ table#availableShifts{
 	font-weight: 600;
 }
 
-.picked {
+.picker .option
+{
+    float: none;
+}
+.picker
+{
+    float:left;
+}
+
+
+#filters:after
+{
+    content:'.';
+    display:block;
+    clear:both;
+    visibility:hidden;
+    height:0px;
+}
+
+.picked, .picker .option.selected {
 	background-color: #93B300;
 }
 

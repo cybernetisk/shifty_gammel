@@ -18,14 +18,24 @@ class ShiftsController < ApplicationController
         if params[:filter][:user_id]
           @shifts = @shifts.where("user_id IN (?)", params[:filter][:user_id])
         end
+        if params[:filter][:taken]
+          tmp = params[:filter][:taken]
+          taken = tmp.index('0') != nil
+
+          if not taken
+            @shifts = @shifts.where("user_id IS NULL")
+          else
+            @shifts = @shifts.where("user_id IS NOT NULL")
+          end
+        end
       end
       respond_to do |format|
         format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
       end
       return
     end
-    @shifttypes = ShiftType.all
-    
+    @shifttypes = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
+
     respond_to do |format|
       format.html # index.html.erb
     end

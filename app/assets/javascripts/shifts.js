@@ -559,7 +559,7 @@ function WeekPicker(div, start, end, cv)
     this.update();
 }
 
-function FilterList(con, name, options, cv)
+function FilterList(con, label, name, options, cv, multiple)
 {
     this.cv = cv;
     this.options = options;
@@ -567,12 +567,10 @@ function FilterList(con, name, options, cv)
 
     this.element = $('<div />');
     this.element.addClass("picker")
+    this.element.append("<h3>" + label + "</h3>");
 
-    if("multiple" in options)
-    {
-        delete options['multiple'];
-        this.element.addClass("multiple")
-    }
+    this.multiple = multiple;
+    if(this.multiple == undefined) this.multiple = false;
 
     for(var i in options)
     {
@@ -596,7 +594,14 @@ function FilterList(con, name, options, cv)
         cv.filter(tmp);
     }
 
-    $(".option", this.element).click(function(){ $(this).toggleClass('selected'); updateCV();});
+    if(this.multiple)
+        $(".option", this.element).click(function(){ $(this).toggleClass('selected'); updateCV();});
+    else
+        $(".option", this.element).click(function(){ 
+            $(this).parent().children(".selected").not(this).removeClass("selected");
+            $(this).toggleClass('selected'); 
+            updateCV();
+        });
 
     con.append(this.element)
 }
