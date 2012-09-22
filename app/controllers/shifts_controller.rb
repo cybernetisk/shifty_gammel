@@ -1,6 +1,10 @@
 class ShiftsController < ApplicationController
   def index
     
+    if params[:user_id]
+      @user = User.find(params[:user_id])
+    end
+
     if params[:start] and params[:stop]
       if params[:updated]
         params[:updated] = 1.seconds.since DateTime.parse params[:updated]
@@ -10,7 +14,7 @@ class ShiftsController < ApplicationController
 
         @shifts = Shift.where("(start >= :start AND start <= :end) or (end >= :start AND end <= :end)", {:start=>params[:start], :end=>params[:stop]})
       end
-      
+
       if params[:filter] 
         if params[:filter][:shift_type]
           @shifts = @shifts.where("shift_type_id IN (?)", params[:filter][:shift_type])

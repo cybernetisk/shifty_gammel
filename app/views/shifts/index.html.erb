@@ -238,7 +238,10 @@ $(function(){
   
   new FilterList($("#filters"), "Shift types", "shift_type", <%= @shifttypes.to_json.html_safe %>, cv, true);
   new FilterList($("#filters"), "Taken", "taken", {0:'Taken', 1:'Available'}, cv);
+  <% if @user %>
 
+  new FilterList($("#filters"), "User", "user_id", {<%= @user.id %>:"<%= @user.username %>"}, cv);
+  <% end %>
   $("#calendar").mousedown(function(e){
     p = e.srcElement;
     while(p != this && !$(p).hasClass("shift"))
@@ -256,6 +259,7 @@ $(function(){
 
 <script id="shift" type="text/html">
 <div class="shift">
+  <a href="/shifts/{{id}}">
   <div class="content">
     <div>{{ start_time }}</div>
     <div>
@@ -265,5 +269,6 @@ $(function(){
     </div>
     <div>{{ end_time }}</div>
   </div>
+  </a>
 </div>
 </script>
