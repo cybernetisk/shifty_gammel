@@ -572,16 +572,6 @@ function FilterList(con, label, name, options, cv, multiple)
     this.multiple = multiple;
     if(this.multiple == undefined) this.multiple = false;
 
-    for(var i in options)
-    {
-        var tmp = $('<div />');
-        tmp.addClass('option');
-        tmp.html(options[i]);
-        tmp.data('id', i);
-
-        this.element.append(tmp)
-    }
-
     var a = this;
     var updateCV = function(){
         var selected = Array();
@@ -593,6 +583,20 @@ function FilterList(con, label, name, options, cv, multiple)
         tmp[a.name] = selected;
         cv.filter(tmp);
     }
+
+
+    for(var i in options)
+    {
+        var tmp = $('<div />');
+        tmp.addClass('option');
+        tmp.html(options[i]);
+        tmp.data('id', i);
+        if(window.location.hash.indexOf(options[i]) != -1)
+            tmp.addClass("selected");
+        this.element.append(tmp)
+    }
+
+    updateCV();
 
     if(this.multiple)
         $(".option", this.element).click(function(){ $(this).toggleClass('selected'); updateCV();});
