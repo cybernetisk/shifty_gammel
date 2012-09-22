@@ -117,6 +117,15 @@ class UsersController < ApplicationController
     render json: @users
   end
 
+  def shifts
+    if params.has_key?(:id)
+      @user = User.find(params[:id])
+
+      @shift = @user.shifts.where(:start => DateTime.now)
+    end
+    render html: {user:@user}
+  end
+
   def ticket
     
     if params.has_key?(:id)

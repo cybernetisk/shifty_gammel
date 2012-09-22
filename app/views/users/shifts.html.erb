@@ -1,0 +1,19 @@
+<table>
+    <tr>
+        <th>Tittel</th>
+        <th>Start</th>
+        <th>Stopp</th>
+        <th>Varighet</th>
+        <th>Kommentar</th>
+    </tr>
+<% @user.shifts.where("start >= ?", Date.today).each do | shift | %>
+    <tr>
+        <td><%= link_to shift.shift_type.title, shift %></td>
+        <td><%= shift.start %></td>
+        <td><%= shift.end %></td>
+        <td><%= shift.duration %></td>
+        <td><%= shift.comment %></td>
+        <td><%= link_to 'Cancel', '#' %></td>
+    </tr>
+<% end %>
+</table>
