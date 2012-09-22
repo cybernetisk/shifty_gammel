@@ -7,8 +7,9 @@
 		<h2>Shift types</h2>
 	
 		<ul>
-			<li><a href="#">Manage shift types</a></li>
-			<li><a href="#">Add new shift type</a></li>
+		<ul>
+			<li><%= link_to "Manage shift types", :controller => "shift_types", :action => "index" %></li>
+			<li><%= link_to "Add new shift type", :controller => "shift_types", :action => "new" %></li>
 		</ul>
 	</div>
 </div>
@@ -18,8 +19,19 @@
 		<h2>Users</h2>
 		
 		<ul>
-			<li><a href="#">Manage users</a></li>
-			<li><a href="#">Add new user</a></li>
+			<li><%= link_to "Manage users", :controller => "users", :action => "index" %></li>
+			<li><%= link_to "Add new user", :controller => "users", :action => "new" %></li>
+		</ul>
+	</div>
+</div>
+
+<div id="left_div">
+	<div class="box">
+		<h2>Groups</h2>
+		
+		<ul>
+			<li><%= link_to "Manage groups", :controller => "user_groups", :action => "index" %></li>
+			<li><%= link_to "Add new group", :controller => "user_groups", :action => "new" %></li>
 		</ul>
 	</div>
 </div>
@@ -29,9 +41,9 @@
 		<h2>Tickets</h2>
 	
 		<ul>
-			<li><a href="#">Manage tickets</a></li>
-			<li><a href="#">Add new tickets</a></li>
-			<li><a href="#">Reports</a></li>
+			<li><%= link_to "Manage tickets", :controller => "tickets", :action => "index" %></li>
+			<li><%= link_to "Add new ticket", :controller => "tickets", :action => "new" %></li>
+			<li><%# link_to "Ticket reports", :controller => "tickets", :action => "reports" %></li>
 		</ul>
 	</div>
 </div>
