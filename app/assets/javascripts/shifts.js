@@ -563,14 +563,15 @@ function FilterList(con, name, options, cv)
 {
     this.cv = cv;
     this.options = options;
+    this.name = name;
 
     this.element = $('<div />');
-    x.addClass("picker")
+    this.element.addClass("picker")
 
     if("multiple" in options)
     {
         delete options['multiple'];
-        x.addClass("multiple")
+        this.element.addClass("multiple")
     }
 
     for(var i in options)
@@ -580,18 +581,22 @@ function FilterList(con, name, options, cv)
         tmp.html(options[i]);
         tmp.data('id', i);
 
-        x.append(tmp)
+        this.element.append(tmp)
     }
 
     var a = this;
-    var tmp = function(){
-        var selected = $(".option.selected", a.element).data('id');
-        var tmp = {}
+    var updateCV = function(){
+        var selected = Array();
+
+        $(".option.selected", a.element).each(function(){
+            selected.push($(this).data('id'));
+        })
+        var tmp = {};
         tmp[a.name] = selected;
         cv.filter(tmp);
     }
 
-    $(".option", x).live('click', function(){ this.toggleClass('selected');});
+    $(".option", this.element).click(function(){ $(this).toggleClass('selected'); updateCV();});
 
-    con.append(x)
+    con.append(this.element)
 }

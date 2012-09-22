@@ -9,13 +9,15 @@
 
 <% end %>
 </div>
-
+<div id="filters"></div>
 <div id="picker"></div>
 <div id="calendar">
 
 </div>
 
+<script type="text/javascript">
 
+</script>
 <style type="text/css">
 #calendar .shift
 {
@@ -239,6 +241,8 @@ $(function(){
    
    
    
+  new FilterList($("#filters"), "test", {32:'hei', 12:'test'}, cv);
+  
   $("#calendar").mousedown(function(e){
     p = e.srcElement;
     while(p != this && !$(p).hasClass("shift"))
