@@ -10,11 +10,17 @@ class ShiftsController < ApplicationController
 
         @shifts = Shift.where("(start >= :start AND start <= :end) or (end >= :start AND end <= :end)", {:start=>params[:start], :end=>params[:stop]})
       end
+
+      if params[:filter] and params[:filter][:shift_type]
+        
+        @shifts = @shifts.where("shift_type_id = ?", params[:filter][:shift_type])
+      end
       respond_to do |format|
         format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
       end
       return
     end
+    @shifttypes = ShiftType.all
     respond_to do |format|
       format.html # index.html.erb
     end

@@ -286,6 +286,7 @@ function CalendarView(div, start, stop)
             this.refresh();
     }
     
+    this._filter = {};
     
     this.fetch = function(cancelable)
     {
@@ -294,6 +295,8 @@ function CalendarView(div, start, stop)
         if(this.last_update)
             data['updated'] = this.last_update;
         
+        data['filter'] = this._filter;
+
         var cv = this;
         if(this.query != undefined)
         {
@@ -312,7 +315,23 @@ function CalendarView(div, start, stop)
                 cv.handleData(data);
             });
     };
-    
+
+    this.filter = function(filter, reset)
+    {
+        if(reset == true)
+            this._filter = {};
+
+        this._filter = $.extend(this._filter, filter);
+        this.last_update = false;
+        this.clear();
+        this.update();
+    }
+
+    this.clear = function(){
+        this.shifts = {};
+        $(".shift").remove();
+    }
+
     this.handleData = function(data)
     {
         for(var i in data)
@@ -333,6 +352,8 @@ function CalendarView(div, start, stop)
         this.query = undefined;
     }
     
+
+
     this.renderShift = function(shift)
     {
         shift.day = shift.start.getDay();
@@ -362,6 +383,9 @@ function CalendarView(div, start, stop)
             return;
         }
         shift.last = cmp;
+
+        shift.start_time = shift.start.toString("HH:mm:ss")
+        shift.end_time = shift.end.toString("HH:mm:ss")
 
         $(".shift_" + shift.id).remove()
         var s = ich.shift(shift);

@@ -1,5 +1,15 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
 <% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
+<div id="shiftTypes">
+<% @shifttypes.each do |type| %>
+  <div class="pickType" shift_type="<%= type.id %>">
+    <%= type.title %>
+
+  </div>
+
+<% end %>
+</div>
+
 <div id="picker"></div>
 <div id="calendar">
 
@@ -62,7 +72,18 @@
   border-left:2px solid red;
   border-right: 1px solid gray;
 }
+/*
+.shift:hover
+{
+  
+  z-index:101;
+}
 
+.shift:hover .content
+{
+  width: 200px;
+}
+*/
 .ui-resizable-n
 {
   height:15px;
@@ -99,6 +120,27 @@
 <%= link_to 'New shift', new_shift_path %>
 
 <script type="text/javascript">
+
+$(function(){
+  $(".pickType").live('click', function(event)
+  {
+    var x = $(".pickType.picked")
+    var id = x.attr('shift_type');
+    cv.filter({'shift_type':id});
+  });
+
+
+});
+(function($){
+    $.fn.disableSelection = function() {
+        return this
+                 .attr('unselectable', 'on')
+                 .css('user-select', 'none')
+                 .on('selectstart', false);
+    };
+
+    $("#calendar").disableSelection()
+})(jQuery);
 
     function resized(event, ui)
     {
@@ -222,8 +264,8 @@ $(function(){
     {{user.username}}
     </div>
     <div>{{id}} - {{index}}/{{columns}}</div>
-    <div>{{start}}</div>
-    <div>{{end}}</div>
+    <div>{{ start_time }}</div>
+    <div>{{ end_time }}</div>
   </div>
 </div>
 </script>
