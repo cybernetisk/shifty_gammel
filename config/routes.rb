@@ -46,6 +46,7 @@ Railsdemo::Application.routes.draw do
   get "users/:id/remove_group/:user_group" => "users#remove_group"
   get "users/:id/groups" => "users#groups"
   post "users/:id/groups" => "users#update_groups"
+  get "users/:id/ical" => "users#ical"
 
 
   # Default CRUD routes

@@ -85,6 +85,14 @@ class UsersController < ApplicationController
     redirect_to @user
   end
 
+  def ical
+    @user = User.find(params[:id])
+
+    respond_to do |format|
+      format.ics { }
+    end
+  end
+
   def remove_group
     @user = User.find(params[:id])
     group = UserGroup.find(params[:user_group])
