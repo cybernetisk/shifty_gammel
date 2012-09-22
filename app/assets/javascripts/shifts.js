@@ -583,7 +583,9 @@ function FilterList(con, label, name, options, cv, multiple)
         tmp[a.name] = selected;
         cv.filter(tmp);
     }
+    this.updateCV = updateCV;
 
+    this.element.data("FilterList", this);
 
     for(var i in options)
     {

@@ -1,7 +1,7 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
 <% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
-
-<div id="filters"></div>
+<input type="text" id="filter_search" />
+<div id="filters" class="hidden"></div>
 
 
 
@@ -113,6 +113,21 @@
   border:1px dashed grey;
   position:absolute;
 }
+
+
+#filters.hidden .picker
+{
+  display:none;
+}
+
+#filters.hidden .picker.selected
+{
+  display:block !important;
+}
+
+#filters.hidden .option.selected{ display:block !important;}
+#filters.hidden .option{display:none;}
+
 </style>
 <%= link_to 'New shift', new_shift_path %>
 
@@ -242,6 +257,34 @@ $(function(){
 
   new FilterList($("#filters"), "User", "user_id", {<%= @user.id %>:"<%= @user.username %>"}, cv);
   <% end %>
+
+  $("#filter_search").keyup(function(e)
+  {
+    var value = this.value.trim();
+    value = value.split(/\s+/);
+    for(var i = 0; i < value.length; i++) value[i] = value[i] + ".*";
+
+    value = new RegExp("(^" + value.join("|^") + ")", "i");
+
+    setTimeout(function(){
+      $(".selected").removeClass("selected");
+      var e = function(){
+        if(this.innerText.match(value))
+        {
+          $(this).addClass("selected");
+          $(this).parent().addClass("selected");
+          }
+      }
+      $(".option").each(e);
+
+      $(".picker").each(function(){
+        $(this).data("FilterList").updateCV();
+      });
+
+    },100);
+
+  });
+  
   $("#calendar").mousedown(function(e){
     p = e.srcElement;
     while(p != this && !$(p).hasClass("shift"))
