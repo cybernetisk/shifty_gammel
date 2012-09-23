@@ -1,6 +1,7 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
 <% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
 <input type="text" id="filter_search" />
+<div id="show_filter">+</div>
 <div id="filters" class="hidden"></div>
 
 
@@ -258,12 +259,31 @@ $(function(){
   new FilterList($("#filters"), "User", "user_id", {<%= @user.id %>:"<%= @user.username %>"}, cv);
   <% end %>
 
+
+  $("#show_filter").click(function(e)
+  {
+      $("#filters").toggleClass('hidden');
+    if($("#filters").hasClass("hidden"))
+    {
+      $(this).text("+");
+    }else
+    {
+      $(this).text("-");
+
+    }
+  });
   $("#filter_search").keyup(function(e)
   {
     var value = this.value.trim();
     value = value.split(/\s+/);
-    for(var i = 0; i < value.length; i++) value[i] = value[i] + ".*";
+    
+    var username = Array();
 
+    for(var i = 0; i < value.length; i++) 
+    {
+      
+      value[i] = value[i] + ".*";
+    }
     value = new RegExp("(^" + value.join("|^") + ")", "i");
 
     setTimeout(function(){
