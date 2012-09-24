@@ -97,18 +97,24 @@ class ShiftsController < ApplicationController
 
   def edit
     @shift = Shift.find(params[:id])
+    if not current_user.can_manage_shift_type?(@shift.shift_type)
+      redirect_to @shift
+    end
   end
 
   def update
     @shift = Shift.find(params[:id])
-
-    respond_to do |format|
-      if @shift.update_attributes(params[:shift])
-        format.html { redirect_to @shift, notice: 'Shift was successfully updated.' }
-        format.json { head :ok }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @shift.errors, satus: :unprocessable_entity }
+    if not current_user.can_manage_shift_type?(@shift.shift_type)
+      redirect_to @shift
+    else
+      respond_to do |format|
+        if @shift.update_attributes(params[:shift])
+          format.html { redirect_to @shift, notice: 'Shift was successfully updated.' }
+          format.json { head :ok }
+        else
+          format.html { render action: 'edit' }
+          format.json { render json: @shift.errors, satus: :unprocessable_entity }
+        end
       end
     end
   end

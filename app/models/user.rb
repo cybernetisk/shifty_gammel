@@ -39,6 +39,10 @@ class User < ActiveRecord::Base
     Certification.exists?(shift_type_id: shift.shift_type, user_group_id: user_groups)
   end
 
+  def can_manage_shift_type?(shift_type)
+    Certification.exists?(shift_type_id: shift_type, manager: 1, user_group_id: user_groups)
+  end
+
   def can_manage_group?(group)
     self.user_groups.each do |g|
       return true if g.managed_groups.exists?(group)
