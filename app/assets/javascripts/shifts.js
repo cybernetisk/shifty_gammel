@@ -562,6 +562,8 @@ function WeekPicker(div, start, end, cv)
         
         addLink('Previous week', function(){m.prevWeek();});
         addLink('Prev day', function(){m.prevDay();});
+        c.append("<span>Uke " + this.start.getWeekOfYear() + "</span>")
+
         addLink('Next day', function(){m.nextDay();});
         addLink('Next week', function(){m.nextWeek();});
         
