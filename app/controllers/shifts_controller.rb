@@ -57,13 +57,19 @@ class ShiftsController < ApplicationController
   def take_shift
     @shift = Shift.find(params[:id])
 
-    
+    if @shift.same_as != nil
+
+      respond_to do|format|
+        format.html
+      end
+      
+    else
     #if params[:confirm]
       @shift.user = User.find(session[:user_id])
       @shift.save
       
       redirect_to @shift
-    #end
+    end
   end
   
   def new

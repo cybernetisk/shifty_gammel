@@ -183,7 +183,7 @@ $(function(){
       var e = $(this);
       var s = e.data('shift');
 
-      var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, ui.position.top / $("#calendar").height() * 100);
+      var t = cv.offsetToTime(ui.position.left  / $("#calendar").width() * 100, ui.position.top / $("#calendar").height() * 100);
       
       var diff = t.valueOf() - s.start.valueOf();
 
@@ -276,32 +276,38 @@ $(function(){
   {
     var value = this.value.trim();
     value = value.split(/\s+/);
-    
+    var filter = Array()
     var username = Array();
 
     for(var i = 0; i < value.length; i++) 
     {
-      
-      value[i] = value[i] + ".*";
-    }
-    value = new RegExp("(^" + value.join("|^") + ")", "i");
-
-    setTimeout(function(){
-      $(".selected").removeClass("selected");
-      var e = function(){
-        if(this.innerText.match(value))
-        {
-          $(this).addClass("selected");
-          $(this).parent().addClass("selected");
-          }
+      if(Date.parse(value[i]))
+      {
+        cv.setTime(Date.parse(value[i]));
       }
-      $(".option").each(e);
+      else if(value[i] != "")
+        filter.push( value[i] + ".*");
+    }
 
-      $(".picker").each(function(){
-        $(this).data("FilterList").updateCV();
-      });
 
-    },100);
+    $(".selected").removeClass("selected");
+    
+    if(filter.length > 0)
+    {
+        filter = new RegExp("(^" + filter.join("|^") + ")", "i");
+
+        var e = function(){
+          if(this.innerText.match(filter))
+          {
+            $(this).addClass("selected");
+            }
+        }
+        $(".option").each(e);
+    }
+    $(".picker").each(function(){
+      $(this).data("FilterList").updateCV();
+    });
+
 
   });
   
@@ -321,7 +327,7 @@ $(function(){
 <div id="changes"></div>
 
 <script id="shift" type="text/html">
-<div class="shift">
+<div class="shift {{ shift_type.title }}">
   <a href="/shifts/{{id}}">
   <div class="content">
     <div>{{ start_time }}</div>

@@ -6,7 +6,8 @@ class Shift < ActiveRecord::Base
   belongs_to :user
   belongs_to :signed_by, :foreign_key=>'signed_by_id', :class_name=>'User'
   #has_one :user, through: :task
-
+  belongs_to :same_as, :foreign_key=>'same_as_id', :class_name=>'Shift'
+  
   before_save :add_ticket
   
   def add_ticket

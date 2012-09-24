@@ -417,6 +417,9 @@ function CalendarView(div, start, stop)
 
     this.timeToOffset = function(time)
     {
+        /*
+         * Converts Date object to x y coordinates
+         */
         var s = time.valueOf() - this.start.valueOf();
 
         var day = Math.floor(s / this.aday);
@@ -432,7 +435,10 @@ function CalendarView(div, start, stop)
 
     this.offsetToTime = function(x,y)
     {
-        var day = Math.round(x / 100.0 * this.days);
+        /*
+         * Converts x y coordinates to a date object
+         */
+        var day = Math.floor(x / 100.0 * this.days);
 
         var time = Math.round(y / 100.0 * 900) / 900;
         
@@ -441,7 +447,9 @@ function CalendarView(div, start, stop)
         time = Math.round(time * this.aday);
         time += this.start.valueOf();
 
-        return new Date(time);
+        time = new Date(time);
+        time.setSeconds(0);
+        return time;
     }
 
     this.makeDayGrid = function ()
@@ -453,6 +461,9 @@ function CalendarView(div, start, stop)
 
     this.setTime = function(start, stop)
     {
+        if(stop == undefined)
+            stop = new Date(start.valueOf() + this.stop.valueOf() - this.start.valueOf());
+        
         this.start = start;//new Date('2012-08-27');// start;
         this.stop = stop;// new Date('2012-09-03');
 
@@ -581,6 +592,10 @@ function FilterList(con, label, name, options, cv, multiple)
         })
         var tmp = {};
         tmp[a.name] = selected;
+
+        if( (selected.length > 0) != a.element.hasClass("selected") )
+            a.element.toggleClass("selected");
+
         cv.filter(tmp);
     }
     this.updateCV = updateCV;
