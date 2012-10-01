@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120811164618) do
+ActiveRecord::Schema.define(:version => 20121001185119) do
 
   create_table "certifications", :force => true do |t|
     t.integer  "shift_type_id",                    :null => false
@@ -40,18 +40,19 @@ ActiveRecord::Schema.define(:version => 20120811164618) do
   end
 
   create_table "shifts", :force => true do |t|
-    t.integer  "shift_type_id",                    :null => false
+    t.integer  "shift_type_id",                        :null => false
     t.integer  "task_id"
-    t.datetime "start",                            :null => false
-    t.datetime "end",                              :null => false
-    t.boolean  "training",      :default => false, :null => false
+    t.datetime "start",                                :null => false
+    t.datetime "end",                                  :null => false
+    t.boolean  "training",          :default => false, :null => false
     t.text     "comment"
-    t.boolean  "leasing",       :default => false, :null => false
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.boolean  "leasing",           :default => false, :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.integer  "user_id"
     t.integer  "ticket_id"
     t.integer  "signed_by_id"
+    t.integer  "template_shift_id"
   end
 
   create_table "tasks", :force => true do |t|
@@ -61,6 +62,27 @@ ActiveRecord::Schema.define(:version => 20120811164618) do
     t.integer  "user_group_id"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+  end
+
+  create_table "template_shifts", :force => true do |t|
+    t.datetime "start"
+    t.datetime "stop"
+    t.integer  "shift_type_id"
+    t.string   "comment"
+    t.boolean  "training"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.integer  "template_id"
+  end
+
+  create_table "templates", :force => true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.datetime "start"
+    t.datetime "stop"
+    t.integer  "interval"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "tickets", :force => true do |t|

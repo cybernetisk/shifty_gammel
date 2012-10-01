@@ -1,0 +1,16 @@
+<h1>Editing template</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', @template %> |
+<%= link_to 'Back', templates_path %>
+
+
+
+<table>
+<tr>
+<% template.template_shift.each do |shift| %>
+    <th><%= shift.shift_type %></th>
+<% end %>
+</tr>
+

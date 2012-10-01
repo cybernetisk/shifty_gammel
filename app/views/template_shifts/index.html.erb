@@ -1,0 +1,31 @@
+<h1>Listing template_shifts</h1>
+
+<table>
+  <tr>
+    <th>Start</th>
+    <th>Stop</th>
+    <th>Shift type</th>
+    <th>Comment</th>
+    <th>Training</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @template_shifts.each do |template_shift| %>
+  <tr>
+    <td><%= template_shift.start %></td>
+    <td><%= template_shift.stop %></td>
+    <td><%= template_shift.shift_type_id %></td>
+    <td><%= template_shift.comment %></td>
+    <td><%= template_shift.training %></td>
+    <td><%= link_to 'Show', template_shift %></td>
+    <td><%= link_to 'Edit', edit_template_shift_path(template_shift) %></td>
+    <td><%= link_to 'Destroy', template_shift, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Template shift', new_template_shift_path %>

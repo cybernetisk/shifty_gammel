@@ -1,5 +1,7 @@
 Railsdemo::Application.routes.draw do
 
+  resources :template_shifts
+
   # Route
   root :to => "users#new"
 
@@ -56,6 +58,7 @@ Railsdemo::Application.routes.draw do
   resources :users
   resources :sessions
   resources :tickets
+  resources :templates
   #resources :tasks
 
   # The priority is based upon order of creation:

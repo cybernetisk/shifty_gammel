@@ -1,0 +1,31 @@
+<h1>Listing templates</h1>
+
+<table>
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Start</th>
+    <th>Stop</th>
+    <th>Interval</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @templates.each do |template| %>
+  <tr>
+    <td><%= template.title %></td>
+    <td><%= template.description %></td>
+    <td><%= template.start %></td>
+    <td><%= template.stop %></td>
+    <td><%= template.interval %></td>
+    <td><%= link_to 'Show', template %></td>
+    <td><%= link_to 'Edit', edit_template_path(template) %></td>
+    <td><%= link_to 'Destroy', template, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Template', new_template_path %>

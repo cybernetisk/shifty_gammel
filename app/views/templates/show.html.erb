@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Title:</b>
+  <%= @template.title %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @template.description %>
+</p>
+
+<p>
+  <b>Start:</b>
+  <%= @template.start %>
+</p>
+
+<p>
+  <b>Stop:</b>
+  <%= @template.stop %>
+</p>
+
+<p>
+  <b>Interval:</b>
+  <%= @template.interval %>
+</p>
+
+
+<%= link_to 'Edit', edit_template_path(@template) %> |
+<%= link_to 'Back', templates_path %>
+
+
+<table>
+<tr>
+<% @template.template_shift.each do |shift| %>
+    <th><%= shift.shift_type.title %> <%= shift.start %> <%= shift.stop %></th>
+<% end %>
+</tr>
+</table>
+<% @template.template_shift.each do |shift| %>
+    <ul>
+    <% shift.shift.each do |s| %>
+        <li>
+        <%= s.id %>
+        <%= s.start %>
+        </li>
+    <% end %>
+    </ul>
+<% end %>

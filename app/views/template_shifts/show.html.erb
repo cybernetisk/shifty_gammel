@@ -1,0 +1,30 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Start:</b>
+  <%= @template_shift.start %>
+</p>
+
+<p>
+  <b>Stop:</b>
+  <%= @template_shift.stop %>
+</p>
+
+<p>
+  <b>Shift type:</b>
+  <%= @template_shift.shift_type_id %>
+</p>
+
+<p>
+  <b>Comment:</b>
+  <%= @template_shift.comment %>
+</p>
+
+<p>
+  <b>Training:</b>
+  <%= @template_shift.training %>
+</p>
+
+
+<%= link_to 'Edit', edit_template_shift_path(@template_shift) %> |
+<%= link_to 'Back', template_shifts_path %>
