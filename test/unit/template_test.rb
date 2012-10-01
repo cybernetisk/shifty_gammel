@@ -23,6 +23,5 @@ class TemplateTest < ActiveSupport::TestCase
     assert_equal shift_template, shift[0].template
     assert_equal shift_template2, shift[1].template
 
-    #Check that the offset is correct
-    end
+  end
 end
