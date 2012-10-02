@@ -12,8 +12,9 @@ class TemplateShift < ActiveRecord::Base
     delta = start - self.template.start
     
     shift = Shift.new
-    shift.start = delta.seconds.since self.start
-    shift.end =   delta.seconds.since self.stop
+    shift.start = self.start + delta.seconds
+    shift.end =   self.stop + delta.seconds
+    
     shift.shift_type = self.shift_type
     shift.comment = self.comment
     shift.template = self
