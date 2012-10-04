@@ -20,14 +20,17 @@ class Template < ActiveRecord::Base
     self.start + (i * self.interval).days
   end
 
+  # From an integer, get a periods offset from template start
   def get_period_offset(i)
     (i * self.interval).days
   end
 
+  # From a date, guess it's interval
   def get_interval(date)
     ((date - start)/ interval.days).floor
   end
 
+  # gets a range for period #i, ranges start and end can be accessed with r.start and r.end
   def get_period(i)
     start = get_period_start(i)
     return start..(start + self.interval.days - 1.seconds)
