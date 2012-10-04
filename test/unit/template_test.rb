@@ -9,7 +9,7 @@ class TemplateTest < ActiveSupport::TestCase
     
     shift_template2 = FactoryGirl.create(:template_shift, start:2.hours.since(now), stop:3.hours.since(now), template:template)
     
-    shift = template.apply(2.hours.since now)
+    shift = template.apply(0)
     assert_equal 2, shift.length
     assert_equal shift_template, shift[0].template
     assert_equal shift_template2, shift[1].template
@@ -47,15 +47,55 @@ class TemplateTest < ActiveSupport::TestCase
     assert !template.check_period(1)
     assert template.check_period(2)
 
+
+
   end
 
   test "make_period" do
-    template = FactoryGirl.create(:template, :with_shifts, start:Time.now, interval:7)
+    template = FactoryGirl.create(:template, :with_shifts, start:Time.now, stop:Time.now + 10.days, interval:1)
 
     # this will return the generated shifts
     shifts = template.make_period 1
 
     assert_equal 1,  shifts.length 
     assert_equal shifts, template.template_shift[0].shift
+  end
+
+  test "make_many_periods" do
+    now = Time.now
+    template = FactoryGirl.create(:template, start:now, stop:now + 20.days, interval:1)
+    ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
+    template.template_shift << ts
+
+    (0..template.count_intervals).step(2).each do |period|
+      template.make_period(period)
+    end 
+
+    assert_equal 10, ts.shift.length
+
+    10.times.each do |i|
+      assert_in_delta (now + (2 * i).days), ts.shift[i].start, 0.1.seconds
+    end
+  end
+  
+  test "template_careful_apply" do
+    now = Time.now
+    template = FactoryGirl.create(:template, start:now, stop:now+20.days, interval:1)
+    ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
+    template.template_shift << ts
+
+    assert_equal 1, template.careful_apply(0).length
+
+    template.careful_make_period(0)
+
+    assert_equal 0, template.careful_apply(0).length
+
+    assert_equal 1, template.careful_apply(1).length
+
+    ts2 = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
+    template.template_shift << ts2
+
+    assert_equal 1, template.careful_apply(0).length
+    assert_equal 2, template.careful_apply(1).length
   end
 end

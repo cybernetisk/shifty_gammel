@@ -8,12 +8,13 @@ class TemplateShift < ActiveRecord::Base
   has_many :shift, inverse_of: :template
   
   
+  # returns an instance of the shift relative to the tempates start
   def makeShift(start)
     delta = start - self.template.start
     
     shift = Shift.new
-    shift.start = self.start + delta.seconds
-    shift.end =   self.stop + delta.seconds
+    shift.start = self.start + delta
+    shift.end =   self.stop + delta
     
     shift.shift_type = self.shift_type
     shift.comment = self.comment
