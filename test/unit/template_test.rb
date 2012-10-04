@@ -91,7 +91,6 @@ class TemplateTest < ActiveSupport::TestCase
 
     ts2 = FactoryGirl.create(:template_shift, template:template, start:now, stop:now + 1.hours)
     template.template_shift << ts2
-    template.save
 
     assert_equal 1, template.careful_apply(0).length
     assert_equal 2, template.careful_apply(1).length
