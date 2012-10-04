@@ -7,8 +7,9 @@ class TemplateShift < ActiveRecord::Base
   
   has_many :shift, inverse_of: :template
   
+  # does the template exist within this period?
   def isApplied(i)
-    return Shift.where(:template_shift_id=>self, :start=>start + template.get_period_offset(i)).exists?
+    return Shift.where(:template_shift_id=>self, :start=>template.get_period(i)).exists?
   end
 
   # returns an instance of the shift relative to the tempates start

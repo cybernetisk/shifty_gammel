@@ -46,16 +46,7 @@ class TemplateTest < ActiveSupport::TestCase
     assert template.check_period(2)
   end
 
-  test "make_period" do
-    template = FactoryGirl.create(:template, :with_shifts, start:Time.now, stop:Time.now + 10.days, interval:1)
-
-    # this will return the generated shifts
-    shifts = template.make_period 1
-
-    assert_equal 1,  shifts.length 
-    assert_equal shifts, template.template_shift[0].shift
-  end
-
+  # applies a bunch of periods for the template, and checks if it comes out as expected.
   test "make_many_periods" do
     template = FactoryGirl.create(:template, start:now, stop:now + 18.days, interval:1)
     ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
@@ -67,11 +58,16 @@ class TemplateTest < ActiveSupport::TestCase
 
     assert_equal 10, ts.shift.length
 
+    (0..template.count_intervals).each do |period|
+      assert_equal period % 2 == 0, template.check_period(period)
+    end
+
     10.times.each do |i|
       assert_in_delta (now + (2 * i).days), ts.shift[i].start, 0.1.seconds
     end
   end
 
+  # checks if template has been applied, (which it shouldn't bee at first) applies it, rechecks adds another shift to template, repeats checks
   test "template_careful_apply" do
     template = FactoryGirl.create(:template, start:now, stop:now + 18.days, interval:2)
     ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
