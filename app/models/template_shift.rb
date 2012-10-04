@@ -17,11 +17,11 @@ class TemplateShift < ActiveRecord::Base
     delta = self.template.get_period_offset(i)
     
     shift = Shift.new
-    shift.start = self.start + delta
-    shift.end   = self.stop + delta
+    shift.start = start + delta
+    shift.end   = stop + delta
     
-    shift.shift_type = self.shift_type
-    shift.comment = self.comment
+    shift.shift_type = shift_type
+    shift.comment = comment
     shift.template = self
 
     return shift
