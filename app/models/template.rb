@@ -60,4 +60,15 @@ class Template < ActiveRecord::Base
   def periods
     self.count_intervals.times.map do |i| get_period(i) end
   end
+
+  # Applies a template to it's entire period.
+  def make_all
+    self.count_intervals.times.each do |i|
+      if self.check_period i
+        self.careful_make_period i
+      else
+        self.make_period i
+      end
+    end
+  end
 end

@@ -95,4 +95,7 @@ class TemplateTest < ActiveSupport::TestCase
     x = template.get_period_start 5
     assert_equal 5, template.get_interval(x)
   end
+
+
+  #TODO: add test for make_all function?
 end
