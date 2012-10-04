@@ -25,6 +25,7 @@ class TemplateTest < ActiveSupport::TestCase
     assert_equal 7.days.since(now), x
   end
 
+  # Checks if period exists (which it shouldn't at first), re
   test "check_period" do
     template = FactoryGirl.create(:template)
     template.start = now
@@ -86,5 +87,12 @@ class TemplateTest < ActiveSupport::TestCase
 
     assert_equal 1, template.careful_apply(0).length
     assert_equal 2, template.careful_apply(1).length
+  end
+
+  test "get_interval" do
+    template = FactoryGirl.create(:template, start:now, stop: now + 4.weeks, interval:4)
+
+    x = template.get_period_start 5
+    assert_equal 5, template.get_interval(x)
   end
 end

@@ -21,7 +21,11 @@ class Template < ActiveRecord::Base
   end
 
   def get_period_offset(i)
-    return (i * self.interval).days
+    (i * self.interval).days
+  end
+
+  def get_interval(date)
+    ((date - start)/ interval.days).floor
   end
 
   def get_period(i)
