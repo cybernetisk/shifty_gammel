@@ -46,9 +46,6 @@ class TemplateTest < ActiveSupport::TestCase
     assert template.check_period(0)
     assert !template.check_period(1)
     assert template.check_period(2)
-
-
-
   end
 
   test "make_period" do
@@ -77,23 +74,24 @@ class TemplateTest < ActiveSupport::TestCase
       assert_in_delta (now + (2 * i).days), ts.shift[i].start, 0.1.seconds
     end
   end
-  
+
   test "template_careful_apply" do
     now = Time.now
-    template = FactoryGirl.create(:template, start:now, stop:now+20.days, interval:1)
+    template = FactoryGirl.create(:template, start:now, stop:now+20.days, interval:2)
     ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
     template.template_shift << ts
 
     assert_equal 1, template.careful_apply(0).length
 
-    template.careful_make_period(0)
+    assert_equal 1, template.careful_make_period(0).length
 
     assert_equal 0, template.careful_apply(0).length
 
     assert_equal 1, template.careful_apply(1).length
 
-    ts2 = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
+    ts2 = FactoryGirl.create(:template_shift, template:template, start:now, stop:now + 1.hours)
     template.template_shift << ts2
+    template.save
 
     assert_equal 1, template.careful_apply(0).length
     assert_equal 2, template.careful_apply(1).length

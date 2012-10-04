@@ -5,33 +5,27 @@ class Template < ActiveRecord::Base
   
   # returns shifts in a period.
   def apply(i)
-    a = self.get_period_start(i)
     return self.template_shift.map  do |template|
-         template.makeShift(a)
+         template.makeShift(i)
     end
   end
 
   # returns shifts in a period that hasn't allready been applied.
   def careful_apply(i)
-    a = self.get_period_start(i)
-    # substract 1 second to allow close overlap between weeks
-    b = a + self.interval.days - 1.seconds
-    in_place = Shift.where(:template_shift_id=>self.template_shift, :start=>a..b).all.map do |x| x.template_shift_id end
-    
-    res = self.template_shift
+    res = self.template_shift.select do |template| !template.isApplied(i) end
 
-    if in_place.length > 0 
-      res = res.where("template_shifts.id not in (?)", in_place)
-    end  
-    
     return res.map do |template|
-        template.makeShift(start)
+        template.makeShift(i)
       end
   end
 
   # returns date of period start
   def get_period_start(i)
     self.start + (i * self.interval).days
+  end
+
+  def get_period_offset(i)
+    return (i * self.interval).days
   end
 
   # check if any shifts form this template already exists in the period.

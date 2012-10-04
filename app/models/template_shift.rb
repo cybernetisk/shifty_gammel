@@ -7,14 +7,17 @@ class TemplateShift < ActiveRecord::Base
   
   has_many :shift, inverse_of: :template
   
-  
+  def isApplied(i)
+    return Shift.where(:template_shift_id=>self, :start=>start + template.get_period_offset(i)).exists?
+  end
+
   # returns an instance of the shift relative to the tempates start
-  def makeShift(start)
-    delta = start - self.template.start
+  def makeShift(i)
+    delta = self.template.get_period_offset(i)
     
     shift = Shift.new
     shift.start = self.start + delta
-    shift.end =   self.stop + delta
+    shift.end   = self.stop + delta
     
     shift.shift_type = self.shift_type
     shift.comment = self.comment

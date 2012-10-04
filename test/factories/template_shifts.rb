@@ -7,5 +7,7 @@ FactoryGirl.define do
     shift_type_id { FactoryGirl.create(:shift_type) }
     comment "MyString"
     training false
+
+    trait(:with_template) { template {FactoryGirl.create(:template) }}
   end
 end
