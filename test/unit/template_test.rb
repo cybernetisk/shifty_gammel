@@ -1,8 +1,8 @@
 require 'test_helper'
 
 class TemplateTest < ActiveSupport::TestCase
+  now = Time.at(0)
   test "apply template" do
-    now = Time.now
     template = FactoryGirl.create(:template, start:now)
 
     shift_template = FactoryGirl.create(:template_shift, start:now, stop:2.hours.since(now), template:template)
@@ -17,7 +17,6 @@ class TemplateTest < ActiveSupport::TestCase
   end
 
   test "get period start" do
-    now = Time.now
     template = FactoryGirl.create(:template)
     template.start = now
     template.interval = 7
@@ -27,7 +26,6 @@ class TemplateTest < ActiveSupport::TestCase
   end
 
   test "check_period" do
-    now = Time.now
     template = FactoryGirl.create(:template)
     template.start = now
     template.save
@@ -59,8 +57,7 @@ class TemplateTest < ActiveSupport::TestCase
   end
 
   test "make_many_periods" do
-    now = Time.now
-    template = FactoryGirl.create(:template, start:now, stop:now + 20.days, interval:1)
+    template = FactoryGirl.create(:template, start:now, stop:now + 18.days, interval:1)
     ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
     template.template_shift << ts
 
@@ -76,8 +73,7 @@ class TemplateTest < ActiveSupport::TestCase
   end
 
   test "template_careful_apply" do
-    now = Time.now
-    template = FactoryGirl.create(:template, start:now, stop:now+20.days, interval:2)
+    template = FactoryGirl.create(:template, start:now, stop:now + 18.days, interval:2)
     ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
     template.template_shift << ts
 
