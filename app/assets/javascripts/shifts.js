@@ -433,20 +433,26 @@ function CalendarView(div, start, stop)
         return Array(x,y);
     }
 
+    /**
+     * Converts x y coordinates to a date object
+     */
     this.offsetToTime = function(x,y)
     {
-        /*
-         * Converts x y coordinates to a date object
-         */
+        // day = fixed 0 to 6
         var day = Math.floor(x / 100.0 * this.days);
-
-        var time = Math.round(y / 100.0 * 900) / 900;
         
-        time = day + time;
+        // time = decimal 0 to 1
+        var time = y / 100.0;
         
-        time = Math.round(time * this.aday);
+        // add day and time and "scale" it to this.aday
+        time = Math.round((day + time) * this.aday);
+        
+        // round to closest 15 min
+        time = Math.round(time / 900000) * 900000;
+        
+        // add time of week start
         time += this.start.valueOf();
-
+        
         time = new Date(time);
         time.setSeconds(0);
         return time;
