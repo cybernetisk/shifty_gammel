@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
   end
 
   def can_manage_shift_type?(shift_type)
-    Certification.exists?(shift_type_id: shift_type, manager: 1, user_group_id: user_groups)
+    Certification.exists?(shift_type_id: shift_type, manager: true, user_group_id: user_groups)
   end
 
   def can_manage_group?(group)
