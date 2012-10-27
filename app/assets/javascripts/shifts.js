@@ -209,41 +209,141 @@ function makeHalfHourGrid()
 }
 
 
-function DataSource(uri, start, stop)
+function DataSource(start, stop)
 {
-    this.uri = uri;
-    this.start = start;
-    this.stop = stop;
-    
-    this.fetch = function()
+    var self = this;
+
+    //self.uri = uri;
+    self.start = start;
+    self.stop = stop;
+    self.filter = Array();
+    self.query = undefined;
+    self.cancelable = false;
+    self._filter = {};
+
+    self.setTime = function(start, stop)
     {
-        if(cancelable == undefined) cancelable = true;
-        var data = {start:getDate(this.start), stop:getDate(this.stop) };
-        if(this.last_update)
-            data['updated'] = this.last_update;
+        self.start = start;
+        self.stop = stop;
+
+        self.output.setTime(start, stop);
+        self.fetch(false);
+    }
+
+    self.fetch = function(cancelable)
+    {
+        if(cancelable == undefined)
+            cancelable = true;
+
+        var data = {start:getDate(self.start), stop:getDate(self.stop) };
+        if(self.last_update)
+            data['updated'] = self.last_update;
         
-        var cv = this;
-        if(this.query != undefined)
+        if(self.query != undefined)
         {
-            if(!this.cancelable)
+            if(!self.cancelable)
                 return;
-            this.query.abort();
+
+            self.query.abort();
         }
         
-        this.cancelable = cancelable;
+        self.cancelable = cancelable;
+        data['filter'] = self._filter;
         
-        
-        this.query = $.post('/shifts/calendar.json',data,
-        
-        function(data)
-        { 
-            cv.handleData(data);
-        });
+        self.query = $.post('/shifts/calendar.json',data,
+            function(data)
+            { 
+                self.handleData(data);
+                self.query = undefined;
+            });
+    }
+
+    self.filter = function(filter, reset){
+
+        if(reset == true)
+            self._filter = {};
+
+        self._filter = $.extend(self._filter, filter);
+        self.last_update = false;
+        //self.clear();
+        //self.update();
+        self.fetch();
     }
     
-    this.handleData(data)
+    self.handleData = function(data)
+    {
+        self.data = data;
+        self.output.clear();
+        self.output.handleData(data);
+    }
+}
+
+function ListView(div, start, stop)
+{
+    var self = this;
+    self.div = div;
+    div.html("");
+    self.table = $("<table />");
+    self.table.attr('id', 'availableShifts');
+
+    div.append(self.table);
+    self.setTime = function(start, stop)
     {
         
+    }
+
+    self.clear = function(){
+
+    }
+
+    self.addHeaders = function()
+    {
+        var row = $("<tr>");
+
+        function add(d){row.append($("<th>").append(d));}
+
+        add('Dato');
+        add('Ukedag');
+        add('Start');
+        add('Slutt');
+        add('Type');
+        add('Status');
+
+        self.table.append(row);
+    }
+
+    self.handleData = function(data)
+    {
+        self.table.children().remove();
+        self.addHeaders();
+        for(var i = 0; i < data.length; i++)
+        {
+            var r = data[i];
+
+            var row = $("<tr>");
+            function add(data){row.append($("<td>").html(data));}
+
+            var start = new Date(r.start);
+            var stop = new Date(r.end);
+
+
+            add(start.toString("yyyy-MM-dd"));
+            add("ukedag");
+            add(start.toString("HH:mm"));
+            add(stop.toString("HH:mm"));
+            add(r.shift_type.title);
+
+            if(r.user != undefined)
+            {
+
+                add(r.user.username);
+            }
+            else
+            {
+                add('<a href="#">Available</a>');
+            }
+            self.table.append(row);
+        }
     }
 }
 
@@ -255,7 +355,7 @@ function CalendarView(div, start, stop)
      * and rendering the shifts.
      */
     this.div = div;
-    
+    div.html("");
     this.shiftManager = new ShiftManager();
     this.shifts = {};
     this.weekgrid = new WeekGrid(div, start, stop);
@@ -280,12 +380,12 @@ function CalendarView(div, start, stop)
     
     this.last_update = false;
 
+/*
     this.update = function()
     {
         if(this.fetch())
             this.refresh();
-    }
-    
+    }    
     this._filter = {};
     
     this.fetch = function(cancelable)
@@ -326,7 +426,7 @@ function CalendarView(div, start, stop)
         this.clear();
         this.update();
     }
-
+*/
     this.clear = function(){
         this.shifts = {};
         $(".shift").remove();
@@ -367,7 +467,7 @@ function CalendarView(div, start, stop)
         var left = pos[0] + i_offset;
         var top = pos[1];
         
-        shift.test = left + "," + top
+        shift.test = left + "," + top;
         var height = (shift.end.valueOf() - shift.start.valueOf()) / this.aday * 100;
         
         var css = {'top':top.toFixed(2) + "%",
@@ -478,12 +578,11 @@ function CalendarView(div, start, stop)
 
         this.days = (duration / this.aday).toFixed(0);
         this.last_update = false;
-        
-        this.fetch(false);
+        this.weekgrid.setTime(start,stop);
+
+        //this.fetch(false);
     }
     this.setTime(start, stop);
-
-
 }
 
 
@@ -493,6 +592,14 @@ function WeekGrid(div, start, stop)
     this.start = start;
     this.stop = stop;
     this.days = (this.stop.valueOf() - this.start.valueOf()) / (24 * 3600 * 1000);
+
+
+    this.setTime = function(start, stop)
+    {
+        this.start = start;
+        this.stop = stop;
+        this.refresh();
+    }
 
     this.refresh = function()
     {
@@ -510,54 +617,60 @@ function WeekGrid(div, start, stop)
             $(this.div).append(d);
         }
     }
+    makeHourGrid();
+    makeHalfHourGrid();
 }
 
 
-function WeekPicker(div, start, end, cv)
+function WeekPicker(div, start, end, datasource)
 {
 
-    this.start = start;
-    this.end = end;
-    this.cv = cv;
-    this.div = div;
+    var self = this;
     
-    this.prevDay = function()
+    self.start = new Date(start.getTime());
+    self.end = new Date(end.getTime());
+    self.datasource = datasource;
+    self.div = div;
+
+
+    
+    self.prevDay = function()
     {
-        this.start.add(-1).days();
-        this.end.add(-1).days();
-        this.cv.setTime(this.start, this.end);
-        this.update();
+        self.start.add(-1).days();
+        self.end.add(-1).days();
+        self.datasource.setTime(self.start, self.end);
+        self.update();
     }
     
-    this.nextDay = function()
+    self.nextDay = function()
     {
-        this.start.add(1).days();
-        this.end.add(1).days();
-        this.cv.setTime(this.start, this.end);
-        this.update();
+        self.start.add(1).days();
+        self.end.add(1).days();
+        self.datasource.setTime(self.start, self.end);
+        self.update();
     }
     
-    this.prevWeek = function()
+    self.prevWeek = function()
     {
-        this.start.add(-7).days();
-        this.end.add(-7).days();
-        this.cv.setTime(this.start, this.end);
-        this.update();
+        self.start.add(-7).days();
+        self.end.add(-7).days();
+        self.datasource.setTime(self.start, self.end);
+        self.update();
     }
     
-    this.nextWeek = function()
+    self.nextWeek = function()
     {
-        this.start.add(7).days();
-        this.end.add(7).days();
-        this.cv.setTime(this.start, this.end);
-        this.update();
+        self.start.add(7).days();
+        self.end.add(7).days();
+        self.datasource.setTime(self.start, self.end);
+        self.update();
     }
     
-    this.update = function()
+    self.update = function()
     {
         var c = $("<div>");
         
-        var m = this;
+        var m = self;
         
         function addLink(text, func)
         {
@@ -568,47 +681,48 @@ function WeekPicker(div, start, end, cv)
         
         addLink('Previous week', function(){m.prevWeek();});
         addLink('Prev day', function(){m.prevDay();});
-        c.append("<span>Uke " + this.start.getWeekOfYear() + "</span>")
+        c.append("<span>Uke " + self.start.getWeekOfYear() + "</span>")
 
         addLink('Next day', function(){m.nextDay();});
         addLink('Next week', function(){m.nextWeek();});
         
-        $(this.div).html(c);
+        $(self.div).html(c);
     }
-    this.update();
+    self.update();
 }
 
-function FilterList(con, label, name, options, cv, multiple)
+
+function FilterList(con, label, name, options, ds, multiple)
 {
-    this.cv = cv;
-    this.options = options;
-    this.name = name;
+    var self = this;
 
-    this.element = $('<div />');
-    this.element.addClass("picker")
-    this.element.append("<h3>" + label + "</h3>");
+    self.ds = ds;
+    self.options = options;
+    self.name = name;
 
-    this.multiple = multiple;
-    if(this.multiple == undefined) this.multiple = false;
+    self.element = $('<div />');
+    self.element.addClass("picker")
+    self.element.append("<h3>" + label + "</h3>");
 
-    var a = this;
-    var updateCV = function(){
+    self.multiple = multiple;
+    if(self.multiple == undefined) self.multiple = false;
+
+    self.updateFilter = function(){
         var selected = Array();
 
-        $(".option.selected", a.element).each(function(){
+        $(".option.selected", self.element).each(function(){
             selected.push($(this).data('id'));
         })
         var tmp = {};
-        tmp[a.name] = selected;
+        tmp[self.name] = selected;
 
-        if( (selected.length > 0) != a.element.hasClass("selected") )
-            a.element.toggleClass("selected");
+        if( (selected.length > 0) != self.element.hasClass("selected") )
+            self.element.toggleClass("selected");
 
-        cv.filter(tmp);
+        self.ds.filter(tmp);
     }
-    this.updateCV = updateCV;
 
-    this.element.data("FilterList", this);
+    self.element.data("FilterList", self);
 
     for(var i in options)
     {
@@ -618,19 +732,19 @@ function FilterList(con, label, name, options, cv, multiple)
         tmp.data('id', i);
         if(window.location.hash.indexOf(options[i]) != -1)
             tmp.addClass("selected");
-        this.element.append(tmp)
+        self.element.append(tmp)
     }
 
-    updateCV();
+    self.updateFilter();
 
-    if(this.multiple)
-        $(".option", this.element).click(function(){ $(this).toggleClass('selected'); updateCV();});
+    if(self.multiple)
+        $(".option", self.element).click(function(){ $(this).toggleClass('selected'); self.updateFilter();});
     else
-        $(".option", this.element).click(function(){ 
+        $(".option", self.element).click(function(){ 
             $(this).parent().children(".selected").not(this).removeClass("selected");
             $(this).toggleClass('selected'); 
-            updateCV();
+            self.updateFilter();
         });
 
-    con.append(this.element)
+    con.append(self.element)
 }

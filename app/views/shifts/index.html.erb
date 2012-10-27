@@ -1,6 +1,23 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
 <% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
 <input type="text" id="filter_search" />
+<div style="float:right;">
+  <a href="#" id="calendar_view">Calendar</a>
+  <a href="#" id="list_view">List</a>
+</div>
+<script type="text/javascript">
+  $("#calendar_view").click(function(){
+    datasource.output = new CalendarView($("#calendar"), datasource.start, datasource.stop);
+    datasource.fetch();
+  });
+  $("#list_view").click(function(){
+    datasource.output = new ListView($("#calendar"), datasource.start, datasource.stop);
+    datasource.fetch();
+  });
+
+
+
+</script>
 <div id="show_filter">+</div>
 <div id="filters" class="hidden"></div>
 
@@ -170,7 +187,7 @@ $(function(){
       {
 
         var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, (ui.position.top + ui.size.height) / $("#calendar").height() * 100);
-        s.end = t;WeekPicker
+        s.end = t;
       }
 
       cv.refresh();
@@ -227,7 +244,7 @@ $(function(){
 
 var cv = false;
 
-
+var datasource = undefined;
 $(function(){
   var s = new Date();
   s.setHours(0);
@@ -235,27 +252,29 @@ $(function(){
   s = new Date().moveToDayOfWeek(1, -1);
   s.setHours(0)
  
-  var e = new Date(s).add(7).days();
+  var e = new Date(s.getTime()).add(7).days();
 
-  cv = new CalendarView($("#calendar"),s,e);
-  new WeekPicker($("#picker"), s, e, cv);
-  //makeDayGrid();
-  makeHourGrid();
-  makeHalfHourGrid();
 
-  cv.fetch();
-  cv.refresh();
+  datasource = new DataSource(s, e);
+  datasource.output = new ListView($("#calendar"), s, e);//new CalendarView($("#calendar"), s, e);
+
+  new WeekPicker($("#picker"), s, e, datasource);
+  
+
+  //cv.fetch();
+  //cv.refresh();
 
   makeEditable();
   //$( "#calendar").selectable({'filter':'.shift'});
-   
+  
    
   
-  new FilterList($("#filters"), "Shift types", "shift_type", <%= @shifttypes.to_json.html_safe %>, cv, true);
-  new FilterList($("#filters"), "Taken", "taken", {0:'Taken', 1:'Available'}, cv);
+  new FilterList($("#filters"), "Shift types", "shift_type", <%= @shifttypes.to_json.html_safe %>, datasource, true);
+  new FilterList($("#filters"), "Taken", "taken", {0:'Taken', 1:'Available'}, datasource);
+  
   <% if @user %>
 
-  new FilterList($("#filters"), "User", "user_id", {<%= @user.id %>:"<%= @user.username %>"}, cv);
+  new FilterList($("#filters"), "User", "user_id", {<%= @user.id %>:"<%= @user.username %>"}, datasource);
   <% end %>
 
 
@@ -304,7 +323,7 @@ $(function(){
         $(".option").each(e);
     }
     $(".picker").each(function(){
-      $(this).data("FilterList").updateCV();
+      $(this).data("FilterList").updateFilter();
     });
 
 
@@ -320,7 +339,7 @@ $(function(){
     
   });
 
-  window.setInterval(function(){cv.update();makeEditable()}, 5000);
+  //window.setInterval(function(){cv.update();makeEditable()}, 5000);
 })
 </script>
 <div id="changes"></div>
