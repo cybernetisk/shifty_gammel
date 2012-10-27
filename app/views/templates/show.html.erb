@@ -28,30 +28,13 @@
 
 <%= link_to 'Edit', edit_template_path(@template) %> |
 <%= link_to 'Back', templates_path %>
+<% @times.each do |x| %>
+  <%= x %>
+<% end %>
 
+<ul>
+<% @template.template_shift.each do | s | %>
+    <li><%= s.shift_type.title %> - <%= s.start %> - <%= s.stop %></li>
+<% end %>
+  </ul>
 
-<table>
-<tr>
-<% @template.template_shift.each do |shift| %>
-    <th><%= shift.shift_type.title %> <%= shift.start %> <%= shift.stop %></th>
-<% end %>
-</tr>
-</table>
-<% @template.template_shift.each do |shift| %>
-    <ul>
-    <% shift.shift.each do |s| %>
-        <li>
-        <%= s.id %>
-        <%= s.start %>
-        </li>
-    <% end %>
-    </ul>
-<% end %>
-<table>
-<% @template.count_intervals.times.each do |x| %>
-  <tr>
-    <td><%= x %></td>
-    <td><%= @template.check_period(x) %></td>
-  </tr>
-<% end %>
-</table>

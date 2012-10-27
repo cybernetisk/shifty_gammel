@@ -14,6 +14,18 @@ class TemplatesController < ApplicationController
   # GET /templates/1.json
   def show
     @template = Template.find(params[:id])
+    
+    @shift_types = @template.template_shift.select(:shift_type_id).uniq
+
+    @count = Hash.new
+
+    @shift_types.each do |x|
+      @count[x] = @template.template_shift.where(:shift_type_id=>x).count
+    end
+
+    @times = @template.template_shift.select("start").uniq
+
+    #@queries = @template.count_intervals.times.map do | i | Shift.where(:start => @template.get_period(i), :template_shift_id=> @template.template_shift) end
 
     respond_to do |format|
       format.html # show.html.erb

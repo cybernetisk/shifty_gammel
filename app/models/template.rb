@@ -71,4 +71,8 @@ class Template < ActiveRecord::Base
       end
     end
   end
+
+  def shift_types
+    self.template_shift.select('shift_type_id').uniq
+  end
 end
