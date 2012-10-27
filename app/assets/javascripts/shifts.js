@@ -380,53 +380,6 @@ function CalendarView(div, start, stop)
     
     this.last_update = false;
 
-/*
-    this.update = function()
-    {
-        if(this.fetch())
-            this.refresh();
-    }    
-    this._filter = {};
-    
-    this.fetch = function(cancelable)
-    {
-        if(cancelable == undefined) cancelable = true;
-        var data = {start:getDate(this.start), stop:getDate(this.stop) };
-        if(this.last_update)
-            data['updated'] = this.last_update;
-        
-        data['filter'] = this._filter;
-
-        var cv = this;
-        if(this.query != undefined)
-        {
-            if(!this.cancelable)
-                return;
-            this.query.abort();
-        }
-        
-        this.cancelable = cancelable;
-        
-        
-        this.query = $.post('/shifts/calendar.json',data,
-        
-            function(data)
-            { 
-                cv.handleData(data);
-            });
-    };
-
-    this.filter = function(filter, reset)
-    {
-        if(reset == true)
-            this._filter = {};
-
-        this._filter = $.extend(this._filter, filter);
-        this.last_update = false;
-        this.clear();
-        this.update();
-    }
-*/
     this.clear = function(){
         this.shifts = {};
         $(".shift").remove();
