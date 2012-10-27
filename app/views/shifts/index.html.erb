@@ -256,7 +256,13 @@ $(function(){
 
 
   datasource = new DataSource(s, e);
-  datasource.output = new CalendarView($("#calendar"), s, e);
+
+  if(window.innerWidth <= 800)
+  {
+    datasource.output = new ListView($("#calendar"), s, e);
+  }
+  else
+    datasource.output = new CalendarView($("#calendar"), s, e);
 
   new WeekPicker($("#picker"), s, e, datasource);
   datasource.fetch()
