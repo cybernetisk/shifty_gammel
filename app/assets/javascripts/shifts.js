@@ -326,8 +326,7 @@ function ListView(div, start, stop)
             var start = new Date(r.start);
             var stop = new Date(r.end);
 
-            add(r.start)
-            add(start.toString("yyyy-M-d"));
+            add(start.toString("yyyy-MM-dd"));
             add("ukedag");
             add(start.toString("HH:mm"));
             add(stop.toString("HH:mm"));
@@ -405,8 +404,6 @@ function CalendarView(div, start, stop)
         this.query = undefined;
     }
     
-
-
     this.renderShift = function(shift)
     {
         shift.day = shift.start.getDay();
