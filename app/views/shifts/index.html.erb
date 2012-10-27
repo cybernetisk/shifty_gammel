@@ -256,7 +256,7 @@ $(function(){
 
 
   datasource = new DataSource(s, e);
-  datasource.output = new ListView($("#calendar"), s, e);//new CalendarView($("#calendar"), s, e);
+  datasource.output = new CalendarView($("#calendar"), s, e);
 
   new WeekPicker($("#picker"), s, e, datasource);
   
