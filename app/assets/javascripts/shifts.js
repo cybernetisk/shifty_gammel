@@ -326,8 +326,8 @@ function ListView(div, start, stop)
             var start = new Date(r.start);
             var stop = new Date(r.end);
 
-
-            add(start.toString("yyyy-MM-dd"));
+            add(r.start)
+            add(start.toString("yyyy-M-d"));
             add("ukedag");
             add(start.toString("HH:mm"));
             add(stop.toString("HH:mm"));
@@ -735,7 +735,7 @@ function FilterList(con, label, name, options, ds, multiple)
         self.element.append(tmp)
     }
 
-    self.updateFilter();
+    //self.updateFilter();
 
     if(self.multiple)
         $(".option", self.element).click(function(){ $(this).toggleClass('selected'); self.updateFilter();});

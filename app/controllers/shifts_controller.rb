@@ -33,8 +33,9 @@ class ShiftsController < ApplicationController
           end
         end
       end
+
       respond_to do |format|
-        format.json { render json: @shifts.to_json(:include=>[:user,:shift_type]) }
+        format.json { render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type]) }
       end
       return
     end

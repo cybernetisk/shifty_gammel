@@ -259,7 +259,7 @@ $(function(){
   datasource.output = new CalendarView($("#calendar"), s, e);
 
   new WeekPicker($("#picker"), s, e, datasource);
-  
+  datasource.fetch()
 
   //cv.fetch();
   //cv.refresh();
