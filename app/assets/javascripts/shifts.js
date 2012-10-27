@@ -304,8 +304,8 @@ function ListView(div, start, stop)
 
         add('Dato');
         add('Ukedag');
-        add('Start');
-        add('Slutt');
+        add('Fra');
+        add('Til');
         add('Type');
         add('Status');
 
@@ -341,6 +341,14 @@ function ListView(div, start, stop)
             {
                 add('<a href="#">Available</a>');
             }
+            self.table.append(row);
+        }
+
+        if(data.length == 0)
+        {
+            var row = $("<tr>");
+            row.append($("<td>").attr('colspan',6).html("Ingen skift funnet"));
+
             self.table.append(row);
         }
     }
