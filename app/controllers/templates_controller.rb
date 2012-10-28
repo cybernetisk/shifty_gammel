@@ -23,9 +23,27 @@ class TemplatesController < ApplicationController
       @count[x] = @template.template_shift.where(:shift_type_id=>x).count
     end
 
-    @times = @template.template_shift.select("start").uniq
+    @shifts = @template.template_shift.order("shift_type_id, start ASC")
+
+    @rows = []
+
+    currentRow = []
+    laststart = nil
+    @shifts.each do |shift|
+      if laststart == nil 
+        laststart = shift.start
+      end
+      if shift.start > laststart
+        laststart = shift.start
+        @rows << currentRow
+        currentRow = []
+      end
+      currentRow << shift
+    end
+    @rows << currentRow
 
     #@queries = @template.count_intervals.times.map do | i | Shift.where(:start => @template.get_period(i), :template_shift_id=> @template.template_shift) end
+
 
     respond_to do |format|
       format.html # show.html.erb

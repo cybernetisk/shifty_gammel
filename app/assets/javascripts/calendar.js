@@ -238,6 +238,12 @@ function CalendarView(div, start, stop)
         self.shifts[shift.id] = shift;
     }
 
+    self.removeShift = function(shift_id)
+    {
+        $("shift_" + shift_id).remove();
+        delete self.shifts[shift_id];
+    }
+
     this.renderShift = function(shift)
     {
         shift.day = shift.start.getDay();
@@ -469,9 +475,16 @@ function createShiftInCalendar(shift_type_id)
       shift['end'] = stop;
         $.post("/shifts.json", {shift:shift}, function(data)
           {
-            datasource.output.addShift(data)
+
+            datasource.output.addShift(data);
+            datasource.output.removeShift("temporary");
+            datasource.output.refresh();
+            $(".shift_" + data.id).css('border', '1px solid red');
           });
       }
+  g.unbind('mousemove');
+  g.unbind('mousedown');
+  g.unbind('mouseup');
     g.mousemove(onmousemove);
     g.mousedown(onmousedown);
     g.mouseup(onmouseup);

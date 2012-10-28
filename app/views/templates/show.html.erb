@@ -28,10 +28,25 @@
 
 <%= link_to 'Edit', edit_template_path(@template) %> |
 <%= link_to 'Back', templates_path %>
-<% @times.each do |x| %>
-  <%= x %>
-<% end %>
 
+<table>
+<% @template.count_intervals.times.each do |i| %>
+  <tr>
+    <td><%= @template.get_period(i) %></td>
+    <td><%= @template.check_period(i) %></td>
+  </tr>
+<% end %>
+</table>
+
+<table>
+<% @rows.each do |row| %>
+  <tr>
+  <% row.each do |cell| %>
+    <td><%= cell %></td>
+  <% end %>
+</tr>
+<% end %>
+</table>
 <ul>
 <% @template.template_shift.each do | s | %>
     <li><%= s.shift_type.title %> - <%= s.start %> - <%= s.stop %></li>
