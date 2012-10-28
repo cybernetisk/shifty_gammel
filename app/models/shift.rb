@@ -1,5 +1,5 @@
 class Shift < ActiveRecord::Base
-  attr_accessible :comment, :end, :leasing, :training, :start, :date, :duration, :time
+  attr_accessible :comment, :end, :leasing, :training, :start, :date, :duration, :time, :shift_type_id
   #belongs_to :task
   belongs_to :shift_type
   belongs_to :ticket

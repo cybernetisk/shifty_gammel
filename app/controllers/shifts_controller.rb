@@ -1,5 +1,5 @@
 class ShiftsController < ApplicationController
-  def index
+  def calendar
     
     if params[:user_id]
       @user = User.find(params[:user_id])
@@ -158,7 +158,7 @@ class ShiftsController < ApplicationController
     end
   end  
   
-  def start
+  def index
     @upcomingShifts = Shift.getUpcomingShifts
     if current_user
       @yourshifts = current_user.shifts.where('start > :midnight', {:midnight => Time.now.yesterday.midnight}).limit(10)

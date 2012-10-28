@@ -20,10 +20,10 @@ Railsdemo::Application.routes.draw do
   match 'shifts/showAll' => 'shifts#showAll', :as => :all_shifts
   match 'shifts/showUpcoming' => 'shifts#showUpcoming', :as => :upcoming_shifts  
   match 'shifts/showForDate/:date' => 'shifts#showForDate', :as => :shifts_for_date
-  match 'shifts/' => 'shifts#start', :as => :shifts_start
+  #match 'shifts/' => 'shifts#start', :as => :shifts_start
   match 'shifts/getAvailableDates' => 'shifts#getAvailableDates', :as => :shift_available_dates
   match 'shifts/getUnavailableDates' => 'shifts#getUnavailableDates', :as => :shift_unavailable_dates
-  match 'shifts/calendar' => 'shifts#index', :as => :shifts_calendar
+  match 'shifts/calendar' => 'shifts#calendar', :as => :shifts_calendar
 
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
