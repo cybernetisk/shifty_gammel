@@ -88,7 +88,7 @@ $("#create_shift").click(function(){
       m.html(data[i].title);
       m.css('display','block');
 
-      m.click(function(){createShiftInCalendar(shift_type_id)});
+      m.click(function(){createShiftInCalendar(c)});
       d.append(m);
     }
 
@@ -96,7 +96,7 @@ $("#create_shift").click(function(){
     {
       addShiftType(data[i]);
     }
-    
+
     $(document.body).append(d);
   });
 

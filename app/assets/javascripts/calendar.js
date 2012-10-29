@@ -407,7 +407,7 @@ function WeekGrid(div, start, stop)
 
 
 
-function createShiftInCalendar(shift_type_id)
+function createShiftInCalendar(shift_type)
 {
 
     var mousedown = false;
@@ -450,7 +450,7 @@ function createShiftInCalendar(shift_type_id)
         }
       }
 
-      var shift = {id:'temporary', shift_type_id:shift_type_id};
+      var shift = {id:'temporary', shift_type_id:shift_type.id, shift_type:shift_type};
       shift['start'] = start;
       shift['end'] = stop;
 
@@ -470,7 +470,7 @@ function createShiftInCalendar(shift_type_id)
           g.unbind('mouseup');
         }
 
-      var shift = {id:'temporary', shift_type_id:shift_type_id};
+      var shift = {id:'temporary', shift_type_id:shift_type.id};
       shift['start'] = start;
       shift['end'] = stop;
         $.post("/shifts.json", {shift:shift}, function(data)

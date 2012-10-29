@@ -88,7 +88,7 @@ class ShiftsController < ApplicationController
     respond_to do |format|
       if @shift.save
         format.html { redirect_to @shift, notice: 'Shift was successfully created.' }
-        format.json { render json: @shift, status: :created, location: @shift }
+        format.json { render json: @shift.to_json(:include=>[:user,:shift_type]), status: :created, location: @shift }
       else
         format.html { render action: 'new' }
         format.json { render json: @shift.errors, status: :unprocessable_entity }

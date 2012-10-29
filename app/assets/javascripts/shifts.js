@@ -89,6 +89,7 @@ function DataSource(start, stop)
         self.output = output;
         self.output.clear();
         self.output.handleData(self.data);
+        self.output.refresh();
     }
 
     self.filter = function(filter, reset){
