@@ -123,120 +123,6 @@ $("#create_shift").click(function(){
 
 </script>
 <style type="text/css">
-#calendar .shift
-{
-  position:absolute;
-}
-#calendar
-{
-  position:relative;
-  height:1000px;
-  width:100%;
-  overflow:hidden;
-}
-.dayline
-{
-
-  border-left:1px solid gray;
-  position:absolute;
-  top:0px;
-  bottom:0px;
-  /*width:0px;*/
-}
-.hourline
-{
-  border-top:1px solid gray;
-  position:absolute;
-  height:0px;
-  left:0px;
-  right:0px;
-}
-
-.halfhourline
-{
-  border-top:1px dashed gray;
-  position:absolute;
-  height:0px;
-  left:0px;
-  right:0px;
-}
-
-.shift .content
-{
-  overflow:hidden;
-  margin:1px;
-  padding:4px;
-  background-color:rgb(230,230,230);
-  border-radius:2px;
-
-  position:absolute;
-  top:0px;
-  bottom:0px;
-  left:0px;
-  right:0px;
-
-  border-left:2px solid #93B300;
-  border-right: 1px solid gray;
-}
-/*
-.shift:hover
-{
-  
-  z-index:101;
-}
-
-.shift:hover .content
-{
-  width: 200px;
-}
-*/
-.ui-resizable-n
-{
-  height:15px;
-  position:absolute;
-  top:0px;
-  left:0px;
-  right:0px;
-}
-
-.ui-resizable-s
-{
-  height:15px;
-  position:absolute;
-  left:0px;
-  right:0px;
-  bottom:0px;
-}
-.ui-selected .content
-{
-  background-color:rgb(200,240,240) !important;
-}
-
-.ui-selecting .content
-{
-  background-color:rgb(240,200,240) !important;
-}
-
-.ui-selectable-helper
-{
-  border:1px dashed grey;
-  position:absolute;
-}
-
-
-#filters.hidden .picker
-{
-  display:none;
-}
-
-#filters.hidden .picker.selected
-{
-  display:block !important;
-}
-
-#filters.hidden .option.selected{ display:block !important;}
-#filters.hidden .option{display:none;}
-
 </style>
 <%= link_to 'New shift', new_shift_path %>
 
@@ -268,16 +154,20 @@ $(function(){
       var e = $(this);
       
       var s = e.data('shift');
+
       if(ui.position.top != ui.originalPosition.top)
       {
-        var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, ui.position.top / $("#calendar").height() * 100);
+        var rx = ui.position.left / $("#calendar").width() * 100;
+        var ry = ui.position.top / $("#calendar").height() * 100;
+        var t = cv.offsetToTime(rx, ry);
       
         s.start = t;
       }
       else
       {
-
-        var t = cv.offsetToTime(ui.position.left / $("#calendar").width() * 100, (ui.position.top + ui.size.height) / $("#calendar").height() * 100);
+        var rx = ui.position.left / $("#calendar").width() * 100;
+        var ry = (ui.position.top + ui.size.height) / $("#calendar").height() * 100;
+        var t = cv.offsetToTime(rx, ry);
         s.end = t;
       }
 
@@ -310,8 +200,6 @@ $(function(){
       var end = getISODateTime(shift.end);
       $.post('/shifts/' + shift.id +".json" , {'_method':'put', 'shift[start]':start, 'shift[end]':end}, function(e){
 
-
-        //alert(e);
       });
     }
 
@@ -358,13 +246,7 @@ $(function(){
   new WeekPicker($("#picker"), s, e, datasource);
   datasource.fetch()
 
-  //cv.fetch();
-  //cv.refresh();
-
   makeEditable();
-  //$( "#calendar").selectable({'filter':'.shift'});
-  
-   
   
   new FilterList($("#filters"), "Shift types", "shift_type", <%= @shifttypes.to_json.html_safe %>, datasource, true);
   new FilterList($("#filters"), "Taken", "taken", {0:'Taken', 1:'Available'}, datasource);
@@ -379,14 +261,11 @@ $(function(){
   {
       $("#filters").toggleClass('hidden');
     if($("#filters").hasClass("hidden"))
-    {
       $(this).text("+");
-    }else
-    {
+    else
       $(this).text("-");
-
-    }
   });
+
   $("#filter_search").keyup(function(e)
   {
     var value = this.value.trim();

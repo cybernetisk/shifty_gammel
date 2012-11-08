@@ -416,14 +416,14 @@ function createShiftInCalendar(shift_type)
     var stop;
     var duration = 60;
 
-    var g = $("#calendar");
+    var calendar_div = $("#calendar");
 
     var onmousemove = function(event){
-      var x = event.pageX - $("#calendar").offset().left;
-      var y = event.pageY - $("#calendar").offset().top;
+      var x = event.pageX - calendar_div.offset().left;
+      var y = event.pageY - calendar_div.offset().top;
 
-      x = Math.round(x / $("#calendar").width() * 100);
-      y = Math.round(y / $("#calendar").height() * 100);
+      x = Math.round(x / calendar_div.width() * 100);
+      y = Math.round(y / calendar_div.height() * 100);
 
       var time = datasource.output.offsetToTime(x, y);
       if(start == undefined)
@@ -482,9 +482,10 @@ function createShiftInCalendar(shift_type)
             $(".shift_" + data.id).css('border', '1px solid red');
           });
       }
-  g.unbind('mousemove');
-  g.unbind('mousedown');
-  g.unbind('mouseup');
+
+    g.unbind('mousemove');
+    g.unbind('mousedown');
+    g.unbind('mouseup');
     g.mousemove(onmousemove);
     g.mousedown(onmousedown);
     g.mouseup(onmouseup);
