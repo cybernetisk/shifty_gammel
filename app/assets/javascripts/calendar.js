@@ -412,7 +412,7 @@ function WeekGrid(div, start, stop)
 
 
 
-function createShiftInCalendar(shift_type, post_uri)
+function createShiftInCalendar(shift_type, post_uri, pre_post)
 {
 
     var mousedown = false;
@@ -482,9 +482,16 @@ function createShiftInCalendar(shift_type, post_uri)
         var shift = {id:'temporary', shift_type_id:shift_type.id};
         shift['start'] = start;
         shift['end'] = stop;
-        $.post(post_uri, {shift:shift}, function(data)
+        if(pre_post != undefined)
         {
-
+            shift = pre_post(shift);
+        }
+        else
+        {
+            shift = {shift:shift};
+        }
+        $.post(post_uri, shift, function(data)
+        {
             datasource.output.addShift(data);
             datasource.output.removeShift("temporary");
             datasource.output.refresh();
