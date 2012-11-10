@@ -57,8 +57,8 @@ $("#create_shift").click(function(){
       var m = $("<a href=\"#\"></a>");
       m.html(data[i].title);
       m.css('display','block');
-
-      m.click(function(){createShiftInCalendar(c)});
+      
+      m.click(function(){createShiftInCalendar(c, '/template_shifts.json')});
       d.append(m);
     }
 
