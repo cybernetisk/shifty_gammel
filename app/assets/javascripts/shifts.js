@@ -400,10 +400,10 @@ $(document).ready(function() {
         });
 
 
-        d.mouseout(function(event){
-            if(d[0] != event.toElement && d.has(event.toElement).length == 0)
-                $(this).remove()
-        });
+        //d.mouseout(function(event){
+          //  if(d[0] != event.toElement && d.has(event.toElement).length == 0)
+            //    $(this).remove()
+        //});
     });
 
 
