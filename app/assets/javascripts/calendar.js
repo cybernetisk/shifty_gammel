@@ -234,7 +234,12 @@ function CalendarView(div, start, stop)
     self.addShift = function(shift)
     {
         shift.start = new Date(shift.start);
-        shift.end = new Date(shift.end);
+
+		if("end" in shift)
+        	shift.end = new Date(shift.end);
+		else 
+			shift.end = new Date(shift.stop);
+		
         self.shifts[shift.id] = shift;
     }
 

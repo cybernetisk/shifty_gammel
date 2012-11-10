@@ -162,8 +162,12 @@ function ListView(div, start, stop)
             function add(data){row.append($("<td>").html(data));}
 
             var start = new Date(r.start);
-            var stop = new Date(r.end);
 
+			if("end" in r)
+            	var stop = new Date(r.end);
+			else
+				var stop = new Date(r.stop);
+				
             add(start.toString("yyyy-MM-dd"));
             add("ukedag");
             add(start.toString("HH:mm"));
