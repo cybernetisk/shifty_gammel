@@ -19,7 +19,7 @@ class Shift < ActiveRecord::Base
       self.ticket = ticket
     end
   end
-
+  
   attr_reader :signed_by
   def signed_by=(user)
     # TODO: check if user can sign shift?

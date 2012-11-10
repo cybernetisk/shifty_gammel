@@ -26,5 +26,15 @@ class TemplateShift < ActiveRecord::Base
 
     return shift
   end
+
+  def updateShifts(i, from=nil, populated=false)
+    sel = self.shift
+    
+    if from != nil
+      sel = sel.where("start>?", from)
+    end
+
+    Shift.update_all(["start=?, end=?", self.start, self.end], :id=>sel)
+  end
   
 end

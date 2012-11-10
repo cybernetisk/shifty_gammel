@@ -32,11 +32,18 @@
 <table>
 <% @template.count_intervals.times.each do |i| %>
   <tr>
+    <td style="width:20px;"><input type="checkbox" name="checkbox[]" /></td>
     <td><%= @template.get_period(i) %></td>
     <td><%= @template.check_period(i) %></td>
   </tr>
 <% end %>
 </table>
+
+<div>
+  <input type="submit" value="Apply templates" />
+  <input type="submit" value="Clear remove" />
+  <input type="checkbox" name="also_populated" />Also affect populated shifts
+</div>
 
 <table>
 <% @rows.each do |row| %>

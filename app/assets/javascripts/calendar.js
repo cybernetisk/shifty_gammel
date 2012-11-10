@@ -407,7 +407,7 @@ function WeekGrid(div, start, stop)
 
 
 
-function createShiftInCalendar(shift_type)
+function createShiftInCalendar(shift_type, post_uri)
 {
 
     var mousedown = false;
@@ -415,6 +415,9 @@ function createShiftInCalendar(shift_type)
     var start = undefined;
     var stop;
     var duration = 60;
+
+    if(post_uri == undefined)
+        post_uri = '/shifts.json';
 
     var calendar_div = $("#calendar");
 
@@ -460,33 +463,34 @@ function createShiftInCalendar(shift_type)
       $(".shift_temporary a").click(function(){return false;});
     };
     var onmousedown = function(){mousedown=new Date().getTime();};
+    
     var onmouseup = function(event){
         mousedown=false;
 
         if(event.shiftKey == false)
         {
-          g.unbind('mousemove');
-          g.unbind('mousedown');
-          g.unbind('mouseup');
+          calendar_div.unbind('mousemove');
+          calendar_div.unbind('mousedown');
+          calendar_div.unbind('mouseup');
         }
 
-      var shift = {id:'temporary', shift_type_id:shift_type.id};
-      shift['start'] = start;
-      shift['end'] = stop;
-        $.post("/shifts.json", {shift:shift}, function(data)
-          {
+        var shift = {id:'temporary', shift_type_id:shift_type.id};
+        shift['start'] = start;
+        shift['end'] = stop;
+        $.post(post_uri, {shift:shift}, function(data)
+        {
 
             datasource.output.addShift(data);
             datasource.output.removeShift("temporary");
             datasource.output.refresh();
             $(".shift_" + data.id).css('border', '1px solid red');
-          });
-      }
+        });
+    }
 
-    g.unbind('mousemove');
-    g.unbind('mousedown');
-    g.unbind('mouseup');
-    g.mousemove(onmousemove);
-    g.mousedown(onmousedown);
-    g.mouseup(onmouseup);
+    calendar_div.unbind('mousemove');
+    calendar_div.unbind('mousedown');
+    calendar_div.unbind('mouseup');
+    calendar_div.mousedown(onmousedown);
+    calendar_div.mouseup(onmouseup);
+    calendar_div.mousemove(onmousemove);
 }

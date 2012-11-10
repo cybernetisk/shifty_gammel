@@ -1,1 +1,12 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+one:
+  id: 1
+  title: "shift type 1"
+  description: "desc shift type 1"
+  location: "location 1"
+
+two:
+  id: 2
+  title: "shift type 2"
+  description: "desc shift type 2"
+  location: "location 2"
