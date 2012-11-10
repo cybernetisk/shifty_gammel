@@ -333,11 +333,6 @@ var datasource = undefined;
 $(document).ready(function() {
     if ($("#view_calendar").length == 0) return;
 
-    // buttons for different views
-    $("#calendar_view,#list_view").address(function() {
-        $.address.path($(this).attr("href").substring((root_path+"shifts/").length));
-    });
-
     $("#template").click(function(){
         var d = $("<div>");
 
@@ -506,23 +501,58 @@ $(document).ready(function() {
 
         datasource = new DataSource(s, e);
 
-        // take care of history changes
-        $.address.state(root_path+"shifts/").change(function(event) {
-            var view = event.value.split("/")[1];
+        function getView() {
+            // we first try the address path, then we fall back to url-testing
+            var view = $.address.value();
+            console.log(view);
 
-            if (view == "list") {
-                // show list
-                datasource.setOutput(new ListView($("#calendar"), datasource.start, datasource.stop));
+            console.log(document.location.href);
+            return [];
+        }
+
+        // take care of switching between calendar and list with history tracking
+        (function() {
+            var History = window.History, last_view, root = root_path+"shifts";
+
+            function getView() {
+                return History.getState().hash.substring(root.length+1);
+            }
+            function showView(view) {
+                if (view == last_view) return;
+
+                switch (view) {
+                    case "calendar":
+                        datasource.setOutput(new CalendarView($("#calendar"), datasource.start, datasource.stop));
+                        break;
+
+                    case "list":
+                        datasource.setOutput(new ListView($("#calendar"), datasource.start, datasource.stop));
+                        break;
+
+                    default:
+                        alert("Unknown view: "+view);
+                        return;
+                }
+
+                last_view = view;
+
+                // we have normally not loaded data yet
+                if (!datasource.query) datasource.fetch();
             }
 
-            else if (view == "calendar") {
-                // show calendar
-                datasource.setOutput(new CalendarView($("#calendar"), datasource.start, datasource.stop));
-            }
+            $(window).bind("statechange", function() {
+                showView(getView());
+            });
 
-            // need to load data?
-            if (!datasource.query) datasource.fetch();
-        });
+            // put actions on buttons
+            $("#calendar_view,#list_view").click(function(e) {
+                if (e.shiftKey || e.ctrlKey || e.metaKey) return true; // we don't want to abort opening links in new page, for example
+                History.pushState(null, null, this.href);
+                event.preventDefault();
+            });
+
+            showView(getView());
+        })();
 
         new WeekPicker($("#picker"), s, e, datasource);
         //datasource.fetch();
