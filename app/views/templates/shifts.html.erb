@@ -30,7 +30,7 @@ $("#template").click(function(){
 });
 </script>
 <div style="float:right; margin-right:100px;">
-  <a href="#" id="create_shift">Create shift</a>
+  <a href="#" id="create_template_shift">Create shift</a>
 </div>
 <script>
 
@@ -43,7 +43,7 @@ $("#template").click(function(){
     };
 })(jQuery);
 
-$("#create_shift").click(function(){
+$("#create_template_shift").click(function(){
   var d = $("<div>");
 
   d.css({top:$(this).offset().top, left:$(this).offset().left, position:'absolute', width:200, background:'white', border:'1px solid black', padding:20});
@@ -58,7 +58,18 @@ $("#create_shift").click(function(){
       m.html(data[i].title);
       m.css('display','block');
       
-      m.click(function(){createShiftInCalendar(c, '/template_shifts.json')});
+      m.click(
+        function(){
+          createShiftInCalendar(c, 
+                                '/template_shifts.json', 
+                                function(shift){
+                                  shift.template_id = <%= @template.id %>;
+                                  shift.stop = shift.end;
+                                  delete shift.end
+                                  delete shift.id
+                                  return {template_shift:shift}
+                                });
+        });
       d.append(m);
     }
 
@@ -202,7 +213,7 @@ $(function(){
   var e = new Date(s.getTime()).add(7).days();
 
 
-  datasource = new DataSource(s, e, "/templates/shifts");
+  datasource = new DataSource(s, e, "/templates/<%= @template.id %>/shifts");
   datasource.output = new CalendarView($("#calendar"), s, e);
   datasource.fetch()
 

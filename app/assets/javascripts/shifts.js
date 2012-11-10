@@ -348,6 +348,12 @@ $(document).ready(function() {
             {
                 var c = data[i];
                 var m = $("<a href=\"#\"></a>");
+                m.click(function(){
+                    $.get("/templates/" + c.id + "/apply/" + getDate(datasource.start), function(){
+                        datasource.fetch();
+                    });
+                    d.remove();
+                });
                 m.html(c.title);
                 m.css('display','block');
                 d.append(m);

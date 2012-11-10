@@ -36,6 +36,7 @@ Railsdemo::Application.routes.draw do
   
 
   match 'templates/:id/apply/:date' => 'templates#apply', :as=>:template_apply
+  match 'templates/:id/shifts' => 'templates#shifts', :as=>:template_shifts
 
   
   # User groups now have the url /users/groups

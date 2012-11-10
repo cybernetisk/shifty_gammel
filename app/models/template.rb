@@ -27,7 +27,7 @@ class Template < ActiveRecord::Base
 
   # From a date, guess it's interval
   def get_interval(date)
-    ((date - start) / interval.days).floor
+    ((date - start + 1.hours) / interval.days).floor
   end
 
   # gets a range for period #i, ranges start and end can be accessed with r.start and r.end
