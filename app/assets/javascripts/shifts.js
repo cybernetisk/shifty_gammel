@@ -46,6 +46,7 @@ function DataSource(start, stop, source)
     self.query = undefined;
     self.cancelable = false;
     self._filter = {};
+    self.last_update = 0;
 
     if(source == undefined)
         source = '/shifts/calendar.json';
@@ -92,7 +93,7 @@ function DataSource(start, stop, source)
     {
         self.output = output;
         self.output.clear();
-        self.output.handleData(self.data);
+        if (self.data) self.output.handleData(self.data);
         self.output.refresh();
     }
 
@@ -189,7 +190,9 @@ function ListView(div, start, stop)
 
             self.table.append(row);
         }
-    }
+    };
+
+    self.refresh = $.noop;
 }
 
 
@@ -325,15 +328,14 @@ function FilterList(con, label, name, options, ds, multiple)
 
 var cv = false;
 var datasource = undefined;
+
+// code for calendar-page only
 $(document).ready(function() {
     if ($("#view_calendar").length == 0) return;
-    
+
     // buttons for different views
-    $("#calendar_view").click(function(){
-        datasource.setOutput(new CalendarView($("#calendar"), datasource.start, datasource.stop));
-    });
-    $("#list_view").click(function(){
-        datasource.setOutput(new ListView($("#calendar"), datasource.start, datasource.stop));
+    $("#calendar_view,#list_view").address(function() {
+        $.address.path($(this).attr("href").substring((root_path+"shifts/").length));
     });
 
     $("#template").click(function(){
@@ -498,15 +500,26 @@ $(document).ready(function() {
 
         datasource = new DataSource(s, e);
 
-        if(window.innerWidth <= 800)
-        {
-            datasource.output = new ListView($("#calendar"), s, e);
-        }
-        else
-            datasource.output = new CalendarView($("#calendar"), s, e);
+        // take care of history changes
+        $.address.state(root_path+"shifts/").change(function(event) {
+            var view = event.value.split("/")[1];
+
+            if (view == "list") {
+                // show list
+                datasource.setOutput(new ListView($("#calendar"), datasource.start, datasource.stop));
+            }
+
+            else if (view == "calendar") {
+                // show calendar
+                datasource.setOutput(new CalendarView($("#calendar"), datasource.start, datasource.stop));
+            }
+
+            // need to load data?
+            if (!datasource.query) datasource.fetch();
+        });
 
         new WeekPicker($("#picker"), s, e, datasource);
-        datasource.fetch();
+        //datasource.fetch();
 
         makeEditable();
         

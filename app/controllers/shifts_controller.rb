@@ -48,6 +48,12 @@ class ShiftsController < ApplicationController
     end
   end
 
+  def list
+    respond_to do |format|
+      format.html { render action: 'calendar' }
+    end
+  end
+
   def duplicate
     @shift = Shift.find(params[:id])
 

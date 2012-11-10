@@ -4,6 +4,10 @@
 <!-- tag for javascript to identify this page -->
 <div id="view_calendar"></div>
 
+<!--
+<%= root_path %>
+-->
+
 <script type="text/javascript">
 var shifttypes = <%= @shifttypes.to_json.html_safe %>;
 
@@ -22,8 +26,8 @@ var user = { "id": null, "username": null };
 
 
 <div style="float:right;">
-  <a href="#" id="calendar_view">Calendar</a>
-  <a href="#" id="list_view">List</a>
+  <a href="<%=root_path%>shifts/calendar" id="calendar_view">Calendar</a>
+  <a href="<%=root_path%>shifts/list" id="list_view">List</a>
 </div>
 
 

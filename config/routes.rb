@@ -25,6 +25,8 @@ Railsdemo::Application.routes.draw do
   match 'shifts/getUnavailableDates' => 'shifts#getUnavailableDates', :as => :shift_unavailable_dates
   match 'shifts/calendar' => 'shifts#calendar', :as => :shifts_calendar
 
+  match 'shifts/list' => 'shifts#list', :as => :shifts_list
+
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
   match 'templates/shifts/' => 'templates#shifts', :as => :template_shifts
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
