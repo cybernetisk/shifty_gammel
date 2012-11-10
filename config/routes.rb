@@ -32,6 +32,9 @@ Railsdemo::Application.routes.draw do
   
   match 'admin' => 'users#admin', :as=>:admin
   
+
+  match 'templates/:id/apply/:date' => 'templates#apply', :as=>:template_apply
+
   
   # User groups now have the url /users/groups
   scope '/users' do

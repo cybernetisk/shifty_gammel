@@ -162,12 +162,8 @@ function ListView(div, start, stop)
             function add(data){row.append($("<td>").html(data));}
 
             var start = new Date(r.start);
+            var stop = new Date(r.end);
 
-			if("end" in r)
-            	var stop = new Date(r.end);
-			else
-				var stop = new Date(r.stop);
-				
             add(start.toString("yyyy-MM-dd"));
             add("ukedag");
             add(start.toString("HH:mm"));
@@ -325,6 +321,10 @@ function FilterList(con, label, name, options, ds, multiple)
 }
 
 
+
+
+var cv = false;
+var datasource = undefined;
 $(document).ready(function() {
     if ($("#view_calendar").length == 0) return;
     
@@ -355,7 +355,7 @@ $(document).ready(function() {
         });
 
         d.mouseout(function(event){
-            if(d[0] != event.toElement && d.has(event.toElement).length == 0)
+            if(d[0] != event.relatedTarget && d.has(event.relatedTarget).length == 0)
                 $(this).remove()
         });
     });
@@ -399,11 +399,10 @@ $(document).ready(function() {
             $(document.body).append(d);
         });
 
-
-        //d.mouseout(function(event){
-          //  if(d[0] != event.toElement && d.has(event.toElement).length == 0)
-            //    $(this).remove()
-        //});
+        d.mouseout(function(event){
+            if(d[0] != event.relatedTarget && d.has(event.relatedTarget).length == 0)
+                $(this).remove()
+        });
     });
 
 
@@ -488,8 +487,6 @@ $(document).ready(function() {
 
     }
 
-    var cv = false;
-    var datasource = undefined;
     $(function(){
         var s = new Date();
         s.setHours(0);

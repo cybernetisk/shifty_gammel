@@ -93,6 +93,7 @@ class TemplateTest < ActiveSupport::TestCase
     template = FactoryGirl.create(:template, start:now, stop: now + 4.weeks, interval:4)
 
     x = template.get_period_start 5
+    
     assert_equal 5, template.get_interval(x)
   end
 
