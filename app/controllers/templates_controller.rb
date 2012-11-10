@@ -83,6 +83,20 @@ class TemplatesController < ApplicationController
     end
   end
 
+  def apply
+    @template = Template.find(params[:id])
+
+    @date = Time.parse params[:date]
+
+    @period = @template.get_interval(@date)
+
+    @res = @template.careful_make_period @period
+
+    respond_to do |format|
+      format.json { render json: {res:@res} }
+    end
+  end
+
   # PUT /templates/1
   # PUT /templates/1.json
   def update
