@@ -9,7 +9,7 @@
   <body>
     <div id="wrap">	
       <div id="top">
-        <h2><a href="/" title="Back to main page">SHIFTY</a></h2>
+        <h2><a href="/" title="Back to main page">SHIFTY (<%= (current_user ? current_user.username : (link_to 'Logg inn', :log_in)) %>)</a></h2>
         <div id="menu">
           <ul>
             <% controller = request.fullpath == root_path ? "root" : params[:controller] %>
