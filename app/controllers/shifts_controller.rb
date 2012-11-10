@@ -3,6 +3,8 @@ class ShiftsController < ApplicationController
     
     if params[:user_id]
       @user = User.find(params[:user_id])
+    elsif current_user
+      @user = current_user
     end
 
     if params[:start] and params[:stop]
