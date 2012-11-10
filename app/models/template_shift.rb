@@ -36,5 +36,13 @@ class TemplateShift < ActiveRecord::Base
 
     Shift.update_all(["start=?, end=?", self.start, self.end], :id=>sel)
   end
+
+  def end
+    self.stop
+  end
+
+  def end=(value)
+    self.stop = value
+  end
   
 end
