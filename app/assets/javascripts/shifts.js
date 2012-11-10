@@ -35,7 +35,7 @@ function getISODateTime(d){
 
 
 
-function DataSource(start, stop)
+function DataSource(start, stop, source)
 {
     var self = this;
 
@@ -46,6 +46,10 @@ function DataSource(start, stop)
     self.query = undefined;
     self.cancelable = false;
     self._filter = {};
+
+    if(source == undefined)
+        source = '/shifts/calendar.json';
+    self.source = source;
 
     self.setTime = function(start, stop)
     {
@@ -76,7 +80,7 @@ function DataSource(start, stop)
         self.cancelable = cancelable;
         data['filter'] = self._filter;
         
-        self.query = $.post('/shifts/calendar.json',data,
+        self.query = $.post(self.source,data,
             function(data)
             { 
                 self.handleData(data);
