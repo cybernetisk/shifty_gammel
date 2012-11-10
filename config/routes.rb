@@ -26,6 +26,7 @@ Railsdemo::Application.routes.draw do
   match 'shifts/calendar' => 'shifts#calendar', :as => :shifts_calendar
 
   match 'shifts/start/' => 'shifts#start', :as => :shifts_start
+  match 'templates/shifts/' => 'templates#shifts', :as => :template_shifts
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
   match 'shifts/:id/duplicate' => 'shifts#duplicate', :as=>:shift_duplicate
   
