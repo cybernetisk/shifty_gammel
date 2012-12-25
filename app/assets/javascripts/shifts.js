@@ -49,15 +49,24 @@ function DataSource(start, stop, source)
     self.last_update = 0;
 
     if(source == undefined)
-        source = '/shifts/calendar.json';
+        source = '/shifts.json';
     self.source = source;
 
     self.setTime = function(start, stop)
     {
-        self.start = start;
-        self.stop = stop;
-
-        self.output.setTime(start, stop);
+        if(stop != undefined)
+        {
+            self.start = start;
+            self.stop = stop;
+        }
+        else
+        {
+            var duration = self.stop - self.start;
+            self.start = start;
+            self.stop = stop = start + duration;
+        }
+        if(self.output != undefined)
+            self.output.setTime(start, stop);
         self.fetch(false);
     }
 
@@ -66,7 +75,7 @@ function DataSource(start, stop, source)
         if(cancelable == undefined)
             cancelable = true;
 
-        var data = {start:getDate(self.start), stop:getDate(self.stop) };
+        var data = {start:getDate(self.start), stop:getDate(self.stop), duration:7};
         if(self.last_update)
             data['updated'] = self.last_update;
         
@@ -79,7 +88,7 @@ function DataSource(start, stop, source)
         }
         
         self.cancelable = cancelable;
-        data['filter'] = self._filter;
+        data = $.extend(data, self._filter);
         
         self.query = $.post(self.source,data,
             function(data)
@@ -87,6 +96,12 @@ function DataSource(start, stop, source)
                 self.handleData(data);
                 self.query = undefined;
             });
+    }
+    
+    self.refresh = function()
+    {
+        self.output.clear();
+        self.output.refresh();
     }
 
     self.setOutput = function(output)
@@ -104,6 +119,21 @@ function DataSource(start, stop, source)
 
         self._filter = $.extend(self._filter, filter);
         self.last_update = false;
+
+        query = "";
+        query += "start=" + encodeURIComponent(getISODateTime(self.start));
+        query += "&stop=" + encodeURIComponent(getISODateTime(self.stop));
+        for(var k in self._filter)
+        {
+            for(var i = 0; i < self._filter[k].length; i++)
+            {
+                if(query)
+                    query += "&";
+                query += encodeURIComponent(k) + "=" + encodeURIComponent(self._filter[k][i]);
+            }
+        }
+        console.log(query);
+
         //self.clear();
         //self.update();
         self.fetch();
@@ -112,8 +142,15 @@ function DataSource(start, stop, source)
     self.handleData = function(data)
     {
         self.data = data;
-        self.output.clear();
-        self.output.handleData(data);
+        if(self.output != undefined)
+        {
+            self.output.clear();
+            self.output.handleData(data);
+        }
+        else
+        {
+            console.warn("Output not defined");
+        }
     }
 }
 
@@ -277,7 +314,7 @@ function FilterList(con, label, name, options, ds, multiple)
     self.element = $('<div />');
     self.element.addClass("picker")
     self.element.append("<h3>" + label + "</h3>");
-
+    self.element.attr('id', 'picker_' + name)
     self.multiple = multiple;
     if(self.multiple == undefined) self.multiple = false;
 
@@ -306,6 +343,7 @@ function FilterList(con, label, name, options, ds, multiple)
         tmp.data('id', i);
         if(window.location.hash.indexOf(options[i]) != -1)
             tmp.addClass("selected");
+        tmp.addClass('option_' + i);
         self.element.append(tmp)
     }
 
@@ -517,6 +555,7 @@ $(document).ready(function() {
             function getView() {
                 return History.getState().hash.substring(root.length+1);
             }
+
             function showView(view) {
                 if (view == last_view) return;
 

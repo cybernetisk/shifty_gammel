@@ -100,15 +100,6 @@
 }
 
 
-#filters.hidden .picker
-{
-  display:none;
-}
-
-#filters.hidden .picker.selected
-{
-  display:block !important;
-}
 
 #filters.hidden .option.selected{ display:block !important;}
 #filters.hidden .option{display:none;}

@@ -2,6 +2,60 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+.picker
+{
+  input
+  {
+    display:none;
+  }
+
+  div
+  {
+    margin:3px;
+  }
+
+  label
+  {
+    clear:none;
+    display:block;
+    padding:5px 10px;
+    border-radius:5px;
+    background-color:rgb(200,200,200);
+  }
+
+  input:checked + label
+  {
+    background-color:#93B300;
+  }
+}
+
+#filters.hidden
+{
+  h3
+  {
+    display:hidden;
+  }
+}
+
+.menu {
+  
+
+  .submenu
+  {
+    display:none;
+    position:absolute;
+  }
+}
+
+.menu:hover
+{
+  
+  .submenu
+  {
+    display:block;
+  }
+}
+
 table {
   width:100%; border-collapse:collapse; table-layout:fixed;
 

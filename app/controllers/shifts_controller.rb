@@ -6,45 +6,50 @@ class ShiftsController < ApplicationController
     elsif current_user
       @user = current_user
     end
+    @shifts = Shift
 
-    if params[:start] and params[:stop]
-      if params[:updated]
-        params[:updated] = 1.seconds.since DateTime.parse params[:updated]
-        @shifts = Shift.where("updated_at > :updated AND ((start >= :start AND start <= :end) or (end >= :start AND end <= :end))", {:start=>params[:start], :end=>params[:stop], :updated=>params[:updated]})
-
-      else
-
-        @shifts = Shift.where("(start >= :start AND start <= :end) or (end >= :start AND end <= :end)", {:start=>params[:start], :end=>params[:stop]})
-      end
-
-      if params[:filter] 
-        if params[:filter][:shift_type]
-          @shifts = @shifts.where("shift_type_id IN (?)", params[:filter][:shift_type])
-        end
-        if params[:filter][:user_id]
-          @shifts = @shifts.where("user_id IN (?)", params[:filter][:user_id])
-        end
-        if params[:filter][:taken]
-          tmp = params[:filter][:taken]
-          taken = tmp.index('0') != nil
-
-          if not taken
-            @shifts = @shifts.where("user_id IS NULL")
-          else
-            @shifts = @shifts.where("user_id IS NOT NULL")
-          end
-        end
-      end
-
-      respond_to do |format|
-        format.json { render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type]) }
-      end
-      return
+    if params[:updated]
+      @shifts = @shifts.where("updated_at > :updated", {:updated=>(1.seconds.since DateTime.parse params[:updated])})
     end
-    @shifttypes = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
+
+    if params[:start]
+      @shifts = @shifts.where("(start >= :start or end <= :start)", {:start=>params[:start]})
+
+      if params[:duration]
+        params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.week
+      end
+    end
+
+    if params[:stop]
+      @shifts = @shifts.where("(start <= :stop or end <= :stop)", {:stop=>params[:stop]})
+    end
+
+    if params[:shift_type]
+      @shifts = @shifts.where("shift_type_id IN (?)", params[:shift_type])
+    end
+
+    if params[:user]
+      @shifts = @shifts.where("user_id IN (?)", params[:user_id])
+    end
+    
+    if params[:taken]
+      tmp = params[:taken]
+      taken = tmp.index('0') != nil
+
+      if not taken
+        @shifts = @shifts.where("user_id IS NULL")
+      else
+        @shifts = @shifts.where("user_id IS NOT NULL")
+      end
+    end
+
+    @shift_types = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
+
+    @templates = Template.all
 
     respond_to do |format|
       format.html # index.html.erb
+      format.json { render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type, :template]) } 
     end
   end
 
@@ -166,6 +171,52 @@ class ShiftsController < ApplicationController
     end
   end  
   
+  def json_index
+     if params[:user_id]
+      @user = User.find(params[:user_id])
+    elsif current_user
+      @user = current_user
+    end
+    @shifts = Shift
+
+    if params[:updated]
+      @shifts = @shifts.where("updated_at > :updated", {:updated=>(1.seconds.since DateTime.parse params[:updated])})
+    end
+
+    if params[:start]
+      @shifts = @shifts.where("(start >= :start or end >= :start)", {:start=>params[:start]})
+
+      if params[:duration]
+        params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.week
+      end
+    end
+
+    if params[:stop]
+      @shifts = @shifts.where("(start <= :stop or end <= :stop)", {:stop=>params[:stop]})
+    end
+
+    if params[:shift_type]
+      @shifts = @shifts.where("shift_type_id IN (?)", params[:shift_type])
+    end
+    
+    if params[:user]
+      @shifts = @shifts.where("user_id IN (?)", params[:user_id])
+    end
+    
+    if params[:taken]
+      tmp = params[:taken]
+      taken = tmp.index('0') != nil
+
+      if not taken
+        @shifts = @shifts.where("user_id IS NULL")
+      else
+        @shifts = @shifts.where("user_id IS NOT NULL")
+      end
+    end
+    render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type, :template])
+    
+  end
+
   def index
     @upcomingShifts = Shift.getUpcomingShifts
     if current_user
