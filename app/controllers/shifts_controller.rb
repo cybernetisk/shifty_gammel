@@ -1,48 +1,5 @@
 class ShiftsController < ApplicationController
   def calendar
-    
-    if params[:user_id]
-      @user = User.find(params[:user_id])
-    elsif current_user
-      @user = current_user
-    end
-    @shifts = Shift
-
-    if params[:updated]
-      @shifts = @shifts.where("updated_at > :updated", {:updated=>(1.seconds.since DateTime.parse params[:updated])})
-    end
-
-    if params[:start]
-      @shifts = @shifts.where("(start >= :start or end <= :start)", {:start=>params[:start]})
-
-      if params[:duration]
-        params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.week
-      end
-    end
-
-    if params[:stop]
-      @shifts = @shifts.where("(start <= :stop or end <= :stop)", {:stop=>params[:stop]})
-    end
-
-    if params[:shift_type]
-      @shifts = @shifts.where("shift_type_id IN (?)", params[:shift_type])
-    end
-
-    if params[:user]
-      @shifts = @shifts.where("user_id IN (?)", params[:user_id])
-    end
-    
-    if params[:taken]
-      tmp = params[:taken]
-      taken = tmp.index('0') != nil
-
-      if not taken
-        @shifts = @shifts.where("user_id IS NULL")
-      else
-        @shifts = @shifts.where("user_id IS NOT NULL")
-      end
-    end
-
     @shift_types = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
 
     @templates = Template.all
@@ -114,6 +71,7 @@ class ShiftsController < ApplicationController
     if not current_user.can_manage_shift_type?(@shift.shift_type)
       redirect_to @shift
     end
+    render { render :layout => !request.xhr? }
   end
 
   def update
@@ -126,7 +84,7 @@ class ShiftsController < ApplicationController
           format.html { redirect_to @shift, notice: 'Shift was successfully updated.' }
           format.json { head :ok }
         else
-          format.html { render action: 'edit' }
+          format.html { render action: 'edit', layout: !request.xhr? }
           format.json { render json: @shift.errors, satus: :unprocessable_entity }
         end
       end
@@ -137,7 +95,7 @@ class ShiftsController < ApplicationController
     @shift = Shift.find(params[:id])
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html { render :layout => !request.xhr? }
       format.json { render json: @shift }
     end
   end
@@ -184,15 +142,15 @@ class ShiftsController < ApplicationController
     end
 
     if params[:start]
-      @shifts = @shifts.where("(start >= :start or end >= :start)", {:start=>params[:start]})
+      @shifts = @shifts.where("end >= :start", {:start=>params[:start]})
 
       if params[:duration]
-        params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.week
+        params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.day
       end
     end
 
     if params[:stop]
-      @shifts = @shifts.where("(start <= :stop or end <= :stop)", {:stop=>params[:stop]})
+      @shifts = @shifts.where("start <= :stop", {:stop=>params[:stop]})
     end
 
     if params[:shift_type]
@@ -213,7 +171,7 @@ class ShiftsController < ApplicationController
         @shifts = @shifts.where("user_id IS NOT NULL")
       end
     end
-    render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type, :template])
+    render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type, :template=>{:include=>[:template]}])
     
   end
 
