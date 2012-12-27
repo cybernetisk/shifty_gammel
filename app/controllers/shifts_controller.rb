@@ -2,15 +2,20 @@ class ShiftsController < ApplicationController
   def calendar
     @shift_types = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
 
-    @templates = Template.all
+    @templates = Hash[*Template.all.map{|x| [x.id, x.title]}.flatten]
+    @templates[-1] = 'None'
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type, :template]) } 
     end
   end
 
   def list
+    @shift_types = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
+
+    @templates = Hash[*Template.all.map{|x| [x.id, x.title]}.flatten]
+    @templates[-1] = 'None'
+
     respond_to do |format|
       format.html { render action: 'calendar' }
     end
@@ -70,6 +75,7 @@ class ShiftsController < ApplicationController
     @shift = Shift.find(params[:id])
     if not current_user.can_manage_shift_type?(@shift.shift_type)
       redirect_to @shift
+      return
     end
     render { render :layout => !request.xhr? }
   end
@@ -78,6 +84,7 @@ class ShiftsController < ApplicationController
     @shift = Shift.find(params[:id])
     if not current_user.can_manage_shift_type?(@shift.shift_type)
       redirect_to @shift
+      return
     else
       respond_to do |format|
         if @shift.update_attributes(params[:shift])
@@ -160,6 +167,17 @@ class ShiftsController < ApplicationController
     if params[:user]
       @shifts = @shifts.where("user_id IN (?)", params[:user_id])
     end
+
+    if params[:template]
+      template_shifts = TemplateShift.where(:template_id=>params[:template]).all(:select=>"id")
+
+      if params[:template].include? "-1"
+        @shifts = @shifts.where("template_shift_id IN (?) OR template_shift_id IS NULL", template_shifts)
+      else
+        @shifts = @shifts.where("template_shift_id IN (?)", template_shifts)
+      end
+      
+    end
     
     if params[:taken]
       tmp = params[:taken]
@@ -171,8 +189,8 @@ class ShiftsController < ApplicationController
         @shifts = @shifts.where("user_id IS NOT NULL")
       end
     end
+
     render json: @shifts.order('start ASC').to_json(:include=>[:user,:shift_type, :template=>{:include=>[:template]}])
-    
   end
 
   def index

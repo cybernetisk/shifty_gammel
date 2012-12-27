@@ -8,6 +8,7 @@ $("#template").click(function(){
   var d = $("<div>");
 
   d.css({top:$(this).offset().top, left:$(this).offset().left, position:'absolute', width:200, background:'white', border:'1px solid black', padding:20});
+  
   $.get('/templates.json', function(data)
   {
     for(var i = 0; i < data.length; i++)
@@ -19,7 +20,6 @@ $("#template").click(function(){
       d.append(m);
     }
     $(document.body).append(d);
-
   });
 
   d.mouseout(
@@ -275,13 +275,12 @@ $(function(){
 
 <script id="shift" type="text/html">
 <div class="shift {{ shift_type.title }}">
-  <a href="/shifts/{{id}}">
+  <a href="/template_shifts/{{id}}/show">
   <div class="content">
     <div>{{ start_time }}</div>
     <div>
 
     {{shift_type.title}}
-    {{user.username}}
     </div>
     <div>{{ end_time }}</div>
   </div>

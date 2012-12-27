@@ -49,7 +49,7 @@ function DataSource(start, stop, source)
     self.last_update = 0;
 
     if(source == undefined)
-        source = '/shifts.json';
+        source = '/shifts_calendar.json';
     self.source = source;
 
     self.setTime = function(start, stop)
@@ -180,6 +180,7 @@ function ListView(div, start, stop)
 
         add('Dato');
         add('Ukedag');
+        add('Template');
         add('Fra');
         add('Til');
         add('Type');
@@ -204,6 +205,11 @@ function ListView(div, start, stop)
 
             add(start.toString("yyyy-MM-dd"));
             add("ukedag");
+            if(r.template != undefined)
+                add(r.template.template.title);
+            else
+                add("");
+
             add(start.toString("HH:mm"));
             add(stop.toString("HH:mm"));
             add(r.shift_type.title);
@@ -380,15 +386,21 @@ $(document).ready(function() {
             for(var i = 0; i < data.length; i++)
             {
                 var c = data[i];
-                var m = $("<a href=\"#\"></a>");
+                var m = $("<a />");
+                var id = c.id;
+
                 m.click(function(){
-                    $.get("/templates/" + c.id + "/apply/" + getDate(datasource.start), function(){
+                    $.get(this.href, function(){
                         datasource.fetch();
                     });
                     d.remove();
+
+                    return false;
                 });
+
                 m.html(c.title);
                 m.css('display','block');
+                m.attr('href', "/templates/" + id + "/apply/" + getDate(datasource.start));
                 d.append(m);
             }
             $(document.body).append(d);
@@ -420,7 +432,6 @@ $(document).ready(function() {
 
         $.get('/shift_types.json', function(data)
         {
-
             function addShiftType(c)
             {
                 var shift_type_id = c.id;
@@ -446,7 +457,23 @@ $(document).ready(function() {
         });
     });
 
+    $("#edit_shift").click(function(){
+        var tmp = new CalendarEditor(datasource.output);
+        tmp.makeEditable();
 
+
+    var onmousemove = function(event){
+        var calendar_div = $("#calendar");
+      var x = event.pageX - calendar_div.offset().left;
+      var y = event.pageY - calendar_div.offset().top;
+
+      x = x / calendar_div.width() * 100;
+      y = y / calendar_div.height() * 100;
+
+      console.log(x + "," + y + "-"+ datasource.output.offsetToTime(x,y));
+  };
+  $("#calendar").mousemove(onmousemove);
+    });
 
 
     $(".pickType").live('click', function(event)
@@ -456,84 +483,10 @@ $(document).ready(function() {
         cv.filter({'shift_type':id});
     });
 
-    function resized(event, ui)
-    {
-        var e = $(this);
-        
-        var s = e.data('shift');
-
-        if(ui.position.top != ui.originalPosition.top)
-        {
-            var rx = ui.position.left / $("#calendar").width() * 100;
-            var ry = ui.position.top / $("#calendar").height() * 100;
-            var t = cv.offsetToTime(rx, ry);
-        
-            s.start = t;
-        }
-        else
-        {
-            var rx = ui.position.left / $("#calendar").width() * 100;
-            var ry = (ui.position.top + ui.size.height) / $("#calendar").height() * 100;
-            var t = cv.offsetToTime(rx, ry);
-            s.end = t;
-        }
-
-        cv.refresh();
-        makeEditable()
-        changed(s)
-    }
-
-    function moved(event, ui)
-    {
-        var e = $(this);
-        var s = e.data('shift');
-
-        var t = cv.offsetToTime(ui.position.left    / $("#calendar").width() * 100, ui.position.top / $("#calendar").height() * 100);
-        
-        var diff = t.valueOf() - s.start.valueOf();
-
-
-        s.start = new Date(s.start.valueOf() + diff);
-        s.end = new Date(s.end.valueOf() + diff);
-
-        cv.refresh();
-        makeEditable()
-        changed(s);
-    }
-
-    function changed(shift)
-    {
-        var start = getISODateTime(shift.start);
-        var end = getISODateTime(shift.end);
-        $.post('/shifts/' + shift.id +".json" , {'_method':'put', 'shift[start]':start, 'shift[end]':end}, function(e){
-
-        });
-    }
-
-    function makeEditable()
-    {
-        
-        $(".shift").not(".ui-draggable").draggable(
-                {
-                grid: [100/7, 1000/24/4],
-                stop: moved
-                });
-
-        $(".shift").not(".ui-resizable").resizable(
-            {
-                handles: "n, s",
-                grid: [10, 1000/24/4],
-                stop: resized
-             });
-
-    }
-
     $(function(){
-        var s = new Date();
-        s.setHours(0);
-
         s = new Date().moveToDayOfWeek(1, -1);
         s.setHours(0)
+        s.setMinutes(0);
 
         var e = new Date(s.getTime()).add(7).days();
 
@@ -596,11 +549,11 @@ $(document).ready(function() {
         new WeekPicker($("#picker"), s, e, datasource);
         //datasource.fetch();
 
-        makeEditable();
         
         new FilterList($("#filters"), "Shift types", "shift_type", shifttypes, datasource, true);
         new FilterList($("#filters"), "Taken", "taken", {0:'Taken', 1:'Available'}, datasource);
-        
+        new FilterList($("#filters"), "Templates", "template", templates, datasource, true);
+
         if (user.id) {
             var list = {};
             list[user.id] = user.username;
@@ -625,11 +578,11 @@ $(document).ready(function() {
 
             for(var i = 0; i < value.length; i++) 
             {
-                if(Date.parse(value[i]))
+                /*if(Date.parse(value[i]))
                 {
                     cv.setTime(Date.parse(value[i]));
                 }
-                else if(value[i] != "")
+                else if(value[i] != "")*/
                     filter.push( value[i] + ".*");
             }
 
@@ -639,14 +592,32 @@ $(document).ready(function() {
             {
                 filter = new RegExp("(^" + filter.join("|^") + ")", "i");
 
+                var reg_matches = Array();
+                var exact_matches = Array();
+
                 var e = function(){
+                    if(value.indexOf(this.innerText) != -1)
+                    {
+                        exact_matches.push(this);
+                    }
                     if(this.innerText.match(filter))
                     {
-                        $(this).addClass("selected");
-                        }
+                        reg_matches.push(this);//$(this).addClass("selected");
+                    }
                 }
+
                 $(".option").each(e);
+/*
+                if(exact_matches.length > 0)
+                {
+                    $(exact_matches).addClass('selected');
+                }
+                else
+                {*/
+                    $(reg_matches).addClass('selected');
+                //}
             }
+
             $(".picker").each(function(){
                 $(this).data("FilterList").updateFilter();
             });
@@ -662,6 +633,13 @@ $(document).ready(function() {
         });
 
         //window.setInterval(function(){cv.update();makeEditable()}, 5000);
+/*
+        $(".shift_link").live('click', function(){
+            var iframe = $('<iframe />');
+            iframe.attr('src', this.href);
+            iframe.dialog({modal:true});
+            return false;
+        });*/
     });
 
 });

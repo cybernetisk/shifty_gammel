@@ -32,7 +32,7 @@ Railsdemo::Application.routes.draw do
   match 'templates/shifts/' => 'templates#shifts', :as => :template_shifts
   match 'shifts/take/:id' => 'shifts#take_shift', :as=>:shifts_take
   match 'shifts/:id/duplicate' => 'shifts#duplicate', :as=>:shift_duplicate
-  match 'shifts.json' => 'shifts#json_index', :as=>:shifts_json
+  match 'shifts_calendar.json' => 'shifts#json_index', :as=>:shifts_json
 
   match 'admin' => 'users#admin', :as=>:admin
   

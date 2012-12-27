@@ -1,4 +1,3 @@
-
 function makeHourGrid()
 {
     for(var i = 0; i < 25; i++)
@@ -24,22 +23,22 @@ function makeHalfHourGrid()
 }
 
 
-function collides(a,b)
+function collides(a,b, flip)
 {
-    if(a.start <= b.start &&
+    if(a.start < b.start &&
         a.end > b.start)
             return true;
-    if(b.start <= a.start &&
-        b.end > a.start)
-            return true;
 
-    if(b.start < a.start &&
-        b.end > a.end)
-            return true;
-
-    if(a.start < b.start &&
+    if(a.start < b.end &&
         a.end > b.end)
             return true;
+
+    if(a.start >= b.start &&
+        a.end <= b.end)
+            return true;
+
+    if(flip == undefined || flip)
+        return collides(b,a,false);
 
     return false;
 }
@@ -154,7 +153,7 @@ function ShiftManager()
         for(var i in this.groups)
                 if(this.groups[i].fits(shift))
                     matches.push(this.groups[i]);
-        
+
         if(matches.length > 0)
         {
             for(var i = 1; i < matches.length; i++)
@@ -328,6 +327,8 @@ function CalendarView(div, start, stop)
         return Array(x,y);
     }
 
+    var minutes_15 = 15 * 60 * 1000;
+
     /**
      * Converts x y coordinates to a date object
      */
@@ -343,7 +344,7 @@ function CalendarView(div, start, stop)
         time = Math.round((day + time) * self.aday);
         
         // round to closest 15 min
-        time = Math.round(time / 900000) * 900000;
+        time = Math.round(time / minutes_15) * minutes_15;
         
         // add time of week start
         time += self.start.valueOf();
@@ -410,11 +411,105 @@ function WeekGrid(div, start, stop)
 }
 
 
+function CalendarEditor(cv, filter)
+{
+    var self = this;
+    self.cv = cv;
 
+    self.filter = filter;
+    if(self.filter == undefined)
+    {
+        self.filter = '.shift';
+    }
+
+    self.resized = function(event, ui)
+    {
+        var e = $(this);
+        
+        var s = e.data('shift');
+
+       /* 
+      var x = event.pageX - calendar_div.offset().left;
+      var y = event.pageY - calendar_div.offset().top;
+
+      x = Math.round(x / calendar_div.width() * 100);
+      y = Math.round(y / calendar_div.height() * 100);
+        */ 
+        console.log(ui.position.left + "," + ui.position.top);
+        if(ui.position.top != ui.originalPosition.top)
+        {
+            var rx = (ui.position.left + e.width() / 2) / $("#calendar").width() * 100;
+            var ry = ui.position.top / $("#calendar").height() * 100;
+            s.start = self.cv.offsetToTime(rx, ry);
+        }
+        else
+        {
+            var rx = (ui.position.left + e.width() / 2) / $("#calendar").width() * 100;
+            var ry = (ui.position.top + ui.size.height) / $("#calendar").height() * 100;
+            s.end = self.cv.offsetToTime(rx, ry);
+        }
+
+        cv.refresh();
+        self.makeEditable()
+        self.changed(s)
+    }
+
+    self.moved = function(event, ui)
+    {
+        var e = $(this);
+        var s = e.data('shift');
+
+        var x = (ui.position.left + e.width() / 2)    / $("#calendar").width() * 100;
+        var y = ui.position.top / $("#calendar").height() * 100;
+
+        var t = self.cv.offsetToTime(x, y);
+        
+        var diff = t.valueOf() - s.start.valueOf();
+
+
+        s.start = new Date(s.start.valueOf() + diff);
+        s.end = new Date(s.end.valueOf() + diff);
+
+        self.cv.refresh();
+        self.makeEditable()
+        self.changed(s);
+    }
+
+    self.changed = function(shift)
+    {
+        var start = getISODateTime(shift.start);
+        var end = getISODateTime(shift.end);
+        $.post('/shifts/' + shift.id +".json" , {'_method':'put', 'shift[start]':start, 'shift[end]':end}, function(e){
+
+        });
+    }
+
+    self.makeEditable = function()
+    {
+        $(self.filter).not(".ui-draggable").draggable(
+                {
+                grid: [100/7, 1000/24/4],
+                stop: self.moved
+                });
+
+        $(self.filter).not(".ui-resizable").resizable(
+            {
+                handles: "n, s",
+                grid: [10, 1000/24/4],
+                stop: self.resized
+             });
+
+        $(".shift").not(self.filter).addClass('disabled');
+    }
+
+    self.cleanup = function(){
+        $(self.filter).filter(".ui-draggable").draggable("disable");
+        $(self.filter).filter(".ui-resizable").resizable("disable");
+    }
+}
 
 function createShiftInCalendar(shift_type, post_uri, pre_post)
 {
-
     var mousedown = false;
 
     var start = undefined;
@@ -494,6 +589,7 @@ function createShiftInCalendar(shift_type, post_uri, pre_post)
         {
             datasource.output.addShift(data);
             datasource.output.removeShift("temporary");
+            $(".shift_temporary").remove()
             datasource.output.refresh();
             $(".shift_" + data.id).css('border', '1px solid red');
         });

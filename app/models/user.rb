@@ -40,6 +40,9 @@ class User < ActiveRecord::Base
   end
 
   def can_manage_shift_type?(shift_type)
+    if self.admin
+      return true
+    end
     Certification.exists?(shift_type_id: shift_type, manager: true, user_group_id: user_groups)
   end
 

@@ -10,7 +10,7 @@
 
 <script type="text/javascript">
 var shifttypes = <%= @shift_types.to_json.html_safe %>;
-
+var templates = <%= @templates.to_json.html_safe %>;
 <% if @user %>
 var user = {
   "id": <%= @user.id %>,
@@ -40,6 +40,12 @@ var user = { "id": null, "username": null };
   <a href="#" id="create_shift">Create shift</a>
 </div>
 
+
+<div style="float:right; margin-right:100px;">
+  <a href="#" id="edit_shift">Edit shifts</a>
+</div>
+
+
 <div id="show_filter">+</div>
 <div id="filters" class="hidden"></div>
 
@@ -59,7 +65,7 @@ var user = { "id": null, "username": null };
 
 <script id="shift" type="text/html">
 <div class="shift {{ shift_type.title }}">
-  <a href="/shifts/{{id}}">
+  <a href="/shifts/{{id}}" class="shift_link">
   <div class="content">
     <div>{{ start_time }}</div>
     <div>

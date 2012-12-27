@@ -6,6 +6,7 @@
   <% ShiftType.all.each do |shift_type| %>
     <div id="field">
       <%= check_box_tag "user_group[shift_type_ids][]", shift_type.id, @user_group.certifications.exists?(shift_type_id: shift_type.id) %><%= shift_type.title %>
+      <%= check_box_tag "user_group[shift_type_manage][]", shift_type.id, @user_group.certifications.exists?(manage:1, shift_type_id: shift_type.id)[0].manage %>Manage
     </div>
   <% end %>
   <div class="actions">
