@@ -387,6 +387,7 @@ function WeekGrid(div, start, stop)
     {
         this.start = start;
         this.stop = stop;
+        this.days = (this.stop.valueOf() - this.start.valueOf()) / (24 * 3600 * 1000);
         this.refresh();
     }
 
