@@ -248,7 +248,7 @@ function WeekPicker(div, start, end, datasource)
     self.end = new Date(end.getTime());
     self.datasource = datasource;
     self.div = div;
-
+    self.duration = 7;
 
     
     self.prevDay = function()
@@ -269,16 +269,16 @@ function WeekPicker(div, start, end, datasource)
     
     self.prevWeek = function()
     {
-        self.start.add(-7).days();
-        self.end.add(-7).days();
+        self.start.addDays(-self.duration);
+        self.end.addDays(-self.duration);
         self.datasource.setTime(self.start, self.end);
         self.update();
     }
     
     self.nextWeek = function()
     {
-        self.start.add(7).days();
-        self.end.add(7).days();
+        self.start.addDays(self.duration);
+        self.end.addDays(self.duration);
         self.datasource.setTime(self.start, self.end);
         self.update();
     }
@@ -298,7 +298,40 @@ function WeekPicker(div, start, end, datasource)
         
         addLink('Previous week', function(){m.prevWeek();});
         addLink('Prev day', function(){m.prevDay();});
-        c.append("<span>Uke " + self.start.getWeekOfYear() + "</span>")
+
+
+        if(self.duration == 7 && self.start.getDay() == 1)
+        {
+            c.append("<span>Uke " + self.start.getWeekOfYear() + "</span>")
+        }
+        else
+        {
+            c.append("<dpan>" + self.start.format("Y-m-d") + " -> " + self.end.format("Y-m-d") + "</span>");
+        }
+
+        var dd = $("<select>");
+
+        function addOption(duration, label)
+        {
+            var t = $('<option>');
+            t.html(label)
+            t.attr('value', duration);
+            if(duration == self.duration)
+                t.attr('selected','selected');
+            dd.append(t);
+        }
+        addOption(1 * 7, '1 week');
+        addOption(4 * 7, '4 weeks');
+        addOption(52 * 7, '1 year');
+
+        dd.change(function(){
+            self.duration = parseInt(this.value);
+            self.end = new Date(self.start).addDays(self.duration);
+            self.datasource.setTime(self.start, self.end);
+            self.update();
+        });
+
+        c.append(dd);
 
         addLink('Next day', function(){m.nextDay();});
         addLink('Next week', function(){m.nextWeek();});

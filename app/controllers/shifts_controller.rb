@@ -151,7 +151,7 @@ class ShiftsController < ApplicationController
     if params[:start]
       @shifts = @shifts.where("end >= :start", {:start=>params[:start]})
 
-      if params[:duration]
+      if !params.has_key?:stop and params[:duration]
         params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.day
       end
     end
