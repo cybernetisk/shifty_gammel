@@ -14,12 +14,13 @@ class TemplateShift < ActiveRecord::Base
 
   # returns an instance of the shift relative to the tempates start
   def makeShift(i)
-    delta = self.template.get_period_offset(i)
+    delta = self.template.get_period_start(i)
     
     shift = Shift.new
-    shift.start = start + delta
-    shift.end   = stop + delta
-    
+
+    shift.start = delta + (start - template.template_start)
+    shift.end   = delta + (stop - template.template_start)
+
     shift.shift_type = shift_type
     shift.comment = comment
     shift.template = self

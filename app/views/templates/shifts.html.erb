@@ -8,7 +8,7 @@ $("#template").click(function(){
   var d = $("<div>");
 
   d.css({top:$(this).offset().top, left:$(this).offset().left, position:'absolute', width:200, background:'white', border:'1px solid black', padding:20});
-  
+
   $.get('/templates.json', function(data)
   {
     for(var i = 0; i < data.length; i++)
@@ -176,7 +176,7 @@ $(function(){
     {
       var start = getISODateTime(shift.start);
       var end = getISODateTime(shift.end);
-      $.post('/shifts/' + shift.id +".json" , {'_method':'put', 'shift[start]':start, 'shift[end]':end}, function(e){
+      $.post('/shifts/' + shift.id +".json" , {'_method':'put', 'shift[start]':start.format("c"), 'shift[end]':end.format("c")}, function(e){
 
       });
     }
@@ -203,18 +203,16 @@ var cv = false;
 
 var datasource = undefined;
 $(function(){
-  var s = new Date();
+  var s = new Date(0);
   s.setHours(0);
-
-  <% strt = @template.start.strftime("%c") %>
-  s = new Date("<%= strt %>");
-  s.setHours(0)
 
   var e = new Date(s.getTime()).add(7).days();
 
-
   datasource = new DataSource(s, e, "/templates/<%= @template.id %>/shifts");
   datasource.output = new CalendarView($("#calendar"), s, e);
+  datasource.output.weekgrid.setFormat(function(f){
+    return new Date(f.getTime() + 4 * 24 * 60 * 60 * 1000).format("D");
+  });
   datasource.fetch()
 
   makeEditable();

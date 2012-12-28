@@ -390,6 +390,14 @@ function WeekGrid(div, start, stop)
         this.refresh();
     }
 
+    this.format = "d/M/y D";
+
+    this.setFormat = function(format)
+    {
+        this.format = format;
+        this.refresh();
+    }
+
     this.refresh = function()
     {
         $(".dayline").remove()
@@ -401,7 +409,13 @@ function WeekGrid(div, start, stop)
             d.css('left', l + "%");
 
             var date = new Date(this.start).add(i).days();
-            d.text(date.toString("d/M/yyyy"));
+
+            if(typeof(this.format) == 'function')
+                date = this.format(date);
+            else
+                date = date.format("d/M/y D");
+
+            d.text(date);
 
             $(this.div).append(d);
         }

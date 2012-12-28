@@ -17,7 +17,7 @@ class Template < ActiveRecord::Base
 
   # returns date of period start
   def get_period_start(i)
-    self.start + (i * self.interval).days
+    self.start + get_period_offset(i)
   end
 
   # From an integer, get a periods offset from template start
@@ -74,5 +74,10 @@ class Template < ActiveRecord::Base
 
   def shift_types
     self.template_shift.select('shift_type_id').uniq
+  end
+
+  def template_start
+    t = Time.strptime("0", "%s")
+    return t - t.utc_offset.seconds
   end
 end

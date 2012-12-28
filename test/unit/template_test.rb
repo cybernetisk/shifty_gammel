@@ -2,12 +2,15 @@ require 'test_helper'
 
 class TemplateTest < ActiveSupport::TestCase
   now = Time.at(0)
+  epoc = Time.strptime("0", "%s") 
+  epoc -= epoc.utc_offset.seconds
+
   test "apply template" do
     template = FactoryGirl.create(:template, start:now)
 
-    shift_template = FactoryGirl.create(:template_shift, start:now, stop:2.hours.since(now), template:template)
+    shift_template = FactoryGirl.create(:template_shift, start:epoc, stop:epoc + 2.hours, template:template)
     
-    shift_template2 = FactoryGirl.create(:template_shift, start:2.hours.since(now), stop:3.hours.since(now), template:template)
+    shift_template2 = FactoryGirl.create(:template_shift, start:epoc + 2.hours, stop:epoc + 3.hours, template:template)
     
     shift = template.apply(0)
     assert_equal 2, shift.length
@@ -50,7 +53,7 @@ class TemplateTest < ActiveSupport::TestCase
   # applies a bunch of periods for the template, and checks if it comes out as expected.
   test "make_many_periods" do
     template = FactoryGirl.create(:template, start:now, stop:now + 18.days, interval:1)
-    ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
+    ts = FactoryGirl.create(:template_shift, start:epoc, stop:epoc + 1.hours)
     template.template_shift << ts
 
     (0..template.count_intervals).step(2).each do |period|
@@ -70,8 +73,8 @@ class TemplateTest < ActiveSupport::TestCase
 
   # checks if template has been applied, (which it shouldn't bee at first) applies it, rechecks adds another shift to template, repeats checks
   test "template_careful_apply" do
-    template = FactoryGirl.create(:template, start:now, stop:now + 18.days, interval:2)
-    ts = FactoryGirl.create(:template_shift, start:now, stop:now + 1.hours)
+    template = FactoryGirl.create(:template, start:epoc, stop:epoc + 18.days, interval:2)
+    ts = FactoryGirl.create(:template_shift, start:epoc, stop:epoc + 1.hours)
     template.template_shift << ts
 
     assert_equal 1, template.careful_apply(0).length
@@ -82,7 +85,7 @@ class TemplateTest < ActiveSupport::TestCase
 
     assert_equal 1, template.careful_apply(1).length
 
-    ts2 = FactoryGirl.create(:template_shift, template:template, start:now, stop:now + 1.hours)
+    ts2 = FactoryGirl.create(:template_shift, template:template, start:epoc, stop:epoc + 1.hours)
     template.template_shift << ts2
 
     assert_equal 1, template.careful_apply(0).length
@@ -90,7 +93,7 @@ class TemplateTest < ActiveSupport::TestCase
   end
 
   test "get_interval" do
-    template = FactoryGirl.create(:template, start:now, stop: now + 4.weeks, interval:4)
+    template = FactoryGirl.create(:template, start:epoc, stop: epoc + 4.weeks, interval:4)
 
     x = template.get_period_start 5
     

@@ -1,14 +1,16 @@
 require 'test_helper'
 
 class TemplateShiftTest < ActiveSupport::TestCase
+    epoc = Time.strptime("0", "%s")
+    epoc = epoc - epoc.utc_offset.seconds
     test "createShift" do
         now = Time.now
 
-        shift_template = FactoryGirl.create(:template_shift, start: now + 2.hours, stop: now + 3.hours)
+        shift_template = FactoryGirl.create(:template_shift, start: epoc + 2.hours, stop: epoc + 3.hours)
         shift_template.template = FactoryGirl.create(:template, start:now, interval:1)
 
         shift = shift_template.makeShift(1)
-
+        
         assert_in_delta now + 1.days + 2.hours, shift.start, 1.seconds
         assert_in_delta now + 1.days + 3.hours, shift.end, 1.seconds
 
@@ -22,7 +24,7 @@ class TemplateShiftTest < ActiveSupport::TestCase
     test "isApplied" do
         now = Time.now
 
-        shift_template = FactoryGirl.create(:template_shift, :with_template, start: now + 2.hours, stop:now + 3.hours)
+        shift_template = FactoryGirl.create(:template_shift, :with_template, start: epoc + 2.hours, stop:epoc + 3.hours)
 
         assert_equal false, shift_template.isApplied(0)
 
