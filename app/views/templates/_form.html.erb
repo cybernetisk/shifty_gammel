@@ -19,6 +19,8 @@
     <%= f.label :description %><br />
     <%= f.text_area :description %>
   </div>
+  <div style="padding:16px !important;border:1px dashed gray;">
+    <h3>"advanced" fields</h3>
   <div class="field">
     <%= f.label :start %><br />
     <%= f.datetime_select :start %>
@@ -31,6 +33,7 @@
     <%= f.label :interval %><br />
     <%= f.number_field :interval %>
   </div>
+</div>
   <div class="actions">
     <%= f.submit %>
   </div>

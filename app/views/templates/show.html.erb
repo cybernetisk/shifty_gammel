@@ -27,7 +27,9 @@
 
 
 <%= link_to 'Edit', edit_template_path(@template) %> |
-<%= link_to 'Back', templates_path %>
+<%= link_to 'Back', templates_path %> |
+
+<%= link_to 'Edit shifts', :controller => "templates", :action => "shifts", :id => @template %>
 
 <table>
 <% @template.count_intervals.times.each do |i| %>

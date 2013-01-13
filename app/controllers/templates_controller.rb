@@ -56,6 +56,10 @@ class TemplatesController < ApplicationController
   def new
     @template = Template.new
 
+    @template.start = Time.now.beginning_of_year.beginning_of_week
+    @template.stop = Time.now.end_of_year
+    @template.interval = 7
+
     respond_to do |format|
       format.html # new.html.erb
       format.json { render json: @template }

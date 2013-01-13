@@ -210,6 +210,8 @@ $(function(){
 
   datasource = new DataSource(s, e, "/templates/<%= @template.id %>/shifts");
   datasource.output = new CalendarView($("#calendar"), s, e);
+
+  // Make a offset so that the week starts on 0
   datasource.output.weekgrid.setFormat(function(f){
     return new Date(f.getTime() + 4 * 24 * 60 * 60 * 1000).format("D");
   });

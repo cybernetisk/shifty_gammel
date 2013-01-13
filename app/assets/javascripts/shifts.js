@@ -294,22 +294,35 @@ function WeekPicker(div, start, end, datasource)
             var p = $('<a href="#">' + text + '</a>');
             p.click(func);
             c.append(p);
+            return p;
         }
         
-        addLink('Previous week', function(){m.prevWeek();});
-        addLink('Prev day', function(){m.prevDay();});
+        var unit = 'week';
+        if(self.duration != 7)
+            unit = 'period'
 
+        addLink('Previous ' + unit, function(){m.prevWeek();}).addClass("previous");
+        addLink('Prev day', function(){m.prevDay();}).addClass("previous");
 
-        if(self.duration == 7 && self.start.getDay() == 1)
+        var middle = $("<span />");
+        middle.addClass("middle");
+
+        if(self.duration % 7 == 0 && self.start.getDay() == 1)
         {
-            c.append("<span>Uke " + self.start.getWeekOfYear() + "</span>")
+            var year = "";
+            if(self.start.getFullYear() != new Date().getFullYear())
+                year = self.start.getFullYear() + "-"
+            if(self.duration == 7)
+                middle.append("<span>" + year + " Uke " + self.start.getWeekOfYear() + "</span>");
+            else
+                middle.append("<span>" + year + " Uke " + self.start.getWeekOfYear() + " til uke " + (self.end.getWeekOfYear() - 1) + "</span>");
         }
         else
         {
-            c.append("<dpan>" + self.start.format("Y-m-d") + " -> " + self.end.format("Y-m-d") + "</span>");
+            middle.append("<dpan>" + self.start.format("Y-m-d") + " -> " + self.end.format("Y-m-d") + "</span>");
         }
 
-        var dd = $("<select>");
+        var dd = $(" <select>");
 
         function addOption(duration, label)
         {
@@ -320,7 +333,10 @@ function WeekPicker(div, start, end, datasource)
                 t.attr('selected','selected');
             dd.append(t);
         }
+        addOption(1, '1 day');
+        addOption(3, '3 days');
         addOption(1 * 7, '1 week');
+        addOption(2 * 7, '2 weeks');
         addOption(4 * 7, '4 weeks');
         addOption(52 * 7, '1 year');
 
@@ -331,10 +347,11 @@ function WeekPicker(div, start, end, datasource)
             self.update();
         });
 
-        c.append(dd);
+        middle.append(dd);
+        c.append(middle);
 
-        addLink('Next day', function(){m.nextDay();});
-        addLink('Next week', function(){m.nextWeek();});
+        addLink('Next day', function(){m.nextDay();}).addClass("next");
+        addLink('Next ' + unit, function(){m.nextWeek();}).addClass("next");
         
         $(self.div).html(c);
     }
@@ -493,19 +510,19 @@ $(document).ready(function() {
     $("#edit_shift").click(function(){
         var tmp = new CalendarEditor(datasource.output);
         tmp.makeEditable();
+/*
 
+            var onmousemove = function(event){
+                var calendar_div = $("#calendar");
+              var x = event.pageX - calendar_div.offset().left;
+              var y = event.pageY - calendar_div.offset().top;
 
-    var onmousemove = function(event){
-        var calendar_div = $("#calendar");
-      var x = event.pageX - calendar_div.offset().left;
-      var y = event.pageY - calendar_div.offset().top;
+              x = x / calendar_div.width() * 100;
+              y = y / calendar_div.height() * 100;
 
-      x = x / calendar_div.width() * 100;
-      y = y / calendar_div.height() * 100;
-
-      console.log(x + "," + y + "-"+ datasource.output.offsetToTime(x,y));
-  };
-  $("#calendar").mousemove(onmousemove);
+              console.log(x + "," + y + "-"+ datasource.output.offsetToTime(x,y));
+          };
+          $("#calendar").mousemove(onmousemove);*/
     });
 
 
