@@ -3,11 +3,21 @@
 <h1>Edit certifications for <%= @user_group.name %></h1>
 
 <%= form_tag do %>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Can take shift</th>
+            <th>Can manage</th>
+        </tr>
   <% ShiftType.all.each do |shift_type| %>
-    <div id="field">
-      <%= check_box_tag "user_group[shift_type_ids][]", shift_type.id, @user_group.certifications.exists?(shift_type_id: shift_type.id) %><%= shift_type.title %>
-    </div>
+    <tr>
+        <td><%= shift_type.title %></td>
+        <td>
+      <%= check_box_tag "user_group[shift_type_ids][]", shift_type.id, @user_group.certifications.exists?(shift_type_id: shift_type.id) %></td>
+        <td><%= check_box_tag "user_group_manage[shift_type_ids][]", shift_type.id, @user_group.certifications.exists?(shift_type_id: shift_type.id, manager:true) %></td>
+    </tr>
   <% end %>
+</table>
   <div class="actions">
     <%= submit_tag "Certify!" %>
   </div>
