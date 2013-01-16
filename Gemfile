@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gem 'rails', '3.2.3'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git", :tag => '0.3.1'
 
 group :development, :test do
   gem 'sqlite3'

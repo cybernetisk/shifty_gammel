@@ -72,16 +72,14 @@ class UserGroupsController < ApplicationController
     @user_group = UserGroup.find(params[:id])
   end
 
-
-
   def update_certifications
     @user_group = UserGroup.find(params[:id])
     @user_group.certifications.destroy_all
 
     errors = false
-
+    manages = params[:user_group_manage][:shift_type_ids]
     params[:user_group][:shift_type_ids].each do |st_id|
-      c = Certification.new(user_group: @user_group, shift_type: ShiftType.find(st_id));
+      c = Certification.new(user_group: @user_group, shift_type: ShiftType.find(st_id), manager:manages.include?(st_id));
       if not c.save
         errors = true
         @user_group.errors.add(:certification, "Unable to create certification for something}")
@@ -92,7 +90,7 @@ class UserGroupsController < ApplicationController
         format.html { render action: 'certify' }
         format.json { render json: @user_group.errors, status: :unprocessable_entity }
       else
-        format.html { redirect_to @user_group, notice: 'User group was successfully certified!' }
+        format.html { render action: 'certify' }
         format.json { head :ok }
       end
     end
