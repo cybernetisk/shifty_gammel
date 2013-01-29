@@ -130,12 +130,14 @@ class TemplatesController < ApplicationController
   end
   
   def shifts
-      @template = Template.find(params[:id])
-      @shifts = @template.template_shift
-      if params[:start] and params[:stop]
-        respond_to do |format|
-        format.json { render json: @shifts.to_json(:include=>[:shift_type]) }
-      end
+    @template = Template.find(params[:id])
+    @shifts = @template.template_shift
+    @shift_types = ShiftType.all
+      #if params[:start] and params[:stop]
+    respond_to do |format|
+      format.html {}
+      format.json { render json: @shifts.to_json(:include=>[:shift_type]) }
+      #end
     end
   end  
 end

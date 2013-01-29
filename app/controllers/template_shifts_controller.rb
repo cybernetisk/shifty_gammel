@@ -45,7 +45,7 @@ class TemplateShiftsController < ApplicationController
     respond_to do |format|
       if @template_shift.save
         format.html { redirect_to @template_shift, notice: 'Template shift was successfully created.' }
-        format.json { render json: @template_shift, status: :created, location: @template_shift }
+        format.json { render json: @template_shift.to_json(:include=>[:shift_type]), status: :created, location: @template_shift }
       else
         format.html { render action: "new" }
         format.json { render json: @template_shift.errors, status: :unprocessable_entity }

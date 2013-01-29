@@ -6,7 +6,16 @@ class TemplateShift < ActiveRecord::Base
   belongs_to :template
   
   has_many :shift, inverse_of: :template
-  
+
+  before_save :set_default
+
+
+   def set_default
+     if self.stop == nil
+        self.stop = self.start + 2.hours
+      end
+   end
+
   # does the template exist within this period?
   def isApplied(i)
     return Shift.where(:template_shift_id=>self, :start=>template.get_period(i)).exists?
