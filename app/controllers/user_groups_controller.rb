@@ -77,14 +77,21 @@ class UserGroupsController < ApplicationController
     @user_group.certifications.destroy_all
 
     errors = false
-    manages = params[:user_group_manage][:shift_type_ids]
-    params[:user_group][:shift_type_ids].each do |st_id|
-      c = Certification.new(user_group: @user_group, shift_type: ShiftType.find(st_id), manager:manages.include?(st_id));
-      if not c.save
-        errors = true
-        @user_group.errors.add(:certification, "Unable to create certification for something}")
+
+    if params.has_key?(:user_group)
+      ShiftType.all.each do |type|
+        type_id = type.id.to_s
+        can_manage = params.include?(:user_group_manage) && params[:user_group_manage].include?(type_id)
+        if params[:user_group].include?(type_id) || can_manage
+          c = Certification.new(user_group: @user_group, shift_type: ShiftType.find(type.id), manager:can_manage);
+          if not c.save
+            error = true
+            @user_group.error.add(:certification, "Unable to create certification for something")
+          end
+        end
       end
     end
+
     respond_to do |format|
       if errors
         format.html { render action: 'certify' }
