@@ -1,6 +1,7 @@
 class ShiftsController < ApplicationController
   def calendar
-    @shift_types = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
+    @shift_types = ShiftType.all
+    #@shift_types = Hash[*ShiftType.all.map{|x| [x.id, x.title]}.flatten]
 
     @templates = Hash[*Template.all.map{|x| [x.id, x.title]}.flatten]
     @templates[-1] = 'None'
@@ -73,27 +74,22 @@ class ShiftsController < ApplicationController
 
   def edit
     @shift = Shift.find(params[:id])
-    if not current_user.can_manage_shift_type?(@shift.shift_type)
-      redirect_to @shift
-      return
-    end
+    if not verifyEditAccess(@shift) then return end
+
     render { render :layout => !request.xhr? }
   end
 
   def update
     @shift = Shift.find(params[:id])
-    if not current_user.can_manage_shift_type?(@shift.shift_type)
-      redirect_to @shift
-      return
-    else
-      respond_to do |format|
-        if @shift.update_attributes(params[:shift])
-          format.html { redirect_to @shift, notice: 'Shift was successfully updated.' }
-          format.json { head :ok }
-        else
-          format.html { render action: 'edit', layout: !request.xhr? }
-          format.json { render json: @shift.errors, satus: :unprocessable_entity }
-        end
+    #if not verifyEditAccess(@shift) then return end
+
+    respond_to do |format|
+      if @shift.update_attributes(params[:shift])
+        format.html { redirect_to @shift, notice: 'Shift was successfully updated.' }
+        format.json { render :json => { :success => :true }, :head => :ok }
+      else
+        format.html { render action: 'edit', layout: !request.xhr? }
+        format.json { render json: @shift.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -149,7 +145,8 @@ class ShiftsController < ApplicationController
     end
 
     if params[:start]
-      @shifts = @shifts.where("end >= :start", {:start=>params[:start]})
+      start = Time.at(Integer(params[:start]))
+      @shifts = @shifts.where("end >= :start", {:start=>start})
 
       if !params.has_key?:stop and params[:duration]
         params[:stop] = DateTime.parse(params[:start]) + params[:duration].to_f.day
@@ -157,7 +154,8 @@ class ShiftsController < ApplicationController
     end
 
     if params[:stop]
-      @shifts = @shifts.where("start <= :stop", {:stop=>params[:stop]})
+      stop = Time.at(Integer(params[:stop]))
+      @shifts = @shifts.where("start <= :stop", {:stop=>stop})
     end
 
     if params[:shift_type]
@@ -178,7 +176,7 @@ class ShiftsController < ApplicationController
       end
       
     end
-    
+
     if params[:taken]
       tmp = params[:taken]
       taken = tmp.index('0') != nil
@@ -236,6 +234,16 @@ class ShiftsController < ApplicationController
     respond_to do |format|
       format.html 
       format.json { render json: @shifts }
+    end
+  end
+
+  def verifyEditAccess(shift)
+    if not current_user || current_user.can_manage_shift_type?(shift.shift_type)
+      respond_to do |format|
+        format.html { redirect_to shift, notice: "You do not have access to edit this shift." }
+        format.json { render :json => { :errors => "You do not have access to edit this shift." }, :status => :unauthorized }
+      end
+      return false
     end
   end
   

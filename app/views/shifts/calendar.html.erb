@@ -1,28 +1,4 @@
 <% content_for :title, I18n.t("titles.shifts_calendar") %>
-<% days = {monday: "mandag", tuesday:"tirsdag", wednesday:"onsdag", thursday:"torsdag", friday:"fredag", saturday:"lørdag", sunday:"søndag"} %>
-
-<!-- tag for javascript to identify this page -->
-<div id="view_calendar"></div>
-
-<!--
-<%= root_path %>
--->
-
-<script type="text/javascript">
-var shifttypes = <%= @shift_types.to_json.html_safe %>;
-var templates = <%= @templates.to_json.html_safe %>;
-<% if @user %>
-var user = {
-  "id": <%= @user.id %>,
-  "username": <%= @user.username.to_json.html_safe %>
-};
-<% else %>
-var user = { "id": null, "username": null };
-<% end %>
-
-</script>
-
-<input type="text" id="filter_search" />
 
 
 <div style="float:right;">
@@ -30,7 +6,7 @@ var user = { "id": null, "username": null };
   <a href="<%=root_path%>shifts/list" id="list_view">List</a>
 </div>
 
-
+<!--
 <div style="float:right;margin-right:100px;">
   <a href="#" id="template">Templates</a>
 </div>
@@ -49,32 +25,154 @@ var user = { "id": null, "username": null };
 <div id="show_filter">+</div>
 <div id="filters" class="hidden"></div>
 
+<input type="text" id="filter_search" />
+-->
 
 
-<div id="picker"></div>
-<div id="calendar">
 
+<div id="cal_and_tools">
+  <div id="calendar"></div>
 </div>
+<style type='text/css'>
 
-<style type="text/css">
+#calendar
+{
+  width: 100%;
+  float: left;
+}
+
+#cal_and_tools:after
+{
+  content:'.';
+  display:block;
+  clear:both;
+  height:0px;
+  visibility:hidden;
+}
+
+  .shift_type { /* try to mimick the look of a real event */
+    margin: 10px 0;
+    padding: 2px 4px;
+    background: #3366CC;
+    color: #fff;
+    font-size: .85em;
+    cursor: pointer;
+    }
+    
+  #external-events p {
+    margin: 1.5em 0;
+    font-size: 11px;
+    color: #666;
+    }
+    
+  #external-events p input {
+    margin: 0;
+    vertical-align: middle;
+    }
 </style>
-<%= link_to 'New shift', new_shift_path %>
 
+<script type='text/javascript'>
+function fetchShifts(start, end, callback)
+{
+  console.log(start, end, callback)
 
-<div id="changes"></div>
+  var q = $.param({ start: start/1000, stop: end/1000 });
+  $.get('/shifts_calendar.json?'+q, function(data)
+  {
+    //console.log(data);
+    for(var i = 0; i < data.length; i++)
+    {
+      data[i].title = data[i].shift_type.title;
+      data[i].allDay = false;
+    }
+    callback(data);
+  })
+}
+$(document).ready(function() {
 
-<script id="shift" type="text/html">
-<div class="shift {{ shift_type.title }}">
-  <a href="/shifts/{{id}}" class="shift_link">
-  <div class="content">
-    <div>{{ start_time }}</div>
-    <div>
+  var date = new Date();
+  var d = date.getDate();
+  var m = date.getMonth();
+  var y = date.getFullYear();
+  
+  $('#calendar').fullCalendar({
+    header: {
+      left: 'prev,next today',
+      center: 'title',
+      right: 'month,agendaWeek,agendaDay'
+    },
+    
+    columnFormat:{ week: 'dddd d. MMMM' },
+    firstDay: 1,
+    defaultView: 'agendaWeek',
+    editable: true,
+    events: fetchShifts,
 
-    {{shift_type.title}}
-    {{user.username}}
-    </div>
-    <div>{{ end_time }}</div>
-  </div>
-  </a>
-</div>
+    allDaySlot: false,
+
+    dayNames: ["Søndag", "Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag"],
+    dayNamesShort: ["Søn", "Man", "Tir", "Ons", "Tor", "Fre", "Lør"],
+    monthNames: ["januar", "februar", "mars", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "desember"],
+    timeFormat: {
+        agenda: 'H:mm{ - H:mm}',
+        '': 'HH(:mm){-HH(:mm)}'
+    },
+    
+    // slutt-tiden på shift blir endret
+    eventResize: function(event, dayDelta, minuteDelta, revertFunc) {
+      $.post("/shifts/"+event.id+".json",
+        {
+          "_method": "put",
+          "shift[end]": event.end
+        },
+        function(response, status) {})
+        .fail(function(jqobj, textStatus, errorThrown) {
+          alert("Request failed: "+errorThrown);
+          revertFunc();
+        });
+    },
+
+    // shift blir flyttet (både start og slutt endres)
+    eventDrop: function(event,dayDelta, minuteDelta, allDay, revertFunc) {
+      $.post("/shifts/"+event.id+".json",
+        {
+          "_method": "put",
+          "shift[start]": event.start,
+          "shift[end]": event.end
+        },
+        function(response, status) {})
+        .fail(function(jqobj, textStatus, errorThrown) {
+          alert("Request failed: "+errorThrown);
+          revertFunc();
+        });
+    },
+
+    eventClick: function(event) {
+      var url = "/shifts/"+event.id;
+      window.location.href = url;
+    }
+
+    // TODO: droppable, legge inn nye shifts
+  });
+  
+});
+
 </script>
+
+
+
+
+<!--
+<script type="text/javascript">
+<% if @user %>
+var user = {
+  "id": <%= @user.id %>,
+  "username": <%= @user.username.to_json.html_safe %>
+};
+<% else %>
+var user = { "id": null, "username": null };
+<% end %>
+
+</script>-->
+
+<%= link_to 'New shift', new_shift_path %>
