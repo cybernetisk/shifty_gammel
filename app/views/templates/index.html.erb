@@ -20,7 +20,7 @@
     <td><%= template.stop %></td>
     <td><%= template.interval %></td>
     <td><%= link_to 'Show', template %></td>
-    <td><%= link_to 'Shifts', template %></td>
+    <td><%= link_to 'Shifts', :controller => "templates", :action => "shifts", :id => template %></td>
     <td><%= link_to 'Edit', edit_template_path(template) %></td>
     <td><%= link_to 'Destroy', template, confirm: 'Are you sure?', method: :delete %></td>
   </tr>
