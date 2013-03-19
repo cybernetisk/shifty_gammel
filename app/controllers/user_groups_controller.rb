@@ -78,16 +78,15 @@ class UserGroupsController < ApplicationController
 
     errors = false
 
-    if params.has_key?(:user_group)
-      ShiftType.all.each do |type|
-        type_id = type.id.to_s
-        can_manage = params.include?(:user_group_manage) && params[:user_group_manage].include?(type_id)
-        if params[:user_group].include?(type_id) || can_manage
-          c = Certification.new(user_group: @user_group, shift_type: ShiftType.find(type.id), manager:can_manage);
-          if not c.save
-            error = true
-            @user_group.error.add(:certification, "Unable to create certification for something")
-          end
+    ShiftType.all.each do |type|
+      type_id = type.id.to_s
+      can_manage = params.include?(:user_group_manage) && params[:user_group_manage].include?(type_id)
+      type_checked = params.has_key?(:user_group) && params[:user_group].include?(type_id)
+      if type_checked || can_manage
+        c = Certification.new(user_group: @user_group, shift_type: ShiftType.find(type.id), manager:can_manage);
+        if not c.save
+          error = true
+          @user_group.error.add(:certification, "Unable to create certification for something")
         end
       end
     end
