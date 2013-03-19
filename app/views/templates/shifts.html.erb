@@ -128,7 +128,6 @@ $(document).ready(function() {
           });
     },
     eventDrop: function(event,dayDelta,minuteDelta,allDay,revertFunc) {
-
       $.post('/template_shifts/' + event.id +".json" , {'_method':'put', 'template_shift[start]':event.start, 'template_shift[stop]':event.end},
           function(response, status){
             if(status != 'success')

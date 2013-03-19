@@ -1,12 +1,17 @@
+
 <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Title:</b>
-  <%= @template.title %>
-</p>
+
+<h2><%= @template.title %></h2>
+<div id="right">
+<ul id="nav">
+  <li><%= link_to 'Edit details', edit_template_path(@template) %></li>
+  <li><%= link_to 'Edit template shifts', :controller => "templates", :action => "shifts", :id => @template %></li>
+  <li><%= link_to 'Back', templates_path %></li>
+</ul>
+</div>
 
 <p>
-  <b>Description:</b>
   <%= @template.description %>
 </p>
 
@@ -26,8 +31,6 @@
 </p>
 
 
-<%= link_to 'Edit', edit_template_path(@template) %> |
-<%= link_to 'Back', templates_path %> |
 
 <%= link_to 'Edit shifts', :controller => "templates", :action => "shifts", :id => @template %>
 
