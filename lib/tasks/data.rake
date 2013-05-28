@@ -15,20 +15,24 @@ namespace :data do
   
   desc "Generate example half a year"
   task :halfyear => :environment do
-    today = 6.months.since DateTime.now.beginning_of_year
-    today = today.beginning_of_week
+    today = DateTime.now.beginning_of_week
+    
     print "Making shift types\n"
     makeshifts
     print "Making users\n"
     genusers
     
     year = today.year
-    while year == today.year
-        today = 1.week.since(today)
-        print today
-        makeweek(today)
+
+    print "Making week content"
+    Shift.transaction do 
+      while year >= today.year
+          today = 1.week.since(today)
+          makeweek(today)
+          print "."
+      end
     end
-    
+    print "\n"
   end
 
   desc "Generate an example week"
@@ -59,6 +63,10 @@ namespace :data do
       u.save
     end
 
+    print "Made users!\n"
+    print "Admin/hemmelig\n"
+    print "User/hemmelig\n"
+
     names = ["ole","gunnar","lise","lol","asbjorn","thomas"]
     lastnames = ["bjornsen","eliasen","johansen","mikkel","gronvold"]
 
@@ -71,6 +79,7 @@ namespace :data do
         u.save
       end
     end
+    print "+10 random users\n"
   end
 
   def makeshifts

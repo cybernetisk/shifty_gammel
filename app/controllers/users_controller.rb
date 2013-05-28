@@ -152,6 +152,15 @@ class UsersController < ApplicationController
     render html: {user:@user}
   end
   
+  def make_dev_user
+    @user = User.new
+
+    respond_to do |format|
+      format.html # new.html.erb
+      format.json { render json: @user }
+    end
+  end
+
   def admin
     
   end
