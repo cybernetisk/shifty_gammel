@@ -59,7 +59,6 @@ Railsdemo::Application.routes.draw do
   get "users/:id/groups" => "users#groups"
   post "users/:id/groups" => "users#update_groups"
   get "users/:id/ical" => "users#ical"
-  match 'users/make_dev_user' => "users#make_dev_user"
 
   # Default CRUD routes
   resources :shift_types

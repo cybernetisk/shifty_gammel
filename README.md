@@ -19,7 +19,7 @@
 
 4. In the shifty folder, run `bundle install`. This will install rails and all other dependencies
 
-5. To set up the database, run: `rake db:migrate`
+5. To set up the database and generate data for development, run: `rake shifty:init`
 
 6. You should be finished now, try to run `rails s` to start the webserver.
 
@@ -37,11 +37,8 @@
 
 5. This will install rails and all dependencies: `bundler install`
 
-6. Set up the database: `rake db:migrate`
+6. To set up the database and generate data for development, run: `rake shifty:init`
 
 7. Everything should now be ready, run `rails s` and go to http://localhost:3000/
 
 
-### Fixtures
-
-To get testdata, run `rake db:data:load`.
